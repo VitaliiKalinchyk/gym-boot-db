@@ -1,0 +1,279 @@
+databaseChangeLog:
+  - changeSet:
+      id: addTrainingTypeTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: training_type
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(45)
+                  constraints:
+                    nullable: false
+                    unique: true
+        - createIndex:
+            tableName: training_type
+            indexName: name_UNIQUE
+            unique: true
+            columns:
+              - column:
+                  name: name
+
+  - changeSet:
+      id: addUserTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: TINYINT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: addTraineeTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: trainee
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: birthday
+                  type: DATE
+              - column:
+                  name: address
+                  type: VARCHAR(120)
+              - column:
+                  name: user_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    unique: true
+        - addForeignKeyConstraint:
+            baseTableName: trainee
+            baseColumnNames: user_id
+            constraintName: fk_trainee_user
+            referencedTableName: user
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: addTrainerTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: trainer
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: INT
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: training_type_id
+                  type: INT
+        - addForeignKeyConstraint:
+            baseTableName: trainer
+            baseColumnNames: user_id
+            constraintName: fk_trainer_user1
+            referencedTableName: user
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: trainer
+            baseColumnNames: training_type_id
+            constraintName: fk_trainer_training_type1
+            referencedTableName: training_type
+            referencedColumnNames: id
+
+  - changeSet:
+      id: addTrainingTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: training
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(45)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trainer_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trainee_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: training_type_id
+                  type: INT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: training
+            baseColumnNames: trainer_id
+            constraintName: fk_training_trainer1
+            referencedTableName: trainer
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: training
+            baseColumnNames: trainee_id
+            constraintName: fk_training_trainee1
+            referencedTableName: trainee
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: training
+            baseColumnNames: training_type_id
+            constraintName: fk_training_training_type1
+            referencedTableName: training_type
+            referencedColumnNames: id
+
+  - changeSet:
+      id: addTraineeHasTrainerTable
+      author: vitalii.kalinchyk
+      changes:
+        - createTable:
+            tableName: trainee_has_trainer
+            columns:
+              - column:
+                  name: trainee_id
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: trainer_id
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: trainee_has_trainer
+            baseColumnNames: trainee_id
+            constraintName: fk_trainee_has_trainer_trainee1
+            referencedTableName: trainee
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: trainee_has_trainer
+            baseColumnNames: trainer_id
+            constraintName: fk_trainee_has_trainer_trainer1
+            referencedTableName: trainer
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+  - changeSet:
+      id: addDefaultTrainingTypes
+      author: vitalii.kalinchyk
+      changes:
+        - insert:
+            tableName: training_type
+            columns:
+              - column:
+                  name: name
+                  value: FITNESS
+        - insert:
+            tableName: training_type
+            columns:
+              - column:
+                  name: name
+                  value: YOGA
+        - insert:
+            tableName: training_type
+            columns:
+              - column:
+                  name: name
+                  value: ZUMBA
+        - insert:
+            tableName: training_type
+            columns:
+              - column:
+                  name: name
+                  value: STRETCHING
+        - insert:
+            tableName: training_type
+            columns:
+              - column:
+                  name: name
+                  value: RESISTANCE
