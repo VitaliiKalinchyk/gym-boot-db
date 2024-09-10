@@ -12,6 +12,7 @@
     <groupId>epam.task</groupId>
     <artifactId>gym-boot-db</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>gym-boot-db</name>
     <description>gym-boot-db</description>
 
