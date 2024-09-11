@@ -24,7 +24,7 @@ public class Training {
 
     private LocalDate date;
 
-    private int durationMinutes;
+    private int duration;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")

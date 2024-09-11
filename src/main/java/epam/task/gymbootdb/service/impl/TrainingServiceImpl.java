@@ -9,36 +9,47 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingRepository trainingRepository;
 
     @Override
-    public Training add(Training training) {
+    @Transactional
+    public Training create(Training training) {
         return trainingRepository.save(training);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Training> getById(long id) {
         return trainingRepository.findById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Training> getByName(String name) {
         return trainingRepository.findByName(name);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Training> getTrainings() {
+    public List<Training> getAll() {
         return trainingRepository.findAll();
+    }
+
+    @Override
+    public List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate,
+                                              String trainerUsername, String trainingTypeName) {
+        return trainingRepository.findTrainingsByOptionalParams(traineeUsername, fromDate, toDate,
+                                                                trainerUsername, trainingTypeName);
+    }
+
+    @Override
+    public List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate,
+                                              String traineeUsername) {
+        return trainingRepository.findTrainingsByOptionalParams(trainerUsername, fromDate, toDate, traineeUsername);
     }
 }

@@ -30,14 +30,11 @@ public class Trainee {
 
     private String address;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER) //TODO remove fetch after introducing DTO
     @JoinTable(
             name = "trainee_has_trainer",
             joinColumns = @JoinColumn(name = "trainee_id"),
             inverseJoinColumns = @JoinColumn(name = "trainer_id")
     )
     private Set<Trainer> trainers;
-
-    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL)
-    private Set<Training> trainings;
 }
