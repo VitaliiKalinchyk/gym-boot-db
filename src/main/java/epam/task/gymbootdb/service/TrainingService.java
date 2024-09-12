@@ -1,24 +1,23 @@
 package epam.task.gymbootdb.service;
 
-import epam.task.gymbootdb.entity.Training;
+import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
+import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
+import epam.task.gymbootdb.dto.TrainingCreateRequest;
+import epam.task.gymbootdb.dto.TrainingResponse;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface TrainingService {
 
-    Training create(Training training);
+    TrainingResponse create(TrainingCreateRequest training);
 
-    Optional<Training> getById(long id);
+    TrainingResponse getById(long id);
 
-    Optional<Training> getByName(String name);
+    TrainingResponse getByName(String name);
 
-    List<Training> getAll();
+    List<TrainingResponse> getAll();
 
-    List<Training> getTraineeTrainings(String traineeUsername, LocalDate fromDate, LocalDate toDate,
-                                       String trainerUsername, String trainingTypeName);
+    List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request);
 
-    List<Training> getTrainerTrainings(String trainerUsername, LocalDate fromDate, LocalDate toDate,
-                                       String traineeUsername);
+    List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request);
 }

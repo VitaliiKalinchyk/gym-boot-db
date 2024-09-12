@@ -8,11 +8,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: INT
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(45)
@@ -36,11 +35,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: INT
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: first_name
                   type: VARCHAR(45)
@@ -77,11 +75,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: INT
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: birthday
                   type: DATE
@@ -90,7 +87,7 @@ databaseChangeLog:
                   type: VARCHAR(120)
               - column:
                   name: user_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     nullable: false
                     unique: true
@@ -112,20 +109,19 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: INT
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: user_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     nullable: false
                     unique: true
               - column:
                   name: training_type_id
-                  type: INT
+                  type: BIGINT
         - addForeignKeyConstraint:
             baseTableName: trainer
             baseColumnNames: user_id
@@ -150,17 +146,15 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: INT
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(45)
                   constraints:
                     nullable: false
-                    unique: true
               - column:
                   name: date
                   type: DATE
@@ -173,17 +167,17 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: trainer_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
                   name: trainee_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
                   name: training_type_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
@@ -216,16 +210,14 @@ databaseChangeLog:
             columns:
               - column:
                   name: trainee_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: trainer_id
-                  type: INT
+                  type: BIGINT
                   constraints:
                     primaryKey: true
-                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: trainee_has_trainer
             baseColumnNames: trainee_id

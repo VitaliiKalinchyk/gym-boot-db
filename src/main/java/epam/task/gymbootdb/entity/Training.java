@@ -21,9 +21,7 @@ public class Training {
     private long id;
 
     private String name;
-
     private LocalDate date;
-
     private int duration;
 
     @ManyToOne

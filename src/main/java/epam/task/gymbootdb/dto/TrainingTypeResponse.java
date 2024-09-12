@@ -1,23 +1,15 @@
-package epam.task.gymbootdb.entity;
-
-import jakarta.persistence.*;
+package epam.task.gymbootdb.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "training_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrainingType {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TrainingTypeResponse {
     private long id;
-
     private String name;
 }
