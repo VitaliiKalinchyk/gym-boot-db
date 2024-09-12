@@ -1,26 +1,28 @@
 package epam.task.gymbootdb.service;
 
-import epam.task.gymbootdb.entity.Trainer;
+import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
+import epam.task.gymbootdb.dto.TrainerResponse;
+import epam.task.gymbootdb.dto.UserCredentials;
 
 import java.util.List;
 
 public interface TrainerService {
 
-    Trainer createProfile(Trainer trainer);
+    UserCredentials createProfile(TrainerCreateOrUpdateRequest trainer);
 
-    boolean matchCredentials(String username, String password);
+    boolean matchCredentials(UserCredentials user);
 
-    Trainer update(Trainer trainer);
+    TrainerResponse update(TrainerCreateOrUpdateRequest trainer);
 
-    void changePassword(String username, String newPassword);
+    void changePassword(UserCredentials user);
 
     void setActiveStatus(String username, boolean isActive);
 
-    Trainer getById(long id);
+    TrainerResponse getById(long id);
 
-    Trainer getByUsername(String username);
+    TrainerResponse getByUsername(String username);
 
-    List<Trainer> getAll();
+    List<TrainerResponse> getAll();
 
-    List<Trainer> getTrainersNotAssignedToTrainee(String traineeUsername);
+    List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername);
 }

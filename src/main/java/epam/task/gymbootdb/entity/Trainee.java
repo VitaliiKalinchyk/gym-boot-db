@@ -27,10 +27,9 @@ public class Trainee {
     private User user;
 
     private LocalDate birthday;
-
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER) //TODO remove fetch after introducing DTO
+    @ManyToMany
     @JoinTable(
             name = "trainee_has_trainer",
             joinColumns = @JoinColumn(name = "trainee_id"),

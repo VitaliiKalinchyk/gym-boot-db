@@ -29,6 +29,6 @@ public class Trainer {
     @JoinColumn(name = "training_type_id")
     private TrainingType trainingType;
 
-    @ManyToMany(mappedBy = "trainers", fetch = FetchType.EAGER) //TODO remove fetch after introducing DTO
+    @ManyToMany(mappedBy = "trainers")
     private Set<Trainee> trainees;
 }
