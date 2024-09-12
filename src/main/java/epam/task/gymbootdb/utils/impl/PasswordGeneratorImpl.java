@@ -1,6 +1,7 @@
 package epam.task.gymbootdb.utils.impl;
 
 import epam.task.gymbootdb.utils.PasswordGenerator;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +20,13 @@ public class PasswordGeneratorImpl implements PasswordGenerator {
     private static final String DIGITS = "0123456789";
     private static final String ALL_CHARACTERS = UPPER_CASE + LOWER_CASE + DIGITS;
 
-    @Value("${password.length}")
-    private int passwordLength;
-
     private static final SecureRandom random = new SecureRandom();
+
+    private final int passwordLength;
+
+    public PasswordGeneratorImpl(@Value("${password.length}") int passwordLength) {
+        this.passwordLength = passwordLength;
+    }
 
     @Override
     public String generatePassword() {
