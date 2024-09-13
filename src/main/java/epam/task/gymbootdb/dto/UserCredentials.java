@@ -18,6 +18,6 @@ public class UserCredentials {
     private String username;
 
     @NotBlank(message = "Password cannot be null or empty")
-    @Size(min = 10, max = 10, message = "Password must be exactly 10 characters")
+    @Size(min = 8, max = 16, message = "Password must be between 8 and 16 characters")
     private String password;
 }

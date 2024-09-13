@@ -4,6 +4,9 @@ import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,5 +38,16 @@ public class PasswordGeneratorImplTest {
 
         assertTrue(password.matches("[A-Za-z0-9]+"),
                 "Password should only contain allowed characters (letters and digits)");
+    }
+
+    @Test
+    public void testGenerateUniquePasswords() {
+        int numberOfPasswordsToGenerate = 1000;
+        Set<String> generatedPasswords = new HashSet<>();
+
+        for (int i = 0; i < numberOfPasswordsToGenerate; i++) {
+            String password = passwordGenerator.generatePassword();
+            assertTrue(generatedPasswords.add(password), "Generated password is not unique: " + password);
+        }
     }
 }
