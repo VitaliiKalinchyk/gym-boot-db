@@ -1,6 +1,5 @@
 package epam.task.gymbootdb.utils.impl;
 
-import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.utils.NameGenerator;
 import org.junit.jupiter.api.Test;
 
