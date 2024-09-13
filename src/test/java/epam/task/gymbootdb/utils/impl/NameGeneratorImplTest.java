@@ -14,37 +14,9 @@ class NameGeneratorImplTest {
 
     @Test
     public void testGenerateUsernameWithoutExistingUsernames() {
-        User user = new User();
-        user.setFirstName("John");
-        user.setLastName("Doe");
-
-        String generatedUsername = nameGenerator.generateUsername(user);
+        String generatedUsername = nameGenerator.generateUsername("John", "Doe");
 
         assertEquals("John.Doe", generatedUsername);
-    }
-
-    @Test
-    public void testGenerateUsernameUserIsNull() {
-        assertThrows(NullPointerException.class, () -> nameGenerator.generateUsername(null));
-    }
-
-    @Test
-    public void testGenerateUsernameFirstNameIsNull() {
-        User user = new User();
-
-        NullPointerException e = assertThrows(NullPointerException.class, () -> nameGenerator.generateUsername(user));
-
-        assertEquals("First name is null", e.getMessage());
-    }
-
-    @Test
-    public void testGenerateUsernameLastNameIsNull() {
-        User user = new User();
-        user.setFirstName("John");
-
-        NullPointerException e = assertThrows(NullPointerException.class, () -> nameGenerator.generateUsername(user));
-
-        assertEquals("Last name is null", e.getMessage());
     }
 
     @Test
