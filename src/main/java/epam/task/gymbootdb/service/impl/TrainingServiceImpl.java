@@ -11,7 +11,8 @@ import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.service.TrainingService;
 
-import jakarta.persistence.EntityNotFoundException;
+import static epam.task.gymbootdb.exception.GymExceptions.*;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -37,18 +38,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public TrainingResponse getById(long id) {
-        //TODO custom exceptions
-        Training entity = trainingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Training with id = " + id + " not found"));
-
-        return trainingMapper.toDto(entity);
-    }
-
-    @Override
-    public TrainingResponse getByName(String name) {
-        //TODO custom exceptions
-        Training entity = trainingRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Training with name = " + name + " not found"));
+        Training entity = trainingRepository.findById(id).orElseThrow(() -> noSuchTraining(id));
 
         return trainingMapper.toDto(entity);
     }
@@ -60,13 +50,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request) {
-        boolean traineeExists = traineeRepository.existsByUserUsername(request.getTraineeUsername());
-        if (!traineeExists) {
-            throw new EntityNotFoundException("Trainee not found with username: " + request.getTraineeUsername());
-        }
-        //TODO custom exceptions
-
-        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(request.getTraineeUsername(),
+        String traineeUsername = request.getTraineeUsername();
+        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw noSuchTrainee(traineeUsername);
+        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeUsername,
                 request.getFromDate(), request.getToDate(), request.getTrainerUsername(), request.getTrainingTypeName());
 
         return trainingMapper.toDtoList(entities);
@@ -74,13 +60,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request) {
-        boolean trainerExists = trainerRepository.existsByUserUsername(request.getTrainerUsername());
-        if (!trainerExists) {
-            throw new EntityNotFoundException("Trainer not found with username: " + request.getTrainerUsername());
-        }
-        //TODO custom exceptions
-
-        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(request.getTrainerUsername(),
+        String trainerUsername = request.getTrainerUsername();
+        if (!trainerRepository.existsByUserUsername(trainerUsername)) throw noSuchTrainer(trainerUsername);
+        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerUsername,
                 request.getFromDate(), request.getToDate(), request.getTraineeUsername());
 
         return trainingMapper.toDtoList(entities);

@@ -8,10 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface TrainingRepository extends JpaRepository<Training, Long> {
-    Optional<Training> findByName(String name);
 
     @Query("SELECT t FROM Training t WHERE t.trainee.user.username = :traineeUsername AND " +
             "(:fromDate IS NULL OR t.date >= :fromDate) AND " +

@@ -1,5 +1,10 @@
 package epam.task.gymbootdb.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +17,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class TraineeCreateOrUpdateRequest {
-    //TODO validation
+
     private long id;
+
+    @Valid
+    @NotNull
     private UserCreateOrUpdateRequest user;
+
+    @Past(message = "Birthday cannot be in the future")
     private LocalDate birthday;
+
+    @Size(max = 120, message = "Address cannot exceed 120 characters")
     private String address;
 }

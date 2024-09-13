@@ -13,8 +13,6 @@ public interface TrainingService {
 
     TrainingResponse getById(long id);
 
-    TrainingResponse getByName(String name);
-
     List<TrainingResponse> getAll();
 
     List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request);
