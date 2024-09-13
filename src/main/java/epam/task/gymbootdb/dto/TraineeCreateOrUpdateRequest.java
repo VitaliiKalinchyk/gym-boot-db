@@ -1,6 +1,5 @@
 package epam.task.gymbootdb.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
@@ -20,8 +19,7 @@ public class TraineeCreateOrUpdateRequest {
 
     private long id;
 
-    @Valid
-    @NotNull
+    @NotNull(message = "User cannot be null")
     private UserCreateOrUpdateRequest user;
 
     @Past(message = "Birthday cannot be in the future")

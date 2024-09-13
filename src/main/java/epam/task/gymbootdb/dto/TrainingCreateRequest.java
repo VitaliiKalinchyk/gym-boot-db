@@ -24,7 +24,7 @@ public class TrainingCreateRequest {
     private LocalDate date;
 
     @Min(value = 1, message = "Duration must be greater than 0")
-    @Max(value = 300, message = "Duration mustn't be greater than 30")
+    @Max(value = 300, message = "Duration mustn't be greater than 300")
     private int duration;
 
     @Positive(message = "Trainer ID must be a positive number")

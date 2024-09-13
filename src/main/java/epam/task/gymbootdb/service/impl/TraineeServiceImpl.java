@@ -131,7 +131,8 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void deleteByUsername(String username) {
-        if (!traineeRepository.existsByUserUsername(username)) throw noSuchTrainee(username);
+        boolean existsByUserUsername = traineeRepository.existsByUserUsername(username);
+        if (!existsByUserUsername) throw noSuchTrainee(username);
 
         traineeRepository.deleteByUserUsername(username);
     }
