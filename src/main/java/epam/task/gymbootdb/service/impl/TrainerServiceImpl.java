@@ -13,7 +13,9 @@ import epam.task.gymbootdb.service.TrainerService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
-import jakarta.persistence.EntityNotFoundException;
+import static epam.task.gymbootdb.exception.GymExceptions.noSuchTrainer;
+import static epam.task.gymbootdb.exception.GymExceptions.noSuchTrainee;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,9 +68,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public TrainerResponse update(TrainerCreateOrUpdateRequest request) {
-        //TODO custom exceptions
-        Trainer entity = trainerRepository.findById(request.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with id = " + request.getId() + " not found"));
+        Trainer entity = trainerRepository.findById(request.getId()).orElseThrow(() -> noSuchTrainer(request.getId()));
         User user = entity.getUser();
         user.setFirstName(request.getUser().getFirstName());
         user.setLastName(request.getUser().getLastName());
@@ -78,10 +78,8 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public void changePassword(UserCredentials user) {
-        //TODO custom exceptions
         String username = user.getUsername();
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with username = " + username + " not found"));
+        Trainer entity = trainerRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainer(username));
         entity.getUser().setPassword(passwordEncoder.encode(user.getPassword()));
 
         trainerRepository.save(entity);
@@ -89,9 +87,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public void setActiveStatus(String username, boolean isActive) {
-        //TODO custom exceptions
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with username = " + username + " not found"));
+        Trainer entity = trainerRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainer(username));
         entity.getUser().setActive(isActive);
 
         trainerRepository.save(entity);
@@ -100,9 +96,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional(readOnly = true)
     public TrainerResponse getById(long id) {
-        //TODO custom exceptions
-        Trainer entity = trainerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with id = " + id + " not found"));
+        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> noSuchTrainer(id));
 
         return trainerMapper.toDto(entity);
     }
@@ -110,9 +104,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional(readOnly = true)
     public TrainerResponse getByUsername(String username) {
-        //TODO custom exceptions
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer with username = " + username + " not found"));
+        Trainer entity = trainerRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainer(username));
 
         return trainerMapper.toDto(entity);
     }
@@ -126,17 +118,13 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional(readOnly = true)
     public List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername) {
-        boolean traineeExists = traineeRepository.existsByUserUsername(traineeUsername);
-        if (!traineeExists) {
-            throw new EntityNotFoundException("Trainee not found with username: " + traineeUsername);
-        }
-        //TODO custom exceptions
+        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw noSuchTrainee(traineeUsername);
 
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(traineeUsername));
     }
 
     private String generateUsername(User user) {
-        String username = nameGenerator.generateUsername(user);
+        String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
 
         return userRepository.existsByUsername(username) ?
                 nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :

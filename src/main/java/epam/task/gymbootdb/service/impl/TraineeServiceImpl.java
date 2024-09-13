@@ -14,7 +14,7 @@ import epam.task.gymbootdb.service.TraineeService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
-import jakarta.persistence.EntityNotFoundException;
+import static epam.task.gymbootdb.exception.GymExceptions.noSuchTrainee;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final NameGenerator nameGenerator;
 
     @Override
-    public UserCredentials createProfile(TraineeCreateOrUpdateRequest request) {  //TODO nonnull
+    public UserCredentials createProfile(TraineeCreateOrUpdateRequest request) {
         Trainee entity = traineeMapper.toEntity(request);
         String password = passwordGenerator.generatePassword();
         User user = entity.getUser();
@@ -62,17 +62,15 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public boolean matchCredentials(UserCredentials user) {  //TODO nonnull
+    public boolean matchCredentials(UserCredentials user) {
         Optional<Trainee> entity = traineeRepository.findByUserUsername(user.getUsername());
 
         return entity.isPresent() && passwordEncoder.matches(user.getPassword(), entity.get().getUser().getPassword());
     }
 
     @Override
-    public TraineeResponse update(TraineeCreateOrUpdateRequest request) {  //TODO nonnull
-        //TODO custom exceptions
-        Trainee entity = traineeRepository.findById(request.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with id = " + request.getId() + " not found"));
+    public TraineeResponse update(TraineeCreateOrUpdateRequest request) {
+        Trainee entity = traineeRepository.findById(request.getId()).orElseThrow(() -> noSuchTrainee(request.getId()));
         updateTraineeFields(request, entity);
 
         return traineeMapper.toDto(traineeRepository.save(entity));
@@ -86,21 +84,17 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void changePassword(UserCredentials user) {  //TODO nonnull
-        //TODO custom exceptions
-        String username = user.getUsername();
-        Trainee entity = traineeRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with username = " + username + " not found"));
+    public void changePassword(UserCredentials user) {
+        Trainee entity = traineeRepository.findByUserUsername(user.getUsername())
+                                          .orElseThrow(() -> noSuchTrainee(user.getUsername()));
         entity.getUser().setPassword(passwordEncoder.encode(user.getPassword()));
 
         traineeRepository.save(entity);
     }
 
     @Override
-    public void setActiveStatus(String username, boolean isActive) {  //TODO nonnull
-        //TODO custom exceptions
-        Trainee entity = traineeRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with username = " + username + " not found"));
+    public void setActiveStatus(String username, boolean isActive) {
+        Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
         entity.getUser().setActive(isActive);
 
         traineeRepository.save(entity);
@@ -109,19 +103,15 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional(readOnly = true)
     public TraineeResponse getById(long id) {
-        //TODO custom exceptions
-        Trainee entity = traineeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with id = " + id + " not found"));
+        Trainee entity = traineeRepository.findById(id).orElseThrow(() -> noSuchTrainee(id));
 
         return traineeMapper.toDto(entity);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TraineeResponse getByUsername(String username) {  //TODO nonnull
-        //TODO custom exceptions
-        Trainee entity = traineeRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with username = " + username + " not found"));
+    public TraineeResponse getByUsername(String username) {
+        Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
 
         return traineeMapper.toDto(entity);
     }
@@ -134,35 +124,29 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void delete(long id) {
-        //TODO custom exceptions
-        boolean traineeExists = traineeRepository.existsById(id);
-        if (!traineeExists) throw  new EntityNotFoundException("Trainee with id = " + id + " not found");
+        if (!traineeRepository.existsById(id)) throw  noSuchTrainee(id);
 
         traineeRepository.deleteById(id);
     }
 
     @Override
-    public void deleteByUsername(String username) {  //TODO nonnull
-        //TODO custom exceptions
-        boolean traineeExists = traineeRepository.existsByUserUsername(username);
-        if (!traineeExists) throw  new EntityNotFoundException("Trainee with username = " + username + " not found");
+    public void deleteByUsername(String username) {
+        if (!traineeRepository.existsByUserUsername(username)) throw noSuchTrainee(username);
 
         traineeRepository.deleteByUserUsername(username);
     }
 
     @Override
-    public void updateTraineeTrainers(String traineeUsername, List<Long> trainerIds) { //TODO nonnull
-        //TODO custom exceptions
-        Trainee entity = traineeRepository.findByUserUsername(traineeUsername)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee with username = " + traineeUsername + " not found"));
+    public void updateTraineeTrainers(String username, List<Long> trainerIds) {
+        Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
         Set<Trainer> trainersByIds = new HashSet<>(trainerRepository.findAllById(trainerIds));
         entity.getTrainers().addAll(trainersByIds);
 
         traineeRepository.save(entity);
     }
 
-    private String generateUsername(User user) {  //TODO nonnull
-        String username = nameGenerator.generateUsername(user);
+    private String generateUsername(User user) {
+        String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
 
         return userRepository.existsByUsername(username) ?
                 nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
