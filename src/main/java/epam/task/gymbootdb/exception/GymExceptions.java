@@ -18,8 +18,8 @@ public class GymExceptions {
         return new TrainerException(username);
     }
 
-    public static TrainingException noSuchTraining(long id) {
-        return new TrainingException(id);
+    public static PasswordException wrongPassword() {
+        return new PasswordException();
     }
 
     private GymExceptions() {}

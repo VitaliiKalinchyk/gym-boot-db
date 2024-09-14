@@ -1,9 +1,8 @@
 package epam.task.gymbootdb.dto.mapper;
 
-import epam.task.gymbootdb.dto.TraineeCreateOrUpdateRequest;
-import epam.task.gymbootdb.dto.TraineeResponse;
-import epam.task.gymbootdb.dto.UserCreateOrUpdateRequest;
+import epam.task.gymbootdb.dto.*;
 import epam.task.gymbootdb.entity.Trainee;
+import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class TraineeMapperTest {
 
@@ -26,6 +26,17 @@ public class TraineeMapperTest {
         TraineeResponse response = mapper.toDto(trainee);
 
         assertTraineeResponse(trainee, response);
+    }
+    @Test
+    public void testToDtoWithTrainers() {
+        Trainee trainee = getTrainee1(getUser1());
+        Trainer trainer1 = Trainer.builder().id(1).build();
+        Trainer trainer2 = Trainer.builder().id(2).build();
+        trainee.setTrainers(Set.of(trainer1, trainer2));
+
+        Set<TrainerResponse> trainerResponses = mapper.toDtoWithTrainers(trainee).getTrainers();
+
+        assertEquals(2, trainerResponses.size());
     }
 
     @Test

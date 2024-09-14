@@ -8,9 +8,7 @@ import java.util.Optional;
 
 public interface TraineeRepository extends JpaRepository<Trainee, Long> {
 
-    boolean existsByUserUsername(String traineeUsername);
+    boolean existsByUserUsername(String username);
 
     Optional<Trainee> findByUserUsername(String username);
-
-    void deleteByUserUsername(String username);
 }

@@ -6,6 +6,7 @@ import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
+import epam.task.gymbootdb.exception.GymExceptions;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -77,9 +78,12 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void changePassword(UserCredentials user) {
-        String username = user.getUsername();
-        Trainer entity = trainerRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainer(username));
+    public void changePassword(UserCredentials user, String newPassword) {
+        Trainer entity = trainerRepository.findByUserUsername(user.getUsername())
+                .orElseThrow(() -> noSuchTrainer(user.getUsername()));
+        if (!passwordEncoder.matches(user.getPassword(), entity.getUser().getPassword())) {
+            throw  GymExceptions.wrongPassword();
+        }
         entity.getUser().setPassword(passwordEncoder.encode(user.getPassword()));
 
         trainerRepository.save(entity);
@@ -107,12 +111,6 @@ public class TrainerServiceImpl implements TrainerService {
         Trainer entity = trainerRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainer(username));
 
         return trainerMapper.toDto(entity);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TrainerResponse> getAll() {
-        return trainerMapper.toDtoList(trainerRepository.findAll());
     }
 
     @Override

@@ -11,10 +11,6 @@ public interface TrainingService {
 
     TrainingResponse create(TrainingCreateRequest training);
 
-    TrainingResponse getById(long id);
-
-    List<TrainingResponse> getAll();
-
     List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request);
 
     List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request);

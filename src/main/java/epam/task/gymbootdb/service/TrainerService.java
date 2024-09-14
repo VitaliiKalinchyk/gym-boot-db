@@ -14,15 +14,13 @@ public interface TrainerService {
 
     TrainerResponse update(TrainerCreateOrUpdateRequest trainer);
 
-    void changePassword(UserCredentials user);
+    void changePassword(UserCredentials user, String newPassword);
 
     void setActiveStatus(String username, boolean isActive);
 
     TrainerResponse getById(long id);
 
     TrainerResponse getByUsername(String username);
-
-    List<TrainerResponse> getAll();
 
     List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername);
 }
