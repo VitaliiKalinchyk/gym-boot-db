@@ -2,11 +2,13 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.TraineeCreateOrUpdateRequest;
 import epam.task.gymbootdb.dto.TraineeResponse;
+import epam.task.gymbootdb.dto.TraineeWithTrainersResponse;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.entity.Trainee;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
+import epam.task.gymbootdb.exception.GymExceptions;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -23,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -84,10 +85,13 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void changePassword(UserCredentials user) {
+    public void changePassword(UserCredentials user, String newPassword) {
         Trainee entity = traineeRepository.findByUserUsername(user.getUsername())
                                           .orElseThrow(() -> noSuchTrainee(user.getUsername()));
-        entity.getUser().setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!passwordEncoder.matches(user.getPassword(), entity.getUser().getPassword())) {
+            throw  GymExceptions.wrongPassword();
+        }
+        entity.getUser().setPassword(passwordEncoder.encode(newPassword));
 
         traineeRepository.save(entity);
     }
@@ -110,37 +114,23 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional(readOnly = true)
-    public TraineeResponse getByUsername(String username) {
+    public TraineeWithTrainersResponse getByUsername(String username) {
         Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
 
-        return traineeMapper.toDto(entity);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TraineeResponse> getAll() {
-        return traineeMapper.toDtoList(traineeRepository.findAll());
-    }
-
-    @Override
-    public void delete(long id) {
-        if (!traineeRepository.existsById(id)) throw  noSuchTrainee(id);
-
-        traineeRepository.deleteById(id);
+        return traineeMapper.toDtoWithTrainers(entity);
     }
 
     @Override
     public void deleteByUsername(String username) {
-        boolean existsByUserUsername = traineeRepository.existsByUserUsername(username);
-        if (!existsByUserUsername) throw noSuchTrainee(username);
+        Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
 
-        traineeRepository.deleteByUserUsername(username);
+        traineeRepository.delete(entity);
     }
 
     @Override
     public void updateTraineeTrainers(String username, List<Long> trainerIds) {
         Trainee entity = traineeRepository.findByUserUsername(username).orElseThrow(() -> noSuchTrainee(username));
-        Set<Trainer> trainersByIds = new HashSet<>(trainerRepository.findAllById(trainerIds));
+        Set<Trainer> trainersByIds = Set.copyOf(trainerRepository.findAllById(trainerIds));
         entity.getTrainers().addAll(trainersByIds);
 
         traineeRepository.save(entity);

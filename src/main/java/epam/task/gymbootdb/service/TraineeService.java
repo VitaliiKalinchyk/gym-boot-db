@@ -2,6 +2,7 @@ package epam.task.gymbootdb.service;
 
 import epam.task.gymbootdb.dto.TraineeCreateOrUpdateRequest;
 import epam.task.gymbootdb.dto.TraineeResponse;
+import epam.task.gymbootdb.dto.TraineeWithTrainersResponse;
 import epam.task.gymbootdb.dto.UserCredentials;
 
 import java.util.List;
@@ -14,17 +15,13 @@ public interface TraineeService {
 
     TraineeResponse update(TraineeCreateOrUpdateRequest trainee);
 
-    void changePassword(UserCredentials user);
+    void changePassword(UserCredentials user, String newPassword);
 
     void setActiveStatus(String username, boolean isActive);
 
     TraineeResponse getById(long id);
 
-    TraineeResponse getByUsername(String username);
-
-    List<TraineeResponse> getAll();
-
-    void delete(long id);
+    TraineeWithTrainersResponse getByUsername(String username);
 
     void deleteByUsername(String username);
 

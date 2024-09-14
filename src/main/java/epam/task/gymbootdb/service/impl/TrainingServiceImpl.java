@@ -15,6 +15,7 @@ import static epam.task.gymbootdb.exception.GymExceptions.*;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingRepository trainingRepository;
@@ -30,23 +32,14 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerRepository trainerRepository;
     private final TrainingMapper trainingMapper;
 
-        @Override
-        @Transactional
-        public TrainingResponse create(TrainingCreateRequest request) {
-            return trainingMapper.toDto(trainingRepository.save(trainingMapper.toEntity(request)));
-        }
-
     @Override
-    public TrainingResponse getById(long id) {
-        Training entity = trainingRepository.findById(id).orElseThrow(() -> noSuchTraining(id));
+    @Transactional
+    public TrainingResponse create(TrainingCreateRequest request) {
+        Training entity = trainingMapper.toEntity(request);
+        Training savedEntity = trainingRepository.save(entity);
+        log.debug("Training created with ID: {}", savedEntity.getId());
 
-        return trainingMapper.toDto(entity);
-    }
-
-    @Override
-    public List<TrainingResponse> getAll() {
-        return trainingMapper.toDtoList(trainingRepository.findAll());
-    }
+        return trainingMapper.toDto(savedEntity);    }
 
     @Override
     public List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request) {
