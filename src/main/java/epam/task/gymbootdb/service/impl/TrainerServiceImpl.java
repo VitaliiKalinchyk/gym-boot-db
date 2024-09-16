@@ -54,12 +54,6 @@ public class TrainerServiceImpl implements TrainerService {
         return new UserCredentials(username, password);
     }
 
-    private void setUserFields(User user, String username, String password) {
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setActive(true);
-    }
-
     @Override
     public boolean matchCredentials(UserCredentials user) {
         Optional<Trainer> entity = trainerRepository.findByUserUsername(user.getUsername());
@@ -127,5 +121,11 @@ public class TrainerServiceImpl implements TrainerService {
         return userRepository.existsByUsername(username) ?
                 nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
                 username;
+    }
+
+    private void setUserFields(User user, String username, String password) {
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setActive(true);
     }
 }

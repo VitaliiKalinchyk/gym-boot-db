@@ -56,12 +56,6 @@ public class TraineeServiceImpl implements TraineeService {
         return new UserCredentials(username, password);
     }
 
-    private void setUserFields(User user, String username, String password) {
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setActive(true);
-    }
-
     @Override
     public boolean matchCredentials(UserCredentials user) {
         Optional<Trainee> entity = traineeRepository.findByUserUsername(user.getUsername());
@@ -75,13 +69,6 @@ public class TraineeServiceImpl implements TraineeService {
         updateTraineeFields(request, entity);
 
         return traineeMapper.toDto(traineeRepository.save(entity));
-    }
-
-    private static void updateTraineeFields(TraineeCreateOrUpdateRequest request, Trainee entity) {
-        entity.getUser().setFirstName(request.getUser().getFirstName());
-        entity.getUser().setLastName(request.getUser().getLastName());
-        entity.setBirthday(request.getBirthday());
-        entity.setAddress(request.getAddress());
     }
 
     @Override
@@ -134,6 +121,21 @@ public class TraineeServiceImpl implements TraineeService {
         entity.getTrainers().addAll(trainersByIds);
 
         traineeRepository.save(entity);
+    }
+
+
+    private void setUserFields(User user, String username, String password) {
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setActive(true);
+    }
+
+
+    private static void updateTraineeFields(TraineeCreateOrUpdateRequest request, Trainee entity) {
+        entity.getUser().setFirstName(request.getUser().getFirstName());
+        entity.getUser().setLastName(request.getUser().getLastName());
+        entity.setBirthday(request.getBirthday());
+        entity.setAddress(request.getAddress());
     }
 
     private String generateUsername(User user) {
