@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class TraineeServiceImpl implements TraineeService {
@@ -43,6 +42,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final NameGenerator nameGenerator;
 
     @Override
+    @Transactional
     public UserCredentials createProfile(TraineeCreateOrUpdateRequest request) {
         Trainee entity = traineeMapper.toEntity(request);
         String password = passwordGenerator.generatePassword();
@@ -63,6 +63,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public TraineeResponse update(TraineeCreateOrUpdateRequest request) {
         long id = request.getId();
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
@@ -94,7 +95,6 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TraineeResponse getById(long id) {
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
 
@@ -102,7 +102,6 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TraineeWithTrainersResponse getByUsername(String username) {
         Trainee entity = traineeRepository.findByUserUsername(username)
                 .orElseThrow(() -> new TraineeException(username));

@@ -14,16 +14,14 @@ import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class TrainingServiceImpl implements TrainingService {
 
@@ -33,7 +31,6 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingMapper trainingMapper;
 
     @Override
-    @Transactional
     public TrainingResponse create(TrainingCreateRequest request) {
         Training entity = trainingMapper.toEntity(request);
         Training savedEntity = trainingRepository.save(entity);
