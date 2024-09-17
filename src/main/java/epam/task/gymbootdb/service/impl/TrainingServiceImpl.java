@@ -6,12 +6,12 @@ import epam.task.gymbootdb.dto.TrainingCreateRequest;
 import epam.task.gymbootdb.dto.TrainingResponse;
 import epam.task.gymbootdb.dto.mapper.TrainingMapper;
 import epam.task.gymbootdb.entity.Training;
+import epam.task.gymbootdb.exception.TraineeException;
+import epam.task.gymbootdb.exception.TrainerException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.service.TrainingService;
-
-import static epam.task.gymbootdb.exception.GymExceptions.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +44,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request) {
         String traineeUsername = request.getTraineeUsername();
-        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw noSuchTrainee(traineeUsername);
+        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw new TraineeException(traineeUsername);
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeUsername,
                 request.getFromDate(), request.getToDate(), request.getTrainerUsername(), request.getTrainingTypeName());
 
@@ -54,7 +54,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request) {
         String trainerUsername = request.getTrainerUsername();
-        if (!trainerRepository.existsByUserUsername(trainerUsername)) throw noSuchTrainer(trainerUsername);
+        if (!trainerRepository.existsByUserUsername(trainerUsername)) throw new TrainerException(trainerUsername);
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerUsername,
                 request.getFromDate(), request.getToDate(), request.getTraineeUsername());
 
