@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class TrainerServiceImpl implements TrainerService {
@@ -41,6 +40,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final NameGenerator nameGenerator;
 
     @Override
+    @Transactional
     public UserCredentials createProfile(TrainerCreateOrUpdateRequest request) {
         Trainer entity = trainerMapper.toEntity(request);
         String password = passwordGenerator.generatePassword();
@@ -61,6 +61,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public TrainerResponse update(TrainerCreateOrUpdateRequest request) {
         long id = request.getId();
         Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
@@ -93,7 +94,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TrainerResponse getById(long id) {
         Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
 
@@ -101,7 +101,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public TrainerResponse getByUsername(String username) {
         Trainer entity = trainerRepository.findByUserUsername(username)
                 .orElseThrow(() -> new TrainerException(username));
@@ -110,7 +109,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername) {
         if (!traineeRepository.existsByUserUsername(traineeUsername)) throw new TraineeException(traineeUsername);
 
