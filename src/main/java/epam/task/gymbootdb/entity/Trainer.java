@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "trainer")
@@ -30,5 +30,8 @@ public class Trainer {
     private TrainingType trainingType;
 
     @ManyToMany(mappedBy = "trainers")
-    private Set<Trainee> trainees;
+    private List<Trainee> trainees;
+
+    @OneToMany(mappedBy = "trainer")
+    private List<Training> trainings;
 }

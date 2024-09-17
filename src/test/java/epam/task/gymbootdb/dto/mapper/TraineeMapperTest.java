@@ -32,7 +32,7 @@ public class TraineeMapperTest {
         Trainee trainee = getTrainee1(getUser1());
         Trainer trainer1 = Trainer.builder().id(1).build();
         Trainer trainer2 = Trainer.builder().id(2).build();
-        trainee.setTrainers(Set.of(trainer1, trainer2));
+        trainee.setTrainers(List.of(trainer1, trainer2));
 
         Set<TrainerResponse> trainerResponses = mapper.toDtoWithTrainers(trainee).getTrainers();
 
@@ -108,7 +108,7 @@ public class TraineeMapperTest {
                 .address("Test Address 2").build();
     }
 
-    private static TraineeCreateOrUpdateRequest getRequest(UserCreateOrUpdateRequest user) {
+    private static TraineeCreateOrUpdateRequest getRequest(UserDto user) {
         return TraineeCreateOrUpdateRequest.builder()
                 .id(1L)
                 .user(user)
@@ -116,7 +116,7 @@ public class TraineeMapperTest {
                 .address("Test Address").build();
     }
 
-    private static UserCreateOrUpdateRequest getUserCreateOrUpdateRequest() {
-        return UserCreateOrUpdateRequest.builder().firstName("John").lastName("Doe").build();
+    private static UserDto getUserCreateOrUpdateRequest() {
+        return UserDto.builder().firstName("John").lastName("Doe").build();
     }
 }

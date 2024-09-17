@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TrainingService {
 
-    TrainingResponse create(TrainingCreateRequest training);
+    void create(TrainingCreateRequest training);
 
     List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request);
 

@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "trainee")
@@ -35,5 +35,8 @@ public class Trainee {
             joinColumns = @JoinColumn(name = "trainee_id"),
             inverseJoinColumns = @JoinColumn(name = "trainer_id")
     )
-    private Set<Trainer> trainers;
+    private List<Trainer> trainers;
+
+    @OneToMany(mappedBy = "trainee") //TODO cascade?
+    private List<Training> trainings;
 }

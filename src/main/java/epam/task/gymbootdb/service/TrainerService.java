@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.service;
 
+import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
 import epam.task.gymbootdb.dto.TrainerResponse;
 import epam.task.gymbootdb.dto.UserCredentials;
@@ -10,17 +11,15 @@ public interface TrainerService {
 
     UserCredentials createProfile(TrainerCreateOrUpdateRequest trainer);
 
-    boolean matchCredentials(UserCredentials user);
+    void matchCredentials(UserCredentials user);
 
     TrainerResponse update(TrainerCreateOrUpdateRequest trainer);
 
-    void changePassword(UserCredentials user, String newPassword);
+    void changePassword(ChangePasswordRequest request);
 
-    void setActiveStatus(String username, boolean isActive);
+    void setActiveStatus(long id, boolean isActive);
 
     TrainerResponse getById(long id);
 
-    TrainerResponse getByUsername(String username);
-
-    List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername);
+    List<TrainerResponse> getTrainersNotAssignedToTrainee(long id);
 }

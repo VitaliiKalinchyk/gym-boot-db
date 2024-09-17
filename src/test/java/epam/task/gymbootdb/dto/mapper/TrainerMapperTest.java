@@ -2,8 +2,8 @@ package epam.task.gymbootdb.dto.mapper;
 
 import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
 import epam.task.gymbootdb.dto.TrainerResponse;
-import epam.task.gymbootdb.dto.TrainingTypeResponse;
-import epam.task.gymbootdb.dto.UserCreateOrUpdateRequest;
+import epam.task.gymbootdb.dto.TrainingTypeDto;
+import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.TrainingType;
 import epam.task.gymbootdb.entity.User;
@@ -97,15 +97,15 @@ public class TrainerMapperTest {
 
     }
 
-    private static TrainerCreateOrUpdateRequest getRequest(UserCreateOrUpdateRequest user) {
+    private static TrainerCreateOrUpdateRequest getRequest(UserDto user) {
         return TrainerCreateOrUpdateRequest.builder()
                 .id(1L)
                 .user(user)
-                .trainingType(new TrainingTypeResponse(1, "YOGA")).build();
+                .trainingType(new TrainingTypeDto(1, "YOGA")).build();
 
     }
 
-    private static UserCreateOrUpdateRequest getUserCreateOrUpdateRequest() {
-        return UserCreateOrUpdateRequest.builder().firstName("John").lastName("Doe").build();
+    private static UserDto getUserCreateOrUpdateRequest() {
+        return UserDto.builder().firstName("John").lastName("Doe").build();
     }
 }

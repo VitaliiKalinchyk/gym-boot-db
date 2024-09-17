@@ -18,5 +18,5 @@ public class TrainingResponse {
     private int duration;
     private TrainerResponse trainer;
     private TraineeResponse trainee;
-    private TrainingTypeResponse trainingType;
+    private TrainingTypeDto trainingType;
 }

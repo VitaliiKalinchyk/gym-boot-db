@@ -20,7 +20,7 @@ public class TraineeCreateOrUpdateRequest {
     private long id;
 
     @NotNull(message = "User cannot be null")
-    private UserCreateOrUpdateRequest user;
+    private UserDto user;
 
     @Past(message = "Birthday cannot be in the future")
     private LocalDate birthday;
