@@ -69,7 +69,7 @@ public class TraineeCreateOrUpdateRequestTest {
     private static TraineeCreateOrUpdateRequest validRequest() {
         return TraineeCreateOrUpdateRequest.builder()
                 .id(1)
-                .user(new UserCreateOrUpdateRequest("John", "Doe"))
+                .user(UserDto.builder().firstName("Joe").lastName("Doe").build())
                 .birthday(LocalDate.of(2000, 1, 1))
                 .address("123 Main Street")
                 .build();

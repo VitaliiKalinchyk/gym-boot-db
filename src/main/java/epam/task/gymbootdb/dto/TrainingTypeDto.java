@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrainingTypeResponse {
+public class TrainingTypeDto {
     private long id;
     private String name;
 }

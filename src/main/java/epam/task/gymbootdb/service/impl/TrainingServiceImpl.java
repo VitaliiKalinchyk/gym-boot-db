@@ -14,7 +14,6 @@ import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingRepository trainingRepository;
@@ -31,29 +29,27 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingMapper trainingMapper;
 
     @Override
-    public TrainingResponse create(TrainingCreateRequest request) {
+    public void create(TrainingCreateRequest request) {
         Training entity = trainingMapper.toEntity(request);
-        Training savedEntity = trainingRepository.save(entity);
-        log.debug("Training created with ID: {}", savedEntity.getId());
-
-        return trainingMapper.toDto(savedEntity);    }
+        trainingRepository.save(entity);
+    }
 
     @Override
     public List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request) {
-        String traineeUsername = request.getTraineeUsername();
-        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw new TraineeException(traineeUsername);
-        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeUsername,
-                request.getFromDate(), request.getToDate(), request.getTrainerUsername(), request.getTrainingTypeName());
+        long traineeId = request.getTraineeId();
+        if (!traineeRepository.existsById(traineeId)) throw new TraineeException(traineeId);
+        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeId,
+                request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
 
         return trainingMapper.toDtoList(entities);
     }
 
     @Override
     public List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request) {
-        String trainerUsername = request.getTrainerUsername();
-        if (!trainerRepository.existsByUserUsername(trainerUsername)) throw new TrainerException(trainerUsername);
-        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerUsername,
-                request.getFromDate(), request.getToDate(), request.getTraineeUsername());
+        long trainerId = request.getTrainerId();
+        if (!trainerRepository.existsById(trainerId)) throw new TrainerException(trainerId);
+        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerId,
+                request.getFromDate(), request.getToDate(), request.getTraineeId());
 
         return trainingMapper.toDtoList(entities);
     }

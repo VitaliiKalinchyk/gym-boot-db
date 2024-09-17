@@ -17,8 +17,8 @@ public class TrainerCreateOrUpdateRequest {
 
     @Valid
     @NotNull(message = "User cannot be null")
-    private UserCreateOrUpdateRequest user;
+    private UserDto user;
 
     @NotNull(message = "TrainingType cannot be null")
-    private TrainingTypeResponse trainingType;
+    private TrainingTypeDto trainingType;
 }

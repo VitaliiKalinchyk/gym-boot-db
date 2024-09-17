@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.service.impl;
 
+import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
 import epam.task.gymbootdb.dto.TrainerResponse;
 import epam.task.gymbootdb.dto.UserCredentials;
@@ -17,18 +18,15 @@ import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
@@ -54,10 +52,13 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public boolean matchCredentials(UserCredentials user) {
-        Optional<Trainer> entity = trainerRepository.findByUserUsername(user.getUsername());
+    public void matchCredentials(UserCredentials user) {
+        Trainer entity = trainerRepository.findByUserUsername(user.getUsername())
+                .orElseThrow(() -> new TrainerException(user.getUsername()));
 
-        return entity.isPresent() && passwordEncoder.matches(user.getPassword(), entity.get().getUser().getPassword());
+        if (!passwordEncoder.matches(user.getPassword(), entity.getUser().getPassword())) {
+            throw new PasswordException();
+        }
     }
 
     @Override
@@ -73,21 +74,22 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void changePassword(UserCredentials user, String newPassword) {
-        Trainer entity = trainerRepository.findByUserUsername(user.getUsername())
-                .orElseThrow(() -> new TrainerException(user.getUsername()));
-        if (!passwordEncoder.matches(user.getPassword(), entity.getUser().getPassword())) {
+    public void changePassword(ChangePasswordRequest request) {
+        UserCredentials userCredentials = request.getUserCredentials();
+        String username = userCredentials.getUsername();
+        Trainer entity = trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TrainerException(username));
+        if (!passwordEncoder.matches(userCredentials.getPassword(), entity.getUser().getPassword())) {
             throw  new PasswordException();
         }
-        entity.getUser().setPassword(passwordEncoder.encode(user.getPassword()));
+        entity.getUser().setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         trainerRepository.save(entity);
     }
 
     @Override
-    public void setActiveStatus(String username, boolean isActive) {
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new TrainerException(username));
+    public void setActiveStatus(long id, boolean isActive) {
+        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
         entity.getUser().setActive(isActive);
 
         trainerRepository.save(entity);
@@ -101,18 +103,10 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerResponse getByUsername(String username) {
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new TrainerException(username));
+    public List<TrainerResponse> getTrainersNotAssignedToTrainee(long id) {
+        if (!traineeRepository.existsById(id)) throw new TraineeException(id);
 
-        return trainerMapper.toDto(entity);
-    }
-
-    @Override
-    public List<TrainerResponse> getTrainersNotAssignedToTrainee(String traineeUsername) {
-        if (!traineeRepository.existsByUserUsername(traineeUsername)) throw new TraineeException(traineeUsername);
-
-        return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(traineeUsername));
+        return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
     }
 
     private String generateUsername(User user) {

@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class TrainerResponse {
     private long id;
     private UserResponse user;
-    private TrainingTypeResponse trainingType;
+    private TrainingTypeDto trainingType;
 }

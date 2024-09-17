@@ -54,21 +54,18 @@ class TrainingServiceImplTest {
     void testCreate() {
         when(trainingMapper.toEntity(trainingCreateRequest)).thenReturn(trainingEntity);
         when(trainingRepository.save(trainingEntity)).thenReturn(trainingEntity);
-        when(trainingMapper.toDto(trainingEntity)).thenReturn(trainingResponse);
 
-        TrainingResponse result = trainingService.create(trainingCreateRequest);
+        trainingService.create(trainingCreateRequest);
 
-
-        assertNotNull(result, "Training response should not be null");
-        assertEquals(trainingResponse, result, "Training response should match the expected value");
+        verify(trainingRepository).save(trainingEntity);
     }
 
     @Test
     void testGetTraineeTrainings() {
-        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeUsername("testTrainee").build();
+        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeId(1L).build();
 
-        when(traineeRepository.existsByUserUsername("testTrainee")).thenReturn(true);
-        when(trainingRepository.findTraineeTrainingsByOptionalParams(anyString(), any(), any(), any(), any()))
+        when(traineeRepository.existsById(1L)).thenReturn(true);
+        when(trainingRepository.findTraineeTrainingsByOptionalParams(anyLong(), any(), any(), any(), any()))
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
@@ -80,23 +77,21 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTraineeTrainingsNoSuchUsername() {
-        String username = "testTrainee";
-        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeUsername(username).build();
+    void testGetTraineeTrainingsNoSuchTrainee() {
+        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeId(1L).build();
 
-        when(traineeRepository.existsByUserUsername(username)).thenReturn(false);
+        when(traineeRepository.existsById(1L)).thenReturn(false);
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.getTraineeTrainings(request));
-        assertEquals("Trainee with username " + username + " was not found", e.getMessage());
+        assertEquals("Trainee with id " + 1 + " was not found", e.getMessage());
     }
 
     @Test
     void testGetTrainerTrainings() {
-        String username = "testTrainer";
-        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerUsername(username).build();
+        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerId(1L).build();
 
-        when(trainerRepository.existsByUserUsername(username)).thenReturn(true);
-        when(trainingRepository.findTrainerTrainingsByOptionalParams(anyString(), any(), any(), any()))
+        when(trainerRepository.existsById(1L)).thenReturn(true);
+        when(trainingRepository.findTrainerTrainingsByOptionalParams(anyLong(), any(), any(), any()))
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
@@ -108,13 +103,12 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainerTrainingsNoSuchUsername() {
-        String username = "testTrainer";
-        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerUsername(username).build();
+    void testGetTrainerTrainingsNoSuchTrainer() {
+        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerId(1L).build();
 
-        when(trainerRepository.existsByUserUsername(username)).thenReturn(false);
+        when(trainerRepository.existsById(1L)).thenReturn(false);
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.getTrainerTrainings(request));
-        assertEquals("Trainer with username " + username + " was not found", e.getMessage());
+        assertEquals("Trainer with id " + 1 + " was not found", e.getMessage());
     }
 }

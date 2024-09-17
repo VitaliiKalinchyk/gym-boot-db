@@ -57,8 +57,8 @@ public class TrainerCreateOrUpdateRequestTest {
     private static TrainerCreateOrUpdateRequest validRequest() {
         return TrainerCreateOrUpdateRequest.builder()
                 .id(1L)
-                .user(new UserCreateOrUpdateRequest("John", "Doe"))
-                .trainingType(new TrainingTypeResponse(1L, "Fitness"))
+                .user(UserDto.builder().firstName("Joe").lastName("Doe").build())
+                .trainingType(new TrainingTypeDto(1L, "Fitness"))
                 .build();
     }
 }
