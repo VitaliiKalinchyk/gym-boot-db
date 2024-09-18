@@ -1,15 +1,14 @@
 package epam.task.gymbootdb.service.impl;
 
-import epam.task.gymbootdb.dto.ChangePasswordRequest;
-import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
-import epam.task.gymbootdb.dto.TrainerResponse;
-import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
+import epam.task.gymbootdb.exception.UsernameException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -33,13 +32,14 @@ public class TrainerServiceImpl implements TrainerService {
     private final TraineeRepository traineeRepository;
     private final UserRepository userRepository;
     private final TrainerMapper trainerMapper;
+    private final TraineeMapper traineeMapper;
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
 
     @Override
     @Transactional
-    public UserCredentials createProfile(TrainerCreateOrUpdateRequest request) {
+    public UserCredentials createProfile(TrainerDto request) {
         Trainer entity = trainerMapper.toEntity(request);
         String password = passwordGenerator.generatePassword();
         User user = entity.getUser();
@@ -63,23 +63,23 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public TrainerResponse update(TrainerCreateOrUpdateRequest request) {
-        long id = request.getId();
-        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
-        User user = entity.getUser();
-        user.setFirstName(request.getUser().getFirstName());
-        user.setLastName(request.getUser().getLastName());
+    public TrainerDto update(TrainerDto request) {
+        Trainer entity = trainerRepository.findById(request.getId())
+                .orElseThrow(() -> new TrainerException(request.getId()));
+        checkIfUsernameExists(request, entity);
+        updateTrainerFields(request.getUser(), entity.getUser());
 
-        return trainerMapper.toDto(trainerRepository.save(entity));
+        TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
+        dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
+
+        return dto;
     }
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
-        UserCredentials userCredentials = request.getUserCredentials();
-        String username = userCredentials.getUsername();
-        Trainer entity = trainerRepository.findByUserUsername(username)
-                .orElseThrow(() -> new TrainerException(username));
-        if (!passwordEncoder.matches(userCredentials.getPassword(), entity.getUser().getPassword())) {
+        long id = request.getId();
+        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
+        if (!passwordEncoder.matches(request.getOldPassword(), entity.getUser().getPassword())) {
             throw  new PasswordException();
         }
         entity.getUser().setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -96,14 +96,18 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerResponse getById(long id) {
+    @Transactional(readOnly = true)
+    public TrainerDto getById(long id) {
         Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
 
-        return trainerMapper.toDto(entity);
+        TrainerDto dto = trainerMapper.toDto(entity);
+        dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
+
+        return dto;
     }
 
     @Override
-    public List<TrainerResponse> getTrainersNotAssignedToTrainee(long id) {
+    public List<TrainerDto> getTrainersNotAssignedToTrainee(long id) {
         if (!traineeRepository.existsById(id)) throw new TraineeException(id);
 
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
@@ -121,5 +125,20 @@ public class TrainerServiceImpl implements TrainerService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
+    }
+
+    private static void updateTrainerFields(UserDto userDto, User user) {
+        user.setUsername(userDto.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setActive(userDto.isActive());
+    }
+
+    private void checkIfUsernameExists(TrainerDto request, Trainer entity) {
+        String username = request.getUser().getUsername();
+        if (!username.equals(entity.getUser().getUsername()) &&
+                userRepository.existsByUsername(username)) {
+            throw new UsernameException(username);
+        }
     }
 }

@@ -14,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChangePasswordRequestTest {
 
+    private static final String OLD_PASSWORD = "oldPassword";
+    private static final String NEW_PASSWORD = "newPassword";
+
     private static Validator validator;
 
     @BeforeAll
@@ -25,98 +28,54 @@ public class ChangePasswordRequestTest {
 
     @Test
     public void testValidChangePasswordRequest() {
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(validRequest());
-
-        assertEquals(0, violations.size(), "Validation should pass for valid data");
-    }
-
-    @Test
-    public void testNullUserCredentials() {
-        ChangePasswordRequest request = validRequest();
-        request.setUserCredentials(null);
-
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for null user credentials");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("User credentials cannot be null", violation.getMessage());
-    }
-
-    @Test
-    public void testUserCredentialsUsernameIsNotValid() {
-        ChangePasswordRequest request = validRequest();
-        request.getUserCredentials().setUsername(null);
-
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for null user credentials");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("Username cannot be null or empty", violation.getMessage());
+        assertNoViolations(createRequest(OLD_PASSWORD, NEW_PASSWORD));
     }
 
     @Test
     public void testUserCredentialsPasswordIsNotValid() {
-        ChangePasswordRequest request = validRequest();
-        request.getUserCredentials().setPassword(null);
+        ChangePasswordRequest request = createRequest(null, NEW_PASSWORD);
 
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for null user credentials");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("Password cannot be null or empty", violation.getMessage());
+        assertSingleViolation(request, "Old password cannot be null");
     }
 
     @Test
     public void testNullNewPassword() {
-        ChangePasswordRequest request = validRequest();
-        request.setNewPassword(null);
+        ChangePasswordRequest request = createRequest(OLD_PASSWORD, null);
 
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for null new password");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("New password cannot be null or empty", violation.getMessage());
-    }
-
-    @Test
-    public void testEmptyNewPassword() {
-        ChangePasswordRequest request = validRequest();
-        request.setNewPassword("");
-
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(2, violations.size(), "Validation should fail for empty new password");
+        assertSingleViolation(request, "New password cannot be null");
     }
 
     @Test
     public void testNewPasswordTooShort() {
-        ChangePasswordRequest request = validRequest();
-        request.setNewPassword("short");
+        ChangePasswordRequest request = createRequest(OLD_PASSWORD, "short");
 
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(),
-                "Validation should fail for password not in between 8 and 16 characters");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("New password must be between 8 and 16 characters", violation.getMessage());
+        assertSingleViolation(request, "New password must be between 8 and 16 characters");
     }
 
     @Test
     public void testNewPasswordTooLong() {
-        ChangePasswordRequest request = validRequest();
-        request.setNewPassword("veryLongPassword123");
+        ChangePasswordRequest request = createRequest(OLD_PASSWORD, "veryLongPassword123");
 
-        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(),
-                "Validation should fail for password longer than 16 characters");
-
-        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
-        assertEquals("New password must be between 8 and 16 characters", violation.getMessage());
+        assertSingleViolation(request, "New password must be between 8 and 16 characters");
     }
 
-    private static ChangePasswordRequest validRequest() {
+    private static ChangePasswordRequest createRequest(String oldPassword, String newPassword) {
         return ChangePasswordRequest.builder()
-                .userCredentials(new UserCredentials("validUsername", "validPassword"))
-                .newPassword("validNewPass12")
+                .id(1L)
+                .oldPassword(oldPassword)
+                .newPassword(newPassword)
                 .build();
+    }
+
+    private void assertNoViolations(ChangePasswordRequest request) {
+        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
+        assertEquals(0, violations.size(), "Validation should pass for valid data");
+    }
+
+    private void assertSingleViolation(ChangePasswordRequest request, String expectedMessage) {
+        Set<ConstraintViolation<ChangePasswordRequest>> violations = validator.validate(request);
+        assertEquals(1, violations.size());
+        ConstraintViolation<ChangePasswordRequest> violation = violations.iterator().next();
+        assertEquals(expectedMessage, violation.getMessage());
     }
 }

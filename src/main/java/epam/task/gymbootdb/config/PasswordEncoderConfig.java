@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,8 +11,11 @@ import java.security.SecureRandom;
 @Configuration
 public class PasswordEncoderConfig {
 
+    @Value("${bcrypt.strength}")
+    private int strength;
+
     @Bean
     public PasswordEncoder encoder(){
-        return new BCryptPasswordEncoder(10, new SecureRandom());
+        return new BCryptPasswordEncoder(strength, new SecureRandom());
     }
 }

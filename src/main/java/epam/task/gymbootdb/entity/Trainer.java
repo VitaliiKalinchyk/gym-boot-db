@@ -31,7 +31,4 @@ public class Trainer {
 
     @ManyToMany(mappedBy = "trainers")
     private List<Trainee> trainees;
-
-    @OneToMany(mappedBy = "trainer")
-    private List<Training> trainings;
 }

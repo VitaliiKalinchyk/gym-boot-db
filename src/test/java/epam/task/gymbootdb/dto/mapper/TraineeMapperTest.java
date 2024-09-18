@@ -1,6 +1,8 @@
 package epam.task.gymbootdb.dto.mapper;
 
-import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.dto.TraineeDto;
+import epam.task.gymbootdb.dto.TrainerDto;
+import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.entity.Trainee;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
@@ -13,7 +15,6 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 public class TraineeMapperTest {
 
@@ -23,55 +24,44 @@ public class TraineeMapperTest {
     public void testToDto() {
         Trainee trainee = getTrainee1(getUser1());
 
-        TraineeResponse response = mapper.toDto(trainee);
+        TraineeDto dto = mapper.toDto(trainee);
 
-        assertTraineeResponse(trainee, response);
-    }
-    @Test
-    public void testToDtoWithTrainers() {
-        Trainee trainee = getTrainee1(getUser1());
-        Trainer trainer1 = Trainer.builder().id(1).build();
-        Trainer trainer2 = Trainer.builder().id(2).build();
-        trainee.setTrainers(List.of(trainer1, trainer2));
-
-        Set<TrainerResponse> trainerResponses = mapper.toDtoWithTrainers(trainee).getTrainers();
-
-        assertEquals(2, trainerResponses.size());
+        assertTraineeDto(trainee, dto);
+        assertNull(dto.getTrainers());
     }
 
     @Test
     public void testToEntity() {
-        TraineeCreateOrUpdateRequest request = getRequest(getUserCreateOrUpdateRequest());
+        TraineeDto dto = getDto(getUserDto());
 
-        Trainee trainee = mapper.toEntity(request);
+        Trainee trainee = mapper.toEntity(dto);
 
-        assertEquals(request.getAddress(), trainee.getAddress());
-        assertEquals(request.getBirthday(), trainee.getBirthday());
-        assertEquals(request.getUser().getFirstName(), trainee.getUser().getFirstName());
-        assertEquals(request.getUser().getLastName(), trainee.getUser().getLastName());
+        assertTraineeDto(trainee, dto);
     }
 
     @Test
-    public void testToDtoList() {
-        Trainee trainee1 = getTrainee1(getUser1());
-        Trainee trainee2 = getTrainee2(getUser2());
-        List<Trainee> trainees = List.of(trainee1, trainee2);
+    public void testToEntityWithTrainers() {
+        TraineeDto dto = getDto(getUserDto());
+        TrainerDto trainer1 = TrainerDto.builder().id(1).build();
+        TrainerDto trainer2 = TrainerDto.builder().id(2).build();
+        dto.setTrainers(List.of(trainer1, trainer2));
 
-        List<TraineeResponse> traineeResponses = mapper.toDtoList(trainees);
+        List<Trainer> trainers = mapper.toEntity(dto).getTrainers();
 
-        assertTraineeResponse(trainee1, traineeResponses.get(0));
-        assertTraineeResponse(trainee2, traineeResponses.get(1));
+        assertEquals(2, trainers.size());
+        assertEquals(trainer1.getId(), trainers.get(0).getId());
+        assertEquals(trainer2.getId(), trainers.get(1).getId());
     }
 
-    private static void assertTraineeResponse(Trainee trainee, TraineeResponse response) {
-        assertEquals(trainee.getId(), response.getId());
-        assertEquals(trainee.getAddress(), response.getAddress());
-        assertEquals(trainee.getBirthday(), response.getBirthday());
-        assertEquals(trainee.getUser().getId(), response.getUser().getId());
-        assertEquals(trainee.getUser().getFirstName(), response.getUser().getFirstName());
-        assertEquals(trainee.getUser().getLastName(), response.getUser().getLastName());
-        assertEquals(trainee.getUser().getUsername(), response.getUser().getUsername());
-        assertEquals(trainee.getUser().isActive(), response.getUser().isActive());
+    private static void assertTraineeDto(Trainee trainee, TraineeDto dto) {
+        assertEquals(trainee.getId(), dto.getId());
+        assertEquals(trainee.getAddress(), dto.getAddress());
+        assertEquals(trainee.getBirthday(), dto.getBirthday());
+        assertEquals(trainee.getUser().getId(), dto.getUser().getId());
+        assertEquals(trainee.getUser().getFirstName(), dto.getUser().getFirstName());
+        assertEquals(trainee.getUser().getLastName(), dto.getUser().getLastName());
+        assertEquals(trainee.getUser().getUsername(), dto.getUser().getUsername());
+        assertEquals(trainee.getUser().isActive(), dto.getUser().isActive());
     }
 
     private static User getUser1() {
@@ -80,16 +70,8 @@ public class TraineeMapperTest {
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
-                .isActive(true).build();
-    }
-
-    private static User getUser2() {
-        return User.builder()
-                .id(2L)
-                .firstName("Jane")
-                .lastName("Doe")
-                .username("Jane.Doe")
-                .isActive(true).build();
+                .isActive(true)
+                .build();
     }
 
     private static Trainee getTrainee1(User user) {
@@ -97,26 +79,26 @@ public class TraineeMapperTest {
                 .id(1L)
                 .user(user)
                 .birthday(LocalDate.of(1990, 1, 1))
-                .address("Test Address").build();
+                .address("Test Address")
+                .trainers(List.of(new Trainer()))
+                .build();
     }
 
-    private static Trainee getTrainee2(User user) {
-        return Trainee.builder()
-                .id(2L)
-                .user(user)
-                .birthday(LocalDate.of(1995, 5, 5))
-                .address("Test Address 2").build();
-    }
-
-    private static TraineeCreateOrUpdateRequest getRequest(UserDto user) {
-        return TraineeCreateOrUpdateRequest.builder()
+    private static TraineeDto getDto(UserDto user) {
+        return TraineeDto.builder()
                 .id(1L)
                 .user(user)
                 .birthday(LocalDate.of(1990, 1, 1))
-                .address("Test Address").build();
+                .address("Test Address")
+                .build();
     }
 
-    private static UserDto getUserCreateOrUpdateRequest() {
-        return UserDto.builder().firstName("John").lastName("Doe").build();
+    private static UserDto getUserDto() {
+        return UserDto.builder()
+                .username("John.Doe")
+                .firstName("John")
+                .lastName("Doe")
+                .active(true)
+                .build();
     }
 }

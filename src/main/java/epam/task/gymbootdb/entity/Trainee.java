@@ -36,7 +36,4 @@ public class Trainee {
             inverseJoinColumns = @JoinColumn(name = "trainer_id")
     )
     private List<Trainer> trainers;
-
-    @OneToMany(mappedBy = "trainee") //TODO cascade?
-    private List<Training> trainings;
 }

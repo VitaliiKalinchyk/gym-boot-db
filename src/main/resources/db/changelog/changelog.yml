@@ -54,7 +54,6 @@ databaseChangeLog:
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
-                    unique: true
               - column:
                   name: password
                   type: VARCHAR(100)
@@ -65,7 +64,13 @@ databaseChangeLog:
                   type: TINYINT
                   constraints:
                     nullable: false
-
+        - createIndex:
+            tableName: user
+            indexName: idx_username
+            unique: true
+            columns:
+              - column:
+                  name: username
   - changeSet:
       id: addTraineeTable
       author: vitalii.kalinchyk
