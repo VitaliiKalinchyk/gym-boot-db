@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TrainingCreateRequestTest {
 
+    public static final String NAME = "Yoga Class";
+    public static final LocalDate DATE = LocalDate.now().plusDays(1);
+    public static final int DURATION = 60;
+
     private static Validator validator;
 
     @BeforeAll
@@ -26,136 +30,72 @@ public class TrainingCreateRequestTest {
 
     @Test
     public void testValidTrainingCreateRequest() {
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(validRequest());
-
-        assertEquals(0, violations.size(), "Validation should pass for valid data");
+        assertNoViolations(createRequest(NAME, DATE, DURATION));
     }
 
     @Test
-    public void testBlankName() {
-        TrainingCreateRequest request = validRequest();
-        request.setName("");
+    public void testNameIsNull() {
+        TrainingCreateRequest request = createRequest(null, DATE, DURATION);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(2, violations.size(), "Validation should fail for blank name");
+        assertSingleViolation(request, "Name cannot be null");
     }
 
     @Test
     public void testNameTooShort() {
-        TrainingCreateRequest request = validRequest();
-        request.setName("A");
+        TrainingCreateRequest request = createRequest("A", DATE, DURATION);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for name shorter than 2 characters");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Name must be between 2 and 45 characters", violation.getMessage());
+        assertSingleViolation(request, "Name must be between 2 and 45 characters");
     }
 
     @Test
     public void testNameTooLong() {
-        TrainingCreateRequest request = validRequest();
-        request.setName("A".repeat(46));
+        TrainingCreateRequest request = createRequest("A".repeat(46), DATE, DURATION);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for name longer than 45 characters");
+        assertSingleViolation(request, "Name must be between 2 and 45 characters");
 
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Name must be between 2 and 45 characters", violation.getMessage());
-    }
-
-    @Test
-    public void testDateInPast() {
-        TrainingCreateRequest request = validRequest();
-        request.setDate(LocalDate.now().minusDays(1));
-
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for date in the past");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Date must be in the future", violation.getMessage());
     }
 
     @Test
     public void testNullDate() {
-        TrainingCreateRequest request = validRequest();
-        request.setDate(null);
+        TrainingCreateRequest request = createRequest(NAME, null, DURATION);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for null date");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Date is required", violation.getMessage());
+        assertSingleViolation(request, "Date is required");
     }
 
     @Test
-    public void testInvalidDuration() {
-        TrainingCreateRequest request = validRequest();
-        request.setDuration(0);
+    public void testDateInPast() {
+        TrainingCreateRequest request = createRequest(NAME, LocalDate.now().minusDays(1), DURATION);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for duration less than 1");
+        assertSingleViolation(request, "Date must be in the future");
+    }
 
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Duration must be greater than 0", violation.getMessage());
+    @Test
+    public void testDurationTooShort() {
+        TrainingCreateRequest request = createRequest(NAME, DATE,9);
+
+        assertSingleViolation(request, "Duration must be greater than 10");
     }
 
     @Test
     public void testDurationTooLong() {
-        TrainingCreateRequest request = validRequest();
-        request.setDuration(301);
+        TrainingCreateRequest request = createRequest(NAME, DATE,301);
 
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for duration greater than 300");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Duration mustn't be greater than 300", violation.getMessage());
+        assertSingleViolation(request, "Duration mustn't be greater than 300");
     }
 
-    @Test
-    public void testNegativeTrainerId() {
-        TrainingCreateRequest request = validRequest();
-        request.setTrainerId(-1);
-
-        Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for negative trainer ID");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Trainer ID must be a positive number", violation.getMessage());
+    private static TrainingCreateRequest createRequest(String name, LocalDate date, int duration) {
+        return new TrainingCreateRequest(name, date, duration, 1L, 2L, 3L);
     }
 
-    @Test
-    public void testZeroTraineeId() {
-        TrainingCreateRequest request = validRequest();
-        request.setTraineeId(0);
-
+    private void assertNoViolations(TrainingCreateRequest request) {
         Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for zero trainee ID");
-
-        ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Trainee ID must be a positive number", violation.getMessage());
+        assertEquals(0, violations.size(), "Validation should pass for valid data");
     }
 
-    @Test
-    public void testNegativeTrainingTypeId() {
-        TrainingCreateRequest request = validRequest();
-        request.setTrainingTypeId(-1);
-
+    private void assertSingleViolation(TrainingCreateRequest request, String expectedMessage) {
         Set<ConstraintViolation<TrainingCreateRequest>> violations = validator.validate(request);
-        assertEquals(1, violations.size(), "Validation should fail for negative training type ID");
-
+        assertEquals(1, violations.size());
         ConstraintViolation<TrainingCreateRequest> violation = violations.iterator().next();
-        assertEquals("Training Type ID must be a positive number", violation.getMessage());
-    }
-
-    private static TrainingCreateRequest validRequest() {
-        return TrainingCreateRequest.builder()
-                .name("Yoga Class")
-                .date(LocalDate.now().plusDays(1))
-                .duration(60)
-                .trainerId(1)
-                .traineeId(2)
-                .trainingTypeId(3)
-                .build();
+        assertEquals(expectedMessage, violation.getMessage());
     }
 }

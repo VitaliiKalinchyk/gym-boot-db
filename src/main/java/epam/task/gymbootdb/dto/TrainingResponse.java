@@ -16,7 +16,7 @@ public class TrainingResponse {
     private String name;
     private LocalDate date;
     private int duration;
-    private TrainerResponse trainer;
-    private TraineeResponse trainee;
+    private TrainerDto trainer;
+    private TraineeDto trainee;
     private TrainingTypeDto trainingType;
 }

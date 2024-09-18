@@ -17,12 +17,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserDtoTest {
 
-    private static final String FIRST_NAME_ERROR = "First name must be between 1 and 45 characters and contain only letters";
-    private static final String LAST_NAME_ERROR = "Last name must be between 1 and 45 characters and contain only letters";
-    private static final String USERNAME_ERROR = "Username must be between 3 and 100 characters and contain only letters or dot";
-    private static final String NULL_FIRST_NAME_ERROR = "First name cannot be null or empty";
-    private static final String NULL_LAST_NAME_ERROR = "Last name cannot be null or empty";
-    private static final String NULL_USERNAME_ERROR = "Username cannot be null or empty";
+    private static final String FIRST_NAME = "Joe";
+    private static final String LAST_NAME = "Doe";
+    private static final String USERNAME = "Joe.Doe1";
+    private static final String FIRST_NAME_ERROR =
+            "First name must be between 1 and 45 characters and contain only letters";
+    private static final String LAST_NAME_ERROR =
+            "Last name must be between 1 and 45 characters and contain only letters";
+    private static final String USERNAME_ERROR =
+            "Username must be between 3 and 100 characters and contain only only letters, digits, or dot";
+    private static final String NULL_FIRST_NAME_ERROR = "First name cannot be null";
+    private static final String NULL_LAST_NAME_ERROR = "Last name cannot be null";
+    private static final String NULL_USERNAME_ERROR = "Username cannot be null";
 
     private static Validator validator;
 
@@ -35,63 +41,63 @@ public class UserDtoTest {
 
     @Test
     public void testValidUserDtoOnCreation() {
-        UserDto userDto = createUserDto("Joe", "Doe", null);
+        UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME, null);
 
         assertNoViolations(userDto, OnCreate.class);
     }
 
     @Test
     public void testNullFirstName() {
-        UserDto userDto = createUserDto(null, "Doe", null);
+        UserDto userDto = createUserDto(null, LAST_NAME, null);
 
         assertSingleViolation(userDto, NULL_FIRST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testNullLastName() {
-        UserDto userDto = createUserDto("Joe", null, null);
+        UserDto userDto = createUserDto(FIRST_NAME, null, null);
 
         assertSingleViolation(userDto, NULL_LAST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testFirstNameTooLong() {
-        UserDto userDto = createUserDto("A".repeat(46), "Doe", null);
+        UserDto userDto = createUserDto("A".repeat(46), LAST_NAME, null);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testLastNameTooLong() {
-        UserDto userDto = createUserDto("Joe", "A".repeat(46), null);
+        UserDto userDto = createUserDto(FIRST_NAME, "A".repeat(46), null);
 
         assertSingleViolation(userDto, LAST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testFirstNameWithDigits() {
-        UserDto userDto = createUserDto("Joe1", "Doe", null);
+        UserDto userDto = createUserDto("Joe1", LAST_NAME, null);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testLastNameWithDigits() {
-        UserDto userDto = createUserDto("Joe", "Doe1", null);
+        UserDto userDto = createUserDto(FIRST_NAME, "Doe1", null);
 
         assertSingleViolation(userDto, LAST_NAME_ERROR, OnCreate.class);
     }
 
     @Test
     public void testUsernameValidationOnUpdate() {
-        UserDto userDto = createUserDto("Joe", "Doe", "Joe.Doe");
+        UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME, USERNAME);
 
         assertNoViolations(userDto, OnUpdate.class);
     }
 
     @Test
     public void testUsernameValidationOnUpdateNullFirstName() {
-        UserDto userDto = createUserDto(null, "Doe", "Joe.Doe");
+        UserDto userDto = createUserDto(null, LAST_NAME, USERNAME);
 
         assertSingleViolation(userDto, NULL_FIRST_NAME_ERROR, OnUpdate.class);
     }
@@ -99,21 +105,21 @@ public class UserDtoTest {
 
     @Test
     public void testUsernameValidationOnUpdateNullLastName() {
-        UserDto userDto = createUserDto("Joe", null, "Joe.Doe");
+        UserDto userDto = createUserDto(FIRST_NAME, null, USERNAME);
 
         assertSingleViolation(userDto, NULL_LAST_NAME_ERROR, OnUpdate.class);
     }
 
     @Test
     public void testNullUsernameOnUpdate() {
-        UserDto userDto = createUserDto("Joe", "Doe", null);
+        UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME, null);
 
         assertSingleViolation(userDto, NULL_USERNAME_ERROR, OnUpdate.class);
     }
 
     @Test
     public void testInvalidUsernameOnUpdate() {
-        UserDto userDto = createUserDto("Joe", "Doe", "jd4");
+        UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME, "jd$");
 
         assertSingleViolation(userDto, USERNAME_ERROR, OnUpdate.class);
     }

@@ -18,3 +18,5 @@ spring:
 
 password:
   length: ${PASSWORD_LENGTH}
+bcrypt:
+  strength: ${BCRYPT_STRENGTH}

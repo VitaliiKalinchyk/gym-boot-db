@@ -18,6 +18,8 @@
         @Mapping(source = "trainingTypeId", target = "trainingType.id")
         Training toEntity(TrainingCreateRequest request);
 
+        @Mapping(target = "trainer.trainees", ignore = true)
+        @Mapping(target = "trainee.trainers", ignore = true)
         TrainingResponse toDto(Training training);
 
         List<TrainingResponse> toDtoList(List<Training> trainings);

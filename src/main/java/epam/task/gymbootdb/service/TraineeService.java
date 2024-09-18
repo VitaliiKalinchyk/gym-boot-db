@@ -2,23 +2,22 @@ package epam.task.gymbootdb.service;
 
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
-import epam.task.gymbootdb.dto.TraineeCreateOrUpdateRequest;
-import epam.task.gymbootdb.dto.TraineeResponse;
+import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 
 public interface TraineeService {
 
-    UserCredentials createProfile(TraineeCreateOrUpdateRequest trainee);
+    UserCredentials createProfile(TraineeDto trainee);
 
     void matchCredentials(UserCredentials user);
 
-    TraineeResponse update(TraineeCreateOrUpdateRequest trainee);
+    TraineeDto update(TraineeDto trainee);
 
     void changePassword(ChangePasswordRequest request);
 
     void setActiveStatus(long id, boolean isActive);
 
-    TraineeResponse getById(long id);
+    TraineeDto getById(long id);
 
     void deleteById(long id);
 

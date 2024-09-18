@@ -1,7 +1,5 @@
 package epam.task.gymbootdb.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -16,11 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChangePasswordRequest {
 
-    @Valid
-    @NotNull(message = "User credentials cannot be null")
-    private UserCredentials userCredentials;
+    private long id;
 
-    @NotBlank(message = "New password cannot be null or empty")
+    @NotNull(message = "Old password cannot be null")
+    private String oldPassword;
+
+    @NotNull(message = "New password cannot be null")
     @Size(min = 8, max = 16, message = "New password must be between 8 and 16 characters")
     private String newPassword;
 }

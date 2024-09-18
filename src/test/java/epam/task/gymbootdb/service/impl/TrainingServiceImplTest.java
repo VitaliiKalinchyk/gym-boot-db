@@ -53,7 +53,6 @@ class TrainingServiceImplTest {
     @Test
     void testCreate() {
         when(trainingMapper.toEntity(trainingCreateRequest)).thenReturn(trainingEntity);
-        when(trainingRepository.save(trainingEntity)).thenReturn(trainingEntity);
 
         trainingService.create(trainingCreateRequest);
 
@@ -83,7 +82,7 @@ class TrainingServiceImplTest {
         when(traineeRepository.existsById(1L)).thenReturn(false);
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.getTraineeTrainings(request));
-        assertEquals("Trainee with id " + 1 + " was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getMessage());
     }
 
     @Test
@@ -109,6 +108,6 @@ class TrainingServiceImplTest {
         when(trainerRepository.existsById(1L)).thenReturn(false);
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.getTrainerTrainings(request));
-        assertEquals("Trainer with id " + 1 + " was not found", e.getMessage());
+        assertEquals("Trainer with id 1 was not found", e.getMessage());
     }
 }

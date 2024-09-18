@@ -15,24 +15,19 @@ import java.time.LocalDate;
 @Builder
 public class TrainingCreateRequest {
 
-    @NotBlank (message = "Name is required and cannot be blank")
+    @NotNull(message = "Name cannot be null")
     @Size(min = 2, max = 45, message = "Name must be between 2 and 45 characters")
     private String name;
 
-    @Future(message = "Date must be in the future")
     @NotNull(message = "Date is required")
+    @Future(message = "Date must be in the future")
     private LocalDate date;
 
-    @Min(value = 1, message = "Duration must be greater than 0")
+    @Min(value = 10, message = "Duration must be greater than 10")
     @Max(value = 300, message = "Duration mustn't be greater than 300")
     private int duration;
 
-    @Positive(message = "Trainer ID must be a positive number")
     private long trainerId;
-
-    @Positive(message = "Trainee ID must be a positive number")
     private long traineeId;
-
-    @Positive(message = "Training Type ID must be a positive number")
     private long trainingTypeId;
 }

@@ -1,12 +1,14 @@
 package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
+import epam.task.gymbootdb.exception.UsernameException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -40,6 +42,8 @@ class TrainerServiceImplTest {
     @Mock
     private TrainerMapper trainerMapper;
     @Mock
+    private TraineeMapper traineeMapper;
+    @Mock
     private PasswordGenerator passwordGenerator;
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -49,33 +53,33 @@ class TrainerServiceImplTest {
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
-    private TrainerCreateOrUpdateRequest trainerCreateRequest;
+    private TrainerDto trainerRequest;
     private Trainer trainerEntity;
-    private TrainerResponse trainerResponse;
+    private TrainerDto trainerResponse;
     private User user;
     private UserCredentials userCredentials;
     private ChangePasswordRequest changePasswordRequest;
 
     @BeforeEach
     void setUp() {
-        trainerCreateRequest = new TrainerCreateOrUpdateRequest();
-        trainerEntity = new Trainer();
-        trainerResponse = new TrainerResponse();
         user = User.builder().firstName("Joe").lastName("Doe").build();
-        userCredentials = new UserCredentials("testUsername", "testPassword");
-        changePasswordRequest = new ChangePasswordRequest(userCredentials, "newPassword");
+        trainerRequest = new TrainerDto();
+        trainerEntity = new Trainer();
         trainerEntity.setUser(user);
+        trainerResponse = new TrainerDto();
+        userCredentials = new UserCredentials("testUsername", "testPassword");
+        changePasswordRequest = new ChangePasswordRequest(1L, "testPassword","newPassword");
     }
 
     @Test
     void testCreateProfile() {
-        when(trainerMapper.toEntity(trainerCreateRequest)).thenReturn(trainerEntity);
+        when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
         when(passwordGenerator.generatePassword()).thenReturn("testPassword");
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        UserCredentials result = trainerService.createProfile(trainerCreateRequest);
+        UserCredentials result = trainerService.createProfile(trainerRequest);
 
         assertNotNull(result, "User credentials should not be null");
         assertEquals("testUsername", result.getUsername(), "Username should match");
@@ -86,7 +90,7 @@ class TrainerServiceImplTest {
 
     @Test
     void testCreateProfileUsernameExists() {
-        when(trainerMapper.toEntity(trainerCreateRequest)).thenReturn(trainerEntity);
+        when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
         when(passwordGenerator.generatePassword()).thenReturn("testPassword");
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
@@ -96,7 +100,7 @@ class TrainerServiceImplTest {
 
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        UserCredentials result = trainerService.createProfile(trainerCreateRequest);
+        UserCredentials result = trainerService.createProfile(trainerRequest);
 
         assertNotNull(result, "User credentials should not be null");
         assertEquals("testUsername1", result.getUsername(), "Username should match");
@@ -133,29 +137,50 @@ class TrainerServiceImplTest {
 
     @Test
     void testUpdateTrainer() {
-        trainerCreateRequest.setId(1L);
-        trainerCreateRequest.setUser(UserDto.builder().firstName("Joe").lastName("Doe").build());
+        trainerRequest.setUser(UserDto.builder()
+                .firstName("Jane")
+                .lastName("Smith")
+                .username("Jane.Smith")
+                .active(false).build());
 
-        when(trainerRepository.findById(trainerCreateRequest.getId())).thenReturn(Optional.of(trainerEntity));
+        when(trainerRepository.findById(trainerRequest.getId())).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(any())).thenReturn(trainerResponse);
+        when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
 
-        TrainerResponse result = trainerService.update(trainerCreateRequest);
+        TrainerDto result = trainerService.update(trainerRequest);
 
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
+        assertEquals(trainerRequest.getUser().getUsername(), trainerEntity.getUser().getUsername());
+        assertEquals(trainerRequest.getUser().getFirstName(), trainerEntity.getUser().getFirstName());
+        assertEquals(trainerRequest.getUser().getLastName(), trainerEntity.getUser().getLastName());
+        assertEquals(trainerRequest.getUser().isActive(), trainerEntity.getUser().isActive());
+        assertEquals(1, result.getTrainees().size());
     }
 
     @Test
     void testUpdateTrainerNoSuchTrainer() {
-        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerCreateRequest));
+        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
         assertEquals("Trainer with id 0 was not found", e.getMessage());
     }
 
     @Test
+    void testUpdateTrainerUsernameAlreadyExists() {
+        trainerRequest.setId(1L);
+        trainerRequest.setUser(UserDto.builder().firstName("Joe").lastName("Doe").username("Joe.Doe").build());
+
+        when(trainerRepository.findById(trainerRequest.getId())).thenReturn(Optional.of(trainerEntity));
+        when(userRepository.existsByUsername(any())).thenReturn(true);
+
+        UsernameException e = assertThrows(UsernameException.class, () -> trainerService.update(trainerRequest));
+        assertEquals("Username Joe.Doe already in use", e.getMessage());
+    }
+
+    @Test
     void testChangePassword() {
-        when(trainerRepository.findByUserUsername(userCredentials.getUsername())).thenReturn(Optional.of(trainerEntity));
-        when(passwordEncoder.matches(userCredentials.getPassword(), trainerEntity.getUser().getPassword()))
+        when(trainerRepository.findById(changePasswordRequest.getId())).thenReturn(Optional.of(trainerEntity));
+        when(passwordEncoder.matches(changePasswordRequest.getOldPassword(), trainerEntity.getUser().getPassword()))
                 .thenReturn(true);
         when(passwordEncoder.encode(changePasswordRequest.getNewPassword())).thenReturn("newEncodedPassword");
 
@@ -169,13 +194,13 @@ class TrainerServiceImplTest {
         TrainerException e = assertThrows(TrainerException.class,
                 () -> trainerService.changePassword(changePasswordRequest));
 
-        assertEquals("Trainer with username testUsername was not found", e.getMessage());
+        assertEquals("Trainer with id 1 was not found", e.getMessage());
     }
 
     @Test
     void testChangePasswordIncorrect() {
-        when(trainerRepository.findByUserUsername(userCredentials.getUsername())).thenReturn(Optional.of(trainerEntity));
-        when(passwordEncoder.matches(userCredentials.getPassword(), trainerEntity.getUser().getPassword()))
+        when(trainerRepository.findById(changePasswordRequest.getId())).thenReturn(Optional.of(trainerEntity));
+        when(passwordEncoder.matches(changePasswordRequest.getOldPassword(), trainerEntity.getUser().getPassword()))
                 .thenReturn(false);
 
         PasswordException e = assertThrows(PasswordException.class,
@@ -205,11 +230,13 @@ class TrainerServiceImplTest {
     void testGetById() {
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(trainerEntity)).thenReturn(trainerResponse);
+        when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
 
-        TrainerResponse result = trainerService.getById(1L);
+        TrainerDto result = trainerService.getById(1L);
 
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
+        assertEquals(1, result.getTrainees().size());
     }
 
     @Test
@@ -224,7 +251,7 @@ class TrainerServiceImplTest {
         when(traineeRepository.existsById(1L)).thenReturn(true);
         when(trainerMapper.toDtoList(anyList())).thenReturn(List.of(trainerResponse));
 
-        List<TrainerResponse> result = trainerService.getTrainersNotAssignedToTrainee(1L);
+        List<TrainerDto> result = trainerService.getTrainersNotAssignedToTrainee(1L);
 
         assertNotNull(result, "Trainer list should not be null");
         assertEquals(1, result.size(), "Should return one trainer");

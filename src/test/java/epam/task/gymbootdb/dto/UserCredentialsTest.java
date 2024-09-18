@@ -14,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserCredentialsTest {
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
     private static Validator validator;
 
     @BeforeAll
@@ -25,80 +28,50 @@ public class UserCredentialsTest {
 
     @Test
     public void testValidUserCredentials() {
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(validRequest());
-
-        assertEquals(0, violations.size(), "Validation should pass for valid data");
+        assertNoViolations(createCredentials(USERNAME, PASSWORD));
     }
 
     @Test
     public void testNullUsername() {
-        UserCredentials credentials = validRequest();
-        credentials.setUsername(null);
+        UserCredentials credentials = createCredentials(null, PASSWORD);
 
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(1, violations.size(), "Validation should fail for null username");
-
-        ConstraintViolation<UserCredentials> violation = violations.iterator().next();
-        assertEquals("Username cannot be null or empty", violation.getMessage());
+        assertSingleViolation(credentials, "Username cannot be null");
     }
 
     @Test
     public void testNullPassword() {
-        UserCredentials credentials = validRequest();
-        credentials.setPassword(null);
+        UserCredentials credentials = createCredentials(USERNAME, null);
 
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(1, violations.size(), "Validation should fail for null password");
-
-        ConstraintViolation<UserCredentials> violation = violations.iterator().next();
-        assertEquals("Password cannot be null or empty", violation.getMessage());
-    }
-
-    @Test
-    public void testEmptyUsername() {
-        UserCredentials credentials = validRequest();
-        credentials.setUsername("");
-
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(2, violations.size(), "Validation should fail for empty username");
-    }
-
-    @Test
-    public void testEmptyPassword() {
-        UserCredentials credentials = validRequest();
-        credentials.setPassword("");
-
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(2, violations.size(), "Validation should fail for empty password");
+        assertSingleViolation(credentials, "Password cannot be null");
     }
 
     @Test
     public void testUsernameLength() {
-        UserCredentials credentials = validRequest();
-        credentials.setUsername("s");
+        UserCredentials credentials = createCredentials("s", PASSWORD);
 
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(1, violations.size(),
-                "Validation should fail for username not in between 3 and 100 characters");
-
-        ConstraintViolation<UserCredentials> violation = violations.iterator().next();
-        assertEquals("Username must be between 3 and 100 characters", violation.getMessage());
+        assertSingleViolation(credentials, "Username must be between 3 and 100 characters");
     }
 
     @Test
     public void testPasswordLength() {
-        UserCredentials credentials = validRequest();
-        credentials.setPassword("short");
+        UserCredentials credentials = createCredentials(USERNAME, "short");
 
-        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
-        assertEquals(1, violations.size(),
-                "Validation should fail for password not in between 8 16 100 characters");
-
-        ConstraintViolation<UserCredentials> violation = violations.iterator().next();
-        assertEquals("Password must be between 8 and 16 characters", violation.getMessage());
+        assertSingleViolation(credentials, "Password must be between 8 and 16 characters");
     }
 
-    private static UserCredentials validRequest() {
-        return new UserCredentials("username", "password12");
+    private static UserCredentials createCredentials(String username, String password) {
+        return new UserCredentials(username, password);
+    }
+
+    private void assertNoViolations(UserCredentials credentials) {
+        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
+        assertEquals(0, violations.size(), "Validation should pass for valid data");
+    }
+
+    private void assertSingleViolation(UserCredentials credentials, String expectedMessage) {
+        Set<ConstraintViolation<UserCredentials>> violations = validator.validate(credentials);
+        assertEquals(1, violations.size());
+        ConstraintViolation<UserCredentials> violation = violations.iterator().next();
+        assertEquals(expectedMessage, violation.getMessage());
     }
 }

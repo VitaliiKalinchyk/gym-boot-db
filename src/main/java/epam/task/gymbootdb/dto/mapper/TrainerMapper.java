@@ -1,7 +1,6 @@
 package epam.task.gymbootdb.dto.mapper;
 
-import epam.task.gymbootdb.dto.TrainerCreateOrUpdateRequest;
-import epam.task.gymbootdb.dto.TrainerResponse;
+import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.entity.Trainer;
 
 import org.mapstruct.Mapper;
@@ -12,10 +11,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface TrainerMapper {
 
-    TrainerResponse toDto(Trainer trainer);
-
     @Mapping(target = "trainees", ignore = true)
-    Trainer toEntity(TrainerCreateOrUpdateRequest trainer);
+    TrainerDto toDto(Trainer trainer);
 
-    List<TrainerResponse> toDtoList(List<Trainer> trainers);
+    @Mapping(source = "user.active", target = "user.isActive")
+    Trainer toEntity(TrainerDto trainer);
+
+    List<TrainerDto> toDtoList(List<Trainer> trainers);
 }
