@@ -120,6 +120,7 @@ public class TraineeServiceImpl implements TraineeService {
     public void updateTraineeTrainers(long traineeId, long trainerId) {
         Trainee trainee = traineeRepository.findById(traineeId).orElseThrow(() -> new TraineeException(traineeId));
         Trainer trainer = trainerRepository.findById(trainerId).orElseThrow(() -> new TrainerException(trainerId));
+
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
