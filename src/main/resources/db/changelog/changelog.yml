@@ -127,6 +127,8 @@ databaseChangeLog:
               - column:
                   name: training_type_id
                   type: BIGINT
+                  constraints:
+                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: trainer
             baseColumnNames: user_id
