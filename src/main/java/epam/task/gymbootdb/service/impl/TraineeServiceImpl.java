@@ -47,7 +47,6 @@ public class TraineeServiceImpl implements TraineeService {
         String username = generateUsername(user);
         setUserFields(user, username, password);
 
-        System.out.println(entity);
         traineeRepository.save(entity);
 
         return new UserCredentials(username, password);
