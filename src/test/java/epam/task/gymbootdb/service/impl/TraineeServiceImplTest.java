@@ -9,7 +9,6 @@ import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
-import epam.task.gymbootdb.exception.UsernameException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -145,7 +144,6 @@ class TraineeServiceImplTest {
         traineeRequest.setUser(UserDto.builder()
                 .firstName("Jane")
                 .lastName("Smith")
-                .username("Jane.Smith")
                 .active(false).build());
 
         when(traineeRepository.findById(traineeRequest.getId())).thenReturn(Optional.of(traineeEntity));
@@ -158,7 +156,6 @@ class TraineeServiceImplTest {
         assertEquals(traineeResponse, result, "TraineeResponse should match the expected value");
         assertEquals(traineeRequest.getBirthday(), traineeEntity.getBirthday());
         assertEquals(traineeRequest.getAddress(), traineeEntity.getAddress());
-        assertEquals(traineeRequest.getUser().getUsername(), traineeEntity.getUser().getUsername());
         assertEquals(traineeRequest.getUser().getFirstName(), traineeEntity.getUser().getFirstName());
         assertEquals(traineeRequest.getUser().getLastName(), traineeEntity.getUser().getLastName());
         assertEquals(traineeRequest.getUser().isActive(), traineeEntity.getUser().isActive());
@@ -170,17 +167,6 @@ class TraineeServiceImplTest {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.update(traineeRequest));
 
         assertEquals("Trainee with id 0 was not found", e.getMessage());
-    }
-
-    @Test
-    void testUpdateTraineeUsernameAlreadyExists() {
-        traineeRequest.setUser(UserDto.builder().firstName("Joe").lastName("Doe").username("Joe.Doe").build());
-
-        when(traineeRepository.findById(traineeRequest.getId())).thenReturn(Optional.of(traineeEntity));
-        when(userRepository.existsByUsername(any())).thenReturn(true);
-
-        UsernameException e = assertThrows(UsernameException.class, () -> traineeService.update(traineeRequest));
-        assertEquals("Username Joe.Doe already in use", e.getMessage());
     }
 
     @Test

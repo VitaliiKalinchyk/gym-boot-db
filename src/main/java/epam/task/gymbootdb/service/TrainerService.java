@@ -20,5 +20,5 @@ public interface TrainerService {
 
     TrainerDto getById(long id);
 
-    List<TrainerDto> getTrainersNotAssignedToTrainee(long id);
+    List<TrainerDto> getTrainersNotAssignedToTrainee(long id); //TODO move to traineeService
 }

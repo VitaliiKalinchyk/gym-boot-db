@@ -1,7 +1,5 @@
 package epam.task.gymbootdb.dto;
 
-import epam.task.gymbootdb.dto.validation.group.OnCreate;
-import epam.task.gymbootdb.dto.validation.group.OnUpdate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -26,41 +24,29 @@ public class TrainerDtoTest {
     }
 
     @Test
-    public void testValidTrainerDtoOnCreate() {
-        assertNoViolations(createDto(getUser(), getTrainingType()), OnCreate.class);
-    }
-
-    @Test
-    public void testValidTrainerDtoOnUpdate() {
-        assertNoViolations(createDto(getUserWithUsername(), null), OnUpdate.class);
+    public void testValidTrainerDto() {
+        assertNoViolations(createDto(getUser(), getTrainingType()));
     }
 
     @Test
     public void testNullUser() {
         TrainerDto dto = createDto(null, getTrainingType());
 
-        assertSingleViolation(dto, "User cannot be null", OnCreate.class);
+        assertSingleViolation(dto, "User cannot be null");
     }
 
     @Test
     public void testNotValidUserNoFirstName() {
         TrainerDto dto = createDto(getUserNoFirstName(), getTrainingType());
 
-        assertSingleViolation(dto, "First name cannot be null", OnCreate.class);
+        assertSingleViolation(dto, "First name cannot be null");
     }
 
     @Test
-    public void testNullTrainingTypeOnCreate() {
+    public void testNullTrainingType() {
         TrainerDto dto = createDto(getUser(), null);
 
-        assertSingleViolation(dto, "TrainingType cannot be null", OnCreate.class);
-    }
-
-    @Test
-    public void testNullUsernameOnUpdate() {
-        TrainerDto dto = createDto(getUser(), getTrainingType());
-
-        assertSingleViolation(dto, "Username cannot be null", OnUpdate.class);
+        assertSingleViolation(dto, "TrainingType cannot be null");
     }
 
     private static TrainerDto createDto(UserDto user, TrainingTypeDto trainingTypeDto) {
@@ -78,23 +64,19 @@ public class TrainerDtoTest {
         return UserDto.builder().lastName("Doe").build();
     }
 
-    private static UserDto getUserWithUsername() {
-        return UserDto.builder().firstName("Joe").lastName("Doe").username("Joe.Doe").build();
-    }
-
     private static TrainingTypeDto getTrainingType() {
         return new TrainingTypeDto(1L, "Fitness");
     }
 
-    private void assertSingleViolation(TrainerDto dto, String expectedMessage, Class<?> group) {
-        Set<ConstraintViolation<TrainerDto>> violations = validator.validate(dto, group);
+    private void assertSingleViolation(TrainerDto dto, String expectedMessage) {
+        Set<ConstraintViolation<TrainerDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
         ConstraintViolation<TrainerDto> violation = violations.iterator().next();
         assertEquals(expectedMessage, violation.getMessage());
     }
 
-    private void assertNoViolations(TrainerDto dto, Class<?> group) {
-        Set<ConstraintViolation<TrainerDto>> violations = validator.validate(dto, group);
+    private void assertNoViolations(TrainerDto dto) {
+        Set<ConstraintViolation<TrainerDto>> violations = validator.validate(dto);
         assertEquals(0, violations.size(), "Validation should pass for valid data");
     }
 }

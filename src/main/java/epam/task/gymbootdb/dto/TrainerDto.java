@@ -1,7 +1,5 @@
 package epam.task.gymbootdb.dto;
 
-import epam.task.gymbootdb.dto.validation.group.OnCreate;
-import epam.task.gymbootdb.dto.validation.group.OnUpdate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
@@ -21,10 +19,10 @@ public class TrainerDto {
     private long id;
 
     @Valid
-    @NotNull(message = "User cannot be null", groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(message = "User cannot be null")
     private UserDto user;
 
-    @NotNull(message = "TrainingType cannot be null", groups = OnCreate.class)
+    @NotNull(message = "TrainingType cannot be null")
     private TrainingTypeDto trainingType;
 
     List<TraineeDto> trainees;
