@@ -32,7 +32,7 @@ public class ChangePasswordRequestTest {
     }
 
     @Test
-    public void testUserCredentialsPasswordIsNotValid() {
+    public void testNullOldPassword() {
         ChangePasswordRequest request = createRequest(null, NEW_PASSWORD);
 
         assertSingleViolation(request, "Old password cannot be null");
@@ -60,11 +60,7 @@ public class ChangePasswordRequestTest {
     }
 
     private static ChangePasswordRequest createRequest(String oldPassword, String newPassword) {
-        return ChangePasswordRequest.builder()
-                .id(1L)
-                .oldPassword(oldPassword)
-                .newPassword(newPassword)
-                .build();
+        return new ChangePasswordRequest(1L, oldPassword, newPassword);
     }
 
     private void assertNoViolations(ChangePasswordRequest request) {

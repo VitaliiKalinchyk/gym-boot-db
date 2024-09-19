@@ -15,6 +15,8 @@ public interface TraineeMapper {
     TraineeDto toDto(Trainee trainee);
 
     @Mapping(source = "user.active", target = "user.isActive")
+    @Mapping(target = "user.password", ignore = true)
+    @Mapping(target = "trainers", ignore = true)
     Trainee toEntity(TraineeDto trainee);
 
     List<TraineeDto> toDtoList(List<Trainee> trainers);

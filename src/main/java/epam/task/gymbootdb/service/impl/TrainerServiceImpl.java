@@ -1,6 +1,9 @@
 package epam.task.gymbootdb.service.impl;
 
-import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.dto.TrainerDto;
+import epam.task.gymbootdb.dto.UserDto;
+import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;

@@ -2,16 +2,15 @@ package epam.task.gymbootdb.service;
 
 import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
-import epam.task.gymbootdb.dto.TrainingCreateRequest;
-import epam.task.gymbootdb.dto.TrainingResponse;
+import epam.task.gymbootdb.dto.TrainingDto;
 
 import java.util.List;
 
 public interface TrainingService {
 
-    void create(TrainingCreateRequest training);
+    void create(TrainingDto training);
 
-    List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request);
+    List<TrainingDto> getTraineeTrainings(TraineeTrainingsRequest request);
 
-    List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request);
+    List<TrainingDto> getTrainerTrainings(TrainerTrainingsRequest request);
 }

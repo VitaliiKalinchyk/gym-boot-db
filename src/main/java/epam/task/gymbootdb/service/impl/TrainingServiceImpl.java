@@ -2,8 +2,7 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
-import epam.task.gymbootdb.dto.TrainingCreateRequest;
-import epam.task.gymbootdb.dto.TrainingResponse;
+import epam.task.gymbootdb.dto.TrainingDto;
 import epam.task.gymbootdb.dto.mapper.TrainingMapper;
 import epam.task.gymbootdb.entity.Training;
 import epam.task.gymbootdb.exception.TraineeException;
@@ -29,13 +28,13 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingMapper trainingMapper;
 
     @Override
-    public void create(TrainingCreateRequest request) {
+    public void create(TrainingDto request) {
         Training entity = trainingMapper.toEntity(request);
         trainingRepository.save(entity);
     }
 
     @Override
-    public List<TrainingResponse> getTraineeTrainings(TraineeTrainingsRequest request) {
+    public List<TrainingDto> getTraineeTrainings(TraineeTrainingsRequest request) {
         long traineeId = request.getTraineeId();
         if (!traineeRepository.existsById(traineeId)) throw new TraineeException(traineeId);
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeId,
@@ -45,7 +44,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<TrainingResponse> getTrainerTrainings(TrainerTrainingsRequest request) {
+    public List<TrainingDto> getTrainerTrainings(TrainerTrainingsRequest request) {
         long trainerId = request.getTrainerId();
         if (!trainerRepository.existsById(trainerId)) throw new TrainerException(trainerId);
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerId,
