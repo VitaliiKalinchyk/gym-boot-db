@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChangePasswordRequestTest {
 
-    private static final String NEW_PASSWORD = "newPassword";
+    private static final String NEW_PASSWORD = "newPassword1";
 
     private static Validator validator;
 
@@ -55,14 +55,24 @@ public class ChangePasswordRequestTest {
     public void testNewPasswordTooShort() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "short");
 
-        assertSingleViolation(request, "New password must be between 8 and 16 characters");
+        assertSingleViolation(request,
+                "New password must be between 8 and 16 characters and contain only letters or digits");
     }
 
     @Test
     public void testNewPasswordTooLong() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "veryLongPassword123");
 
-        assertSingleViolation(request, "New password must be between 8 and 16 characters");
+        assertSingleViolation(request,
+                "New password must be between 8 and 16 characters and contain only letters or digits");
+    }
+
+    @Test
+    public void testNewPasswordWithSpecialSymbol(){
+        ChangePasswordRequest request = createRequest(getValidUserCredentials(), NEW_PASSWORD + "_");
+
+        assertSingleViolation(request,
+                "New password must be between 8 and 16 characters and contain only letters or digits");
     }
 
     private static ChangePasswordRequest createRequest(UserCredentials userCredentials, String newPassword) {

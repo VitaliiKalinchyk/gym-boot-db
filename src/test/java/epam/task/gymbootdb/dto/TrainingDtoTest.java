@@ -45,15 +45,25 @@ public class TrainingDtoTest {
     public void testNameTooShort() {
         TrainingDto request = createRequest("A", DATE, DURATION, ID, ID, ID);
 
-        assertSingleViolation(request, "Name must be between 2 and 45 characters");
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
     }
 
     @Test
     public void testNameTooLong() {
         TrainingDto request = createRequest("A".repeat(46), DATE, DURATION, ID, ID, ID);
 
-        assertSingleViolation(request, "Name must be between 2 and 45 characters");
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
 
+    }
+
+    @Test
+    public void testNameWithSpecialCharacters() {
+        TrainingDto request = createRequest(NAME +"_", DATE, DURATION, ID, ID, ID);
+
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
     }
 
     @Test

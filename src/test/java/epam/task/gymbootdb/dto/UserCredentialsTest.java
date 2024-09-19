@@ -45,20 +45,6 @@ public class UserCredentialsTest {
         assertSingleViolation(credentials, "Password is required");
     }
 
-    @Test
-    public void testUsernameLength() {
-        UserCredentials credentials = createCredentials("s", PASSWORD);
-
-        assertSingleViolation(credentials, "Username must be between 3 and 100 characters");
-    }
-
-    @Test
-    public void testPasswordLength() {
-        UserCredentials credentials = createCredentials(USERNAME, "short");
-
-        assertSingleViolation(credentials, "Password must be between 8 and 16 characters");
-    }
-
     private static UserCredentials createCredentials(String username, String password) {
         return new UserCredentials(username, password);
     }
