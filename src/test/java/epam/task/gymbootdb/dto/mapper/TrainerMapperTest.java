@@ -23,50 +23,29 @@ public class TrainerMapperTest {
 
     @Test
     public void testToDto() {
-        Trainer trainer = getTrainer1(getUser1());
+        TrainerDto dto = mapper.toDto(getTrainer1());
 
-        TrainerDto dto = mapper.toDto(trainer);
-
-        assertTrainerDto(trainer, dto);
+        assertTrainer(getTrainer1(), dto);
         assertNull(dto.getTrainees());
     }
 
     @Test
     public void testToEntity() {
-        TrainerDto dto = getDto(getUserDto());
+        Trainer trainer = mapper.toEntity(getDto());
 
-        Trainer trainer = mapper.toEntity(dto);
-
-        assertTrainerDto(trainer, dto);
-    }
-
-    @Test
-    public void testToEntityWithTrainees() {
-        TrainerDto dto = getDto(getUserDto());
-        TraineeDto trainee1 = TraineeDto.builder().id(1).build();
-        TraineeDto trainee2 = TraineeDto.builder().id(2).build();
-        dto.setTrainees(List.of(trainee1, trainee2));
-
-        List<Trainee> trainees = mapper.toEntity(dto).getTrainees();
-
-        assertEquals(2, trainees.size());
-        assertEquals(trainee1.getId(), trainees.get(0).getId());
-        assertEquals(trainee2.getId(), trainees.get(1).getId());
+        assertTrainer(trainer, getDto());
+        assertNull(trainer.getTrainees());
     }
 
     @Test
     public void testToDtoList() {
-        Trainer trainer1 = getTrainer1(getUser1());
-        Trainer trainer2 = getTrainer2(getUser2());
-        List<Trainer> trainers = List.of(trainer1, trainer2);
+        List<TrainerDto> trainerDtos = mapper.toDtoList(List.of(getTrainer1(), getTrainer2()));
 
-        List<TrainerDto> trainerDtos = mapper.toDtoList(trainers);
-
-        assertTrainerDto(trainer1, trainerDtos.get(0));
-        assertTrainerDto(trainer2, trainerDtos.get(1));
+        assertTrainer(getTrainer1(), trainerDtos.get(0));
+        assertTrainer(getTrainer2(), trainerDtos.get(1));
     }
 
-    private static void assertTrainerDto(Trainer trainer, TrainerDto dto) {
+    private static void assertTrainer(Trainer trainer, TrainerDto dto) {
         assertEquals(trainer.getId(), dto.getId());
         assertEquals(trainer.getTrainingType().getId(), dto.getTrainingType().getId());
         assertEquals(trainer.getTrainingType().getName(), dto.getTrainingType().getName());
@@ -77,59 +56,48 @@ public class TrainerMapperTest {
         assertEquals(trainer.getUser().isActive(), dto.getUser().isActive());
     }
 
-    private static User getUser1() {
-        return User.builder()
-                .id(1L)
-                .firstName("John")
-                .lastName("Doe")
-                .username("John.Doe")
-                .isActive(true)
-                .build();
-    }
-
-    private static User getUser2() {
-        return User.builder()
-                .id(2L)
-                .firstName("Jane")
-                .lastName("Doe")
-                .username("Jane.Doe")
-                .isActive(true)
-                .build();
-    }
-
-    private static Trainer getTrainer1(User user) {
+    private static Trainer getTrainer1() {
         return Trainer.builder()
                 .id(1L)
-                .user(user)
+                .user(User.builder()
+                        .id(1L)
+                        .firstName("John")
+                        .lastName("Doe")
+                        .username("John.Doe")
+                        .isActive(true)
+                        .build())
                 .trainingType(new TrainingType(1, "YOGA"))
                 .trainees(List.of(new Trainee()))
                 .build();
     }
 
-    private static Trainer getTrainer2(User user) {
+    private static Trainer getTrainer2() {
         return Trainer.builder()
                 .id(2L)
-                .user(user)
+                .user(User.builder()
+                        .id(2L)
+                        .firstName("Jane")
+                        .lastName("Doe")
+                        .username("Jane.Doe")
+                        .isActive(true)
+                        .build())
                 .trainingType(new TrainingType(2, "BOXING"))
                 .build();
 
     }
 
-    private static TrainerDto getDto(UserDto user) {
+    private static TrainerDto getDto() {
         return TrainerDto.builder()
                 .id(1L)
-                .user(user)
+                .user(UserDto.builder()
+                        .username("John.Doe")
+                        .firstName("John")
+                        .lastName("Doe")
+                        .active(true)
+                        .build())
                 .trainingType(new TrainingTypeDto(1, "YOGA"))
+                .trainees(List.of(new TraineeDto()))
                 .build();
 
-    }
-
-    private static UserDto getUserDto() {
-        return UserDto.builder()
-                .username("John.Doe")
-                .firstName("John")
-                .lastName("Doe")
-                .active(true)
-                .build();
     }
 }

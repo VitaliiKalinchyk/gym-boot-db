@@ -22,38 +22,29 @@ public class TraineeMapperTest {
 
     @Test
     public void testToDto() {
-        Trainee trainee = getTrainee1(getUser1());
+        TraineeDto dto = mapper.toDto(getTrainee1());
 
-        TraineeDto dto = mapper.toDto(trainee);
-
-        assertTraineeDto(trainee, dto);
+        assertTrainee(getTrainee1(), dto);
         assertNull(dto.getTrainers());
     }
 
     @Test
     public void testToEntity() {
-        TraineeDto dto = getDto(getUserDto());
+        Trainee trainee = mapper.toEntity(getDto());
 
-        Trainee trainee = mapper.toEntity(dto);
-
-        assertTraineeDto(trainee, dto);
+        assertTrainee(trainee, getDto());
+        assertNull(trainee.getTrainers());
     }
 
     @Test
-    public void testToEntityWithTrainers() {
-        TraineeDto dto = getDto(getUserDto());
-        TrainerDto trainer1 = TrainerDto.builder().id(1).build();
-        TrainerDto trainer2 = TrainerDto.builder().id(2).build();
-        dto.setTrainers(List.of(trainer1, trainer2));
+    public void testToDtoList() {
+        List<TraineeDto> traineeDtos = mapper.toDtoList(List.of(getTrainee1(), getTrainee2()));
 
-        List<Trainer> trainers = mapper.toEntity(dto).getTrainers();
-
-        assertEquals(2, trainers.size());
-        assertEquals(trainer1.getId(), trainers.get(0).getId());
-        assertEquals(trainer2.getId(), trainers.get(1).getId());
+        assertTrainee(getTrainee1(), traineeDtos.get(0));
+        assertTrainee(getTrainee2(), traineeDtos.get(1));
     }
 
-    private static void assertTraineeDto(Trainee trainee, TraineeDto dto) {
+    private static void assertTrainee(Trainee trainee, TraineeDto dto) {
         assertEquals(trainee.getId(), dto.getId());
         assertEquals(trainee.getAddress(), dto.getAddress());
         assertEquals(trainee.getBirthday(), dto.getBirthday());
@@ -64,41 +55,49 @@ public class TraineeMapperTest {
         assertEquals(trainee.getUser().isActive(), dto.getUser().isActive());
     }
 
-    private static User getUser1() {
-        return User.builder()
-                .id(1L)
-                .firstName("John")
-                .lastName("Doe")
-                .username("John.Doe")
-                .isActive(true)
-                .build();
-    }
-
-    private static Trainee getTrainee1(User user) {
+    private static Trainee getTrainee1() {
         return Trainee.builder()
                 .id(1L)
-                .user(user)
+                .user(User.builder()
+                        .id(1L)
+                        .firstName("John")
+                        .lastName("Doe")
+                        .username("John.Doe")
+                        .isActive(true)
+                        .build())
                 .birthday(LocalDate.of(1990, 1, 1))
                 .address("Test Address")
                 .trainers(List.of(new Trainer()))
                 .build();
     }
 
-    private static TraineeDto getDto(UserDto user) {
-        return TraineeDto.builder()
-                .id(1L)
-                .user(user)
-                .birthday(LocalDate.of(1990, 1, 1))
-                .address("Test Address")
+    private static Trainee getTrainee2() {
+        return Trainee.builder()
+                .id(2L)
+                .user(User.builder()
+                        .id(2L)
+                        .firstName("Jane")
+                        .lastName("Smith")
+                        .username("Jane.Smith")
+                        .isActive(false)
+                        .build())
+                .birthday(LocalDate.of(2000, 10, 19))
+                .address("Test Address 2")
                 .build();
     }
 
-    private static UserDto getUserDto() {
-        return UserDto.builder()
-                .username("John.Doe")
-                .firstName("John")
-                .lastName("Doe")
-                .active(true)
+    private static TraineeDto getDto() {
+        return TraineeDto.builder()
+                .id(1L)
+                .user(UserDto.builder()
+                        .username("John.Doe")
+                        .firstName("John")
+                        .lastName("Doe")
+                        .active(true)
+                        .build())
+                .birthday(LocalDate.of(1990, 1, 1))
+                .address("Test Address")
+                .trainers(List.of(new TrainerDto()))
                 .build();
     }
 }

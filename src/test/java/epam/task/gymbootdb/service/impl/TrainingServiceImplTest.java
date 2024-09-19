@@ -2,8 +2,7 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
-import epam.task.gymbootdb.dto.TrainingCreateRequest;
-import epam.task.gymbootdb.dto.TrainingResponse;
+import epam.task.gymbootdb.dto.TrainingDto;
 import epam.task.gymbootdb.dto.mapper.TrainingMapper;
 import epam.task.gymbootdb.entity.Training;
 import epam.task.gymbootdb.exception.TraineeException;
@@ -39,22 +38,22 @@ class TrainingServiceImplTest {
     @InjectMocks
     private TrainingServiceImpl trainingService;
 
-    private TrainingCreateRequest trainingCreateRequest;
+    private TrainingDto trainingRequest;
     private Training trainingEntity;
-    private TrainingResponse trainingResponse;
+    private TrainingDto trainingResponse;
 
     @BeforeEach
     void setUp() {
-        trainingCreateRequest = new TrainingCreateRequest();
+        trainingRequest = new TrainingDto();
         trainingEntity = new Training();
-        trainingResponse = new TrainingResponse();
+        trainingResponse = new TrainingDto();
     }
 
     @Test
     void testCreate() {
-        when(trainingMapper.toEntity(trainingCreateRequest)).thenReturn(trainingEntity);
+        when(trainingMapper.toEntity(trainingRequest)).thenReturn(trainingEntity);
 
-        trainingService.create(trainingCreateRequest);
+        trainingService.create(trainingRequest);
 
         verify(trainingRepository).save(trainingEntity);
     }
@@ -68,7 +67,7 @@ class TrainingServiceImplTest {
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
-        List<TrainingResponse> result = trainingService.getTraineeTrainings(request);
+        List<TrainingDto> result = trainingService.getTraineeTrainings(request);
 
         assertNotNull(result, "Trainee trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");
@@ -94,7 +93,7 @@ class TrainingServiceImplTest {
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
-        List<TrainingResponse> result = trainingService.getTrainerTrainings(request);
+        List<TrainingDto> result = trainingService.getTrainerTrainings(request);
 
         assertNotNull(result, "Trainer trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");

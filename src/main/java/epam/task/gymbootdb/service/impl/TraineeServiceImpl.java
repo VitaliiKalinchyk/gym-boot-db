@@ -107,8 +107,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void deleteById(long id) {
-        Trainee entity = traineeRepository.findById(id)
-                .orElseThrow(() -> new TraineeException(id));
+        Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
 
         traineeRepository.delete(entity);
     }
@@ -125,6 +124,13 @@ public class TraineeServiceImpl implements TraineeService {
         }
     }
 
+    private String generateUsername(User user) {
+        String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
+
+        return userRepository.existsByUsername(username) ?
+                nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
+                username;
+    }
 
     private void setUserFields(User user, String username, String password) {
         user.setUsername(username);
@@ -138,13 +144,5 @@ public class TraineeServiceImpl implements TraineeService {
         entity.getUser().setActive(request.getUser().isActive());
         entity.setBirthday(request.getBirthday());
         entity.setAddress(request.getAddress());
-    }
-
-    private String generateUsername(User user) {
-        String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
-
-        return userRepository.existsByUsername(username) ?
-                nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
-                username;
     }
 }
