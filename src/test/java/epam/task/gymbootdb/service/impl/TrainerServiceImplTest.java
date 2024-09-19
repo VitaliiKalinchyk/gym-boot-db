@@ -8,7 +8,6 @@ import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
-import epam.task.gymbootdb.exception.UsernameException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -151,7 +150,6 @@ class TrainerServiceImplTest {
 
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
-        assertEquals(trainerRequest.getUser().getUsername(), trainerEntity.getUser().getUsername());
         assertEquals(trainerRequest.getUser().getFirstName(), trainerEntity.getUser().getFirstName());
         assertEquals(trainerRequest.getUser().getLastName(), trainerEntity.getUser().getLastName());
         assertEquals(trainerRequest.getUser().isActive(), trainerEntity.getUser().isActive());
@@ -163,18 +161,6 @@ class TrainerServiceImplTest {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
         assertEquals("Trainer with id 0 was not found", e.getMessage());
-    }
-
-    @Test
-    void testUpdateTrainerUsernameAlreadyExists() {
-        trainerRequest.setId(1L);
-        trainerRequest.setUser(UserDto.builder().firstName("Joe").lastName("Doe").username("Joe.Doe").build());
-
-        when(trainerRepository.findById(trainerRequest.getId())).thenReturn(Optional.of(trainerEntity));
-        when(userRepository.existsByUsername(any())).thenReturn(true);
-
-        UsernameException e = assertThrows(UsernameException.class, () -> trainerService.update(trainerRequest));
-        assertEquals("Username Joe.Doe already in use", e.getMessage());
     }
 
     @Test

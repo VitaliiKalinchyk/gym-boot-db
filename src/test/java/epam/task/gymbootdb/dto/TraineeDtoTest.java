@@ -1,6 +1,5 @@
 package epam.task.gymbootdb.dto;
 
-import epam.task.gymbootdb.dto.validation.group.OnCreate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -78,14 +77,14 @@ public class TraineeDtoTest {
     }
 
     private void assertSingleViolation(TraineeDto dto, String expectedMessage) {
-        Set<ConstraintViolation<TraineeDto>> violations = validator.validate(dto, OnCreate.class);
+        Set<ConstraintViolation<TraineeDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
         ConstraintViolation<TraineeDto> violation = violations.iterator().next();
         assertEquals(expectedMessage, violation.getMessage());
     }
 
     private void assertNoViolations(TraineeDto dto) {
-        Set<ConstraintViolation<TraineeDto>> violations = validator.validate(dto, OnCreate.class);
+        Set<ConstraintViolation<TraineeDto>> violations = validator.validate(dto);
         assertEquals(0, violations.size(), "Validation should pass for valid data");
     }
 }

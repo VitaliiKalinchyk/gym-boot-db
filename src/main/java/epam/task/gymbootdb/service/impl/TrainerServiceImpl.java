@@ -8,7 +8,6 @@ import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
-import epam.task.gymbootdb.exception.UsernameException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -66,7 +65,6 @@ public class TrainerServiceImpl implements TrainerService {
     public TrainerDto update(TrainerDto request) {
         Trainer entity = trainerRepository.findById(request.getId())
                 .orElseThrow(() -> new TrainerException(request.getId()));
-        checkIfUsernameExists(request, entity);
         updateTrainerFields(request.getUser(), entity.getUser());
 
         TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
@@ -128,17 +126,8 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     private static void updateTrainerFields(UserDto userDto, User user) {
-        user.setUsername(userDto.getUsername());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setActive(userDto.isActive());
-    }
-
-    private void checkIfUsernameExists(TrainerDto request, Trainer entity) {
-        String username = request.getUser().getUsername();
-        if (!username.equals(entity.getUser().getUsername()) &&
-                userRepository.existsByUsername(username)) {
-            throw new UsernameException(username);
-        }
     }
 }
