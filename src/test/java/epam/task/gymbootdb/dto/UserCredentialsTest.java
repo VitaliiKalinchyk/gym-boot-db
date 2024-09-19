@@ -35,14 +35,14 @@ public class UserCredentialsTest {
     public void testNullUsername() {
         UserCredentials credentials = createCredentials(null, PASSWORD);
 
-        assertSingleViolation(credentials, "Username cannot be null");
+        assertSingleViolation(credentials, "Username is required");
     }
 
     @Test
     public void testNullPassword() {
         UserCredentials credentials = createCredentials(USERNAME, null);
 
-        assertSingleViolation(credentials, "Password cannot be null");
+        assertSingleViolation(credentials, "Password is required");
     }
 
     @Test
