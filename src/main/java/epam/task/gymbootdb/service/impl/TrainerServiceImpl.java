@@ -3,15 +3,11 @@ package epam.task.gymbootdb.service.impl;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
-import epam.task.gymbootdb.exception.PasswordException;
-import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
-import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.service.TrainerService;
@@ -24,14 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
-    private final TraineeRepository traineeRepository;
     private final UserRepository userRepository;
     private final TrainerMapper trainerMapper;
     private final TraineeMapper traineeMapper;
@@ -54,16 +47,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void matchCredentials(UserCredentials user) {
-        Trainer entity = trainerRepository.findByUserUsername(user.getUsername())
-                .orElseThrow(() -> new TrainerException(user.getUsername()));
-
-        if (!passwordEncoder.matches(user.getPassword(), entity.getUser().getPassword())) {
-            throw new PasswordException();
-        }
-    }
-
-    @Override
     @Transactional
     public TrainerDto update(TrainerDto request) {
         Trainer entity = trainerRepository.findById(request.getId())
@@ -74,18 +57,6 @@ public class TrainerServiceImpl implements TrainerService {
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
 
         return dto;
-    }
-
-    @Override
-    public void changePassword(ChangePasswordRequest request) {
-        long id = request.getId();
-        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
-        if (!passwordEncoder.matches(request.getOldPassword(), entity.getUser().getPassword())) {
-            throw  new PasswordException();
-        }
-        entity.getUser().setPassword(passwordEncoder.encode(request.getNewPassword()));
-
-        trainerRepository.save(entity);
     }
 
     @Override
@@ -105,13 +76,6 @@ public class TrainerServiceImpl implements TrainerService {
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
 
         return dto;
-    }
-
-    @Override
-    public List<TrainerDto> getTrainersNotAssignedToTrainee(long id) {
-        if (!traineeRepository.existsById(id)) throw new TraineeException(id);
-
-        return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
     }
 
     private String generateUsername(User user) {

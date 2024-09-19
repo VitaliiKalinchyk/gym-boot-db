@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChangePasswordRequestTest {
 
-    private static final String OLD_PASSWORD = "oldPassword";
     private static final String NEW_PASSWORD = "newPassword";
 
     private static Validator validator;
@@ -28,39 +27,54 @@ public class ChangePasswordRequestTest {
 
     @Test
     public void testValidChangePasswordRequest() {
-        assertNoViolations(createRequest(OLD_PASSWORD, NEW_PASSWORD));
+        assertNoViolations(createRequest(getValidUserCredentials(), NEW_PASSWORD));
     }
 
     @Test
-    public void testNullOldPassword() {
+    public void testNullUserCredentials() {
         ChangePasswordRequest request = createRequest(null, NEW_PASSWORD);
 
-        assertSingleViolation(request, "Old password cannot be null");
+        assertSingleViolation(request, "UserCredentials is required");
+    }
+
+    @Test
+    public void testInvalidUserCredentials() {
+        ChangePasswordRequest request = createRequest(getInvalidUserCredentials(), NEW_PASSWORD);
+
+        assertSingleViolation(request, "Username is required");
     }
 
     @Test
     public void testNullNewPassword() {
-        ChangePasswordRequest request = createRequest(OLD_PASSWORD, null);
+        ChangePasswordRequest request = createRequest(getValidUserCredentials(), null);
 
-        assertSingleViolation(request, "New password cannot be null");
+        assertSingleViolation(request, "New password is required");
     }
 
     @Test
     public void testNewPasswordTooShort() {
-        ChangePasswordRequest request = createRequest(OLD_PASSWORD, "short");
+        ChangePasswordRequest request = createRequest(getValidUserCredentials(), "short");
 
         assertSingleViolation(request, "New password must be between 8 and 16 characters");
     }
 
     @Test
     public void testNewPasswordTooLong() {
-        ChangePasswordRequest request = createRequest(OLD_PASSWORD, "veryLongPassword123");
+        ChangePasswordRequest request = createRequest(getValidUserCredentials(), "veryLongPassword123");
 
         assertSingleViolation(request, "New password must be between 8 and 16 characters");
     }
 
-    private static ChangePasswordRequest createRequest(String oldPassword, String newPassword) {
-        return new ChangePasswordRequest(1L, oldPassword, newPassword);
+    private static ChangePasswordRequest createRequest(UserCredentials userCredentials, String newPassword) {
+        return new ChangePasswordRequest(userCredentials, newPassword);
+    }
+
+    private static UserCredentials getValidUserCredentials() {
+        return new UserCredentials("Joe", "oldPassword");
+    }
+
+    private static UserCredentials getInvalidUserCredentials() {
+        return new UserCredentials(null, "oldPassword");
     }
 
     private void assertNoViolations(ChangePasswordRequest request) {

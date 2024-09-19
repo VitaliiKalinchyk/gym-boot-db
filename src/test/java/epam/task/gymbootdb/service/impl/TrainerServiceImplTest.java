@@ -5,10 +5,7 @@ import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
-import epam.task.gymbootdb.exception.PasswordException;
-import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
-import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.utils.NameGenerator;
@@ -35,8 +32,6 @@ class TrainerServiceImplTest {
     @Mock
     private TrainerRepository trainerRepository;
     @Mock
-    private TraineeRepository traineeRepository;
-    @Mock
     private UserRepository userRepository;
     @Mock
     private TrainerMapper trainerMapper;
@@ -56,8 +51,6 @@ class TrainerServiceImplTest {
     private Trainer trainerEntity;
     private TrainerDto trainerResponse;
     private User user;
-    private UserCredentials userCredentials;
-    private ChangePasswordRequest changePasswordRequest;
 
     @BeforeEach
     void setUp() {
@@ -66,8 +59,6 @@ class TrainerServiceImplTest {
         trainerEntity = new Trainer();
         trainerEntity.setUser(user);
         trainerResponse = new TrainerDto();
-        userCredentials = new UserCredentials("testUsername", "testPassword");
-        changePasswordRequest = new ChangePasswordRequest(1L, "testPassword","newPassword");
     }
 
     @Test
@@ -109,32 +100,6 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testMatchCredentials() {
-        when(trainerRepository.findByUserUsername(userCredentials.getUsername())).thenReturn(Optional.of(trainerEntity));
-        when(passwordEncoder.matches(userCredentials.getPassword(),
-                trainerEntity.getUser().getPassword())).thenReturn(true);
-
-        assertDoesNotThrow(() -> trainerService.matchCredentials(userCredentials));
-    }
-
-    @Test
-    void testMatchCredentialsNoUser() {
-        TrainerException e = assertThrows(TrainerException.class,
-                () -> trainerService.matchCredentials(userCredentials));
-        assertEquals("Trainer with username " + userCredentials.getUsername() + " was not found",
-                e.getMessage());
-    }
-
-    @Test
-    void testMatchCredentialsIncorrectPassword() {
-        when(trainerRepository.findByUserUsername(userCredentials.getUsername())).thenReturn(Optional.of(trainerEntity));
-
-        PasswordException e = assertThrows(PasswordException.class,
-                () -> trainerService.matchCredentials(userCredentials));
-        assertEquals("Wrong password", e.getMessage());
-    }
-
-    @Test
     void testUpdateTrainer() {
         trainerRequest.setUser(UserDto.builder()
                 .firstName("Jane")
@@ -161,38 +126,6 @@ class TrainerServiceImplTest {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
         assertEquals("Trainer with id 0 was not found", e.getMessage());
-    }
-
-    @Test
-    void testChangePassword() {
-        when(trainerRepository.findById(changePasswordRequest.getId())).thenReturn(Optional.of(trainerEntity));
-        when(passwordEncoder.matches(changePasswordRequest.getOldPassword(), trainerEntity.getUser().getPassword()))
-                .thenReturn(true);
-        when(passwordEncoder.encode(changePasswordRequest.getNewPassword())).thenReturn("newEncodedPassword");
-
-        trainerService.changePassword(changePasswordRequest);
-
-        assertEquals("newEncodedPassword", trainerEntity.getUser().getPassword());
-    }
-
-    @Test
-    void testChangePasswordNoSuchTrainer() {
-        TrainerException e = assertThrows(TrainerException.class,
-                () -> trainerService.changePassword(changePasswordRequest));
-
-        assertEquals("Trainer with id 1 was not found", e.getMessage());
-    }
-
-    @Test
-    void testChangePasswordIncorrect() {
-        when(trainerRepository.findById(changePasswordRequest.getId())).thenReturn(Optional.of(trainerEntity));
-        when(passwordEncoder.matches(changePasswordRequest.getOldPassword(), trainerEntity.getUser().getPassword()))
-                .thenReturn(false);
-
-        PasswordException e = assertThrows(PasswordException.class,
-                () -> trainerService.changePassword(changePasswordRequest));
-
-        assertEquals("Wrong password", e.getMessage());
     }
 
     @Test
@@ -230,25 +163,5 @@ class TrainerServiceImplTest {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getById(1L));
 
         assertEquals("Trainer with id 1 was not found", e.getMessage());
-    }
-
-    @Test
-    void testGetTrainersNotAssignedToTrainee() {
-        when(traineeRepository.existsById(1L)).thenReturn(true);
-        when(trainerMapper.toDtoList(anyList())).thenReturn(List.of(trainerResponse));
-
-        List<TrainerDto> result = trainerService.getTrainersNotAssignedToTrainee(1L);
-
-        assertNotNull(result, "Trainer list should not be null");
-        assertEquals(1, result.size(), "Should return one trainer");
-        assertEquals(trainerResponse, result.get(0));
-    }
-
-    @Test
-    void testGetTrainersNotAssignedToTraineeNoSuchTrainee() {
-        TraineeException e = assertThrows(TraineeException.class,
-                () -> trainerService.getTrainersNotAssignedToTrainee(1L));
-
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
     }
 }
