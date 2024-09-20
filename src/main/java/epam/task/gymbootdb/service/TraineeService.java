@@ -13,7 +13,7 @@ public interface TraineeService {
 
     TraineeDto update(TraineeDto trainee);
 
-    void setActiveStatus(long id, boolean isActive);
+    void changeStatus(long id);
 
     TraineeDto getById(long id);
 

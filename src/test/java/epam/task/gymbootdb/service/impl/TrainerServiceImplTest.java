@@ -130,17 +130,17 @@ class TrainerServiceImplTest {
 
     @Test
     void testSetActiveStatus() {
+        trainerEntity.getUser().setActive(false);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainerEntity));
 
-        trainerService.setActiveStatus(1L, true);
+        trainerService.setActiveStatus(1L);
 
         assertTrue(trainerEntity.getUser().isActive(), "User should be active");
     }
 
     @Test
     void testSetActiveStatusNoSuchTrainer() {
-        TrainerException e = assertThrows(TrainerException.class,
-                () -> trainerService.setActiveStatus(1, true));
+        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.setActiveStatus(1));
 
         assertEquals("Trainer with id 1 was not found", e.getMessage());
     }

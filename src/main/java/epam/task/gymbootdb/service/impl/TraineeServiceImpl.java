@@ -66,9 +66,9 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void setActiveStatus(long id, boolean isActive) {
+    public void changeStatus(long id) {
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
-        entity.getUser().setActive(isActive);
+        entity.getUser().setActive(!entity.getUser().isActive());
 
         traineeRepository.save(entity);
     }

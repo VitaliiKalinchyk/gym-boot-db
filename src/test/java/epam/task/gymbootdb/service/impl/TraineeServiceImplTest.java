@@ -140,17 +140,17 @@ class TraineeServiceImplTest {
 
     @Test
     void testSetActiveStatus() {
+        traineeEntity.getUser().setActive(false);
         when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
 
-        traineeService.setActiveStatus(1L, true);
+        traineeService.changeStatus(1L);
 
         assertTrue(traineeEntity.getUser().isActive(), "User should be active");
     }
 
     @Test
     void testSetActiveStatusNoSuchTrainee() {
-        TraineeException e = assertThrows(TraineeException.class,
-                () -> traineeService.setActiveStatus(1L, true));
+        TraineeException e = assertThrows(TraineeException.class, () -> traineeService.changeStatus(1L));
 
         assertEquals("Trainee with id 1 was not found", e.getMessage());
     }

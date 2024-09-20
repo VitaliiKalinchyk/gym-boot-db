@@ -60,9 +60,9 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void setActiveStatus(long id, boolean isActive) {
+    public void setActiveStatus(long id) {
         Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
-        entity.getUser().setActive(isActive);
+        entity.getUser().setActive(!entity.getUser().isActive());
 
         trainerRepository.save(entity);
     }
