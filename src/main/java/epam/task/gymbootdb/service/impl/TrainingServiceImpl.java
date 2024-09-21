@@ -14,13 +14,18 @@ import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TrainingServiceImpl implements TrainingService {
+
+    public static final String TRANSACTION_ID = "transactionId";
 
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
@@ -30,7 +35,10 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public void create(TrainingDto request) {
         Training entity = trainingMapper.toEntity(request);
+
         trainingRepository.save(entity);
+        log.debug("Training (id = {}) was created. Service layer. TransactionId: {}",
+                entity.getId(), MDC.get(TRANSACTION_ID));
     }
 
     @Override
@@ -39,6 +47,8 @@ public class TrainingServiceImpl implements TrainingService {
         if (!traineeRepository.existsById(traineeId)) throw new TraineeException(traineeId);
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeId,
                 request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
+        log.debug("Trainee (id = {}) got his trainings. Service layer. TransactionId: {}",
+                request.getTraineeId(), MDC.get(TRANSACTION_ID));
 
         return trainingMapper.toDtoList(entities);
     }
@@ -49,6 +59,8 @@ public class TrainingServiceImpl implements TrainingService {
         if (!trainerRepository.existsById(trainerId)) throw new TrainerException(trainerId);
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerId,
                 request.getFromDate(), request.getToDate(), request.getTraineeId());
+        log.debug("Trainer (id = {}) got his trainings. Service layer. TransactionId: {}",
+                request.getTraineeId(), MDC.get(TRANSACTION_ID));
 
         return trainingMapper.toDtoList(entities);
     }

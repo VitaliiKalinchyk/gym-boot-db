@@ -19,43 +19,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GymExceptionHandler {
+
+    public static final String TRANSACTION_ID = "transactionId";
+    public static final String TIMESTAMP = "timestamp";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
-        Map<String, Object> body = Map.of("timestamp", LocalDateTime.now(), "message", e.getMessage());
-        log.error("NotFoundException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get("transactionId"));
+        log.error("NotFoundException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        return createResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(PasswordException.class)
     public ResponseEntity<Object> handlePasswordException(PasswordException e) {
-        Map<String, Object> body = Map.of("timestamp", LocalDateTime.now(), "message", e.getMessage());
-        log.error("PasswordException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get("transactionId"));
+        log.error("PasswordException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+        return createResponseEntity(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException e) {
-        Map<String, Object> body = new HashMap<>(Map.of("timestamp", LocalDateTime.now()));
+        Map<String, Object> body = new HashMap<>(Map.of(TIMESTAMP, LocalDateTime.now()));
         body.putAll(e.getFieldErrors().stream()
                 .collect(Collectors.groupingBy(FieldError::getField,
                          Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList()))));
-        log.error("Validation error: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get("transactionId"));
+        log.error("Validation error: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception e) {
-        Map<String, Object> body = Map.of("timestamp", LocalDateTime.now(),
-                "message", "Unexpected error occurred");
-        log.error("Global Exception: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get("transactionId"));
+        log.error("Global Exception: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
+    }
+
+    private static ResponseEntity<Object> createResponseEntity(HttpStatus status, String message) {
+        Map<String, Object> body = Map.of(TIMESTAMP, LocalDateTime.now(), "message", message);
+        return ResponseEntity.status(status).body(body);
     }
 }

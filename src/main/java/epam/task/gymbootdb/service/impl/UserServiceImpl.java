@@ -9,20 +9,26 @@ import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
+
+    public static final String TRANSACTION_ID = "transactionId";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Override
     public void matchCredentials(UserCredentials user) {
         getAndCheckUser(user.getUsername(), user.getPassword());
+        log.debug("User (id = {}) logged in. Service layer. TransactionId: {}",
+                user.getUsername(), MDC.get(TRANSACTION_ID));
     }
 
     @Override
@@ -33,6 +39,8 @@ public class UserServiceImpl implements UserService {
         entity.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(entity);
+        log.debug("User (id = {}) changed its password. Service layer. TransactionId: {}",
+                userCredentials.getUsername(), MDC.get(TRANSACTION_ID));
     }
 
     private User getAndCheckUser(String username, String password){

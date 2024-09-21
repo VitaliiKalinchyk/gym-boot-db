@@ -19,6 +19,8 @@ import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +29,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TraineeServiceImpl implements TraineeService {
+
+    public static final String TRANSACTION_ID = "transactionId";
 
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
@@ -48,6 +53,8 @@ public class TraineeServiceImpl implements TraineeService {
         setUserFields(user, username, password);
 
         traineeRepository.save(entity);
+        log.debug("Trainee (id = {}, username = {}) was created. Service layer. TransactionId: {}",
+                entity.getId(), username, MDC.get(TRANSACTION_ID));
 
         return new UserCredentials(username, password);
     }
@@ -61,6 +68,8 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(traineeRepository.save(entity));
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
+        log.debug("Trainee (id = {}) was updated. Service layer. TransactionId: {}",
+                entity.getId(), MDC.get("transactionId"));
 
         return dto;
     }
@@ -68,7 +77,10 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public void changeStatus(long id) {
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
-        entity.getUser().setActive(!entity.getUser().isActive());
+        boolean status = entity.getUser().isActive();
+        entity.getUser().setActive(!status);
+        log.debug("Trainee (id = {}) changed status to {}. Service layer. TransactionId: {}",
+                id, status, MDC.get(TRANSACTION_ID));
 
         traineeRepository.save(entity);
     }
@@ -80,6 +92,8 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(entity);
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
+        log.debug("Trainee (id = {}) was gotten. Service layer. TransactionId: {}",
+                id, MDC.get(TRANSACTION_ID));
 
         return dto;
     }
@@ -87,6 +101,8 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public void deleteById(long id) {
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
+        log.debug("Trainee (id = {}) was deleted. Service layer. TransactionId: {}",
+                entity.getId(), MDC.get(TRANSACTION_ID));
 
         traineeRepository.delete(entity);
     }
@@ -94,7 +110,8 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public List<TrainerDto> getTrainersNotAssignedToTrainee(long id) {
         if (!traineeRepository.existsById(id)) throw new TraineeException(id);
-
+        log.debug("Trainee (id = {}) got unassigned trainers. Service layer. TransactionId: {}",
+                id, MDC.get(TRANSACTION_ID));
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
     }
 
@@ -107,6 +124,8 @@ public class TraineeServiceImpl implements TraineeService {
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
+            log.debug("Trainee (id = {}) added new trainer to it's list (id = {}). Service layer. TransactionId: {}",
+                    traineeId, trainerId, MDC.get(TRANSACTION_ID));
         }
     }
 
