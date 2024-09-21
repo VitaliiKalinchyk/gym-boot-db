@@ -27,21 +27,21 @@ public class GymExceptionHandler {
     public static final String TIMESTAMP = "timestamp";
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException e) {
         log.error("NotFoundException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
         return createResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(PasswordException.class)
-    public ResponseEntity<Object> handlePasswordException(PasswordException e) {
+    public ResponseEntity<Map<String, Object>> handlePasswordException(PasswordException e) {
         log.error("PasswordException: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
         return createResponseEntity(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException e) {
         Map<String, Object> body = new HashMap<>(Map.of(TIMESTAMP, LocalDateTime.now()));
         body.putAll(e.getFieldErrors().stream()
                 .collect(Collectors.groupingBy(FieldError::getField,
@@ -52,13 +52,13 @@ public class GymExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleGlobalException(Exception e) {
+    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception e) {
         log.error("Global Exception: {}. ErrorHandler. TransactionId: {}", e.getMessage(), MDC.get(TRANSACTION_ID));
 
         return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
     }
 
-    private static ResponseEntity<Object> createResponseEntity(HttpStatus status, String message) {
+    private static ResponseEntity<Map<String, Object>> createResponseEntity(HttpStatus status, String message) {
         Map<String, Object> body = Map.of(TIMESTAMP, LocalDateTime.now(), "message", message);
         return ResponseEntity.status(status).body(body);
     }
