@@ -1,12 +1,12 @@
 package epam.task.gymbootdb.handler;
 
-import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.TraineeException;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,24 +22,23 @@ class GymExceptionHandlerTest {
     private static final GymExceptionHandler handler = new GymExceptionHandler();
     public static final String TRANSACTION_ID = "timestamp";
     public static final String MESSAGE = "message";
+    public static final String FIELD_NAME = "fieldName";
+    public static final String ERROR_MESSAGE = "Error message";
+    public static final String ERROR_ID = "errorId";
 
     @Test
-    public void testHandleNotFoundException() {
-        ResponseEntity<Map<String, Object>> responseEntity = handler.handleNotFoundException(new TraineeException(1));
+    public void testGymResponseStatusException() {
+        TraineeException e = new TraineeException(1);
 
-        asserResponseEntity(responseEntity, HttpStatus.NOT_FOUND, "Trainee with id 1 was not found");
-    }
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleGymResponseStatusException(e);
 
-    @Test
-    public void testHandlePasswordException() {
-        ResponseEntity<Map<String, Object>> responseEntity = handler.handlePasswordException(new PasswordException());
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Wrong password");
+        asserResponseEntity(responseEntity, e.getStatusCode(), e.getMessage());
     }
 
     @Test
     public void testHandleValidationException() {
-        FieldError fieldError = new FieldError("objectName", "fieldName", "Error message");
+        FieldError fieldError = new FieldError("objectName", FIELD_NAME, ERROR_MESSAGE);
         MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
         Mockito.when(exception.getFieldErrors()).thenReturn(Collections.singletonList(fieldError));
 
@@ -49,8 +48,9 @@ class GymExceptionHandlerTest {
         assertNotNull(body);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertTrue(body.containsKey(TRANSACTION_ID));
-        assertTrue(body.containsKey("fieldName"));
-        assertTrue(body.containsValue(Collections.singletonList("Error message")));
+        assertTrue(body.containsKey(FIELD_NAME));
+        assertTrue(body.containsKey(ERROR_ID));
+        assertTrue(body.containsValue(Collections.singletonList(ERROR_MESSAGE)));
     }
 
     @Test
@@ -61,7 +61,7 @@ class GymExceptionHandlerTest {
     }
 
     private static void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity,
-                                            HttpStatus status, String message) {
+                                            HttpStatusCode status, String message) {
         Map<String, Object> body = responseEntity.getBody();
 
         assertNotNull(body);

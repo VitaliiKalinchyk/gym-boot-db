@@ -46,7 +46,7 @@ class UserServiceImplTest {
     @Test
     void testMatchCredentialsNoUser() {
         UserException e = assertThrows(UserException.class, () -> userService.matchCredentials(userCredentials));
-        assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getMessage());
+        assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getReason());
     }
 
     @Test
@@ -55,7 +55,7 @@ class UserServiceImplTest {
 
         PasswordException e = assertThrows(PasswordException.class,
                 () -> userService.matchCredentials(userCredentials));
-        assertEquals("Wrong password", e.getMessage());
+        assertEquals("Wrong password", e.getReason());
     }
 
     @Test
@@ -72,7 +72,7 @@ class UserServiceImplTest {
     @Test
     void testChangePasswordNoSuchUser() {
         UserException e = assertThrows(UserException.class, () -> userService.changePassword(request));
-        assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getMessage());
+        assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getReason());
     }
 
     @Test
@@ -82,6 +82,6 @@ class UserServiceImplTest {
 
         PasswordException e = assertThrows(PasswordException.class, () -> userService.changePassword(request));
 
-        assertEquals("Wrong password", e.getMessage());
+        assertEquals("Wrong password", e.getReason());
     }
 }

@@ -135,7 +135,7 @@ class TraineeServiceImplTest {
     void testUpdateTraineeNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.update(traineeRequest));
 
-        assertEquals("Trainee with id 0 was not found", e.getMessage());
+        assertEquals("Trainee with id 0 was not found", e.getReason());
     }
 
     @Test
@@ -152,7 +152,7 @@ class TraineeServiceImplTest {
     void testSetActiveStatusNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.changeStatus(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -172,7 +172,7 @@ class TraineeServiceImplTest {
     void testGetByIdNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.getById(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -186,7 +186,7 @@ class TraineeServiceImplTest {
     @Test
     void testDeleteByIdNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.deleteById(1L));
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -221,7 +221,7 @@ class TraineeServiceImplTest {
     public void testUpdateTraineeTrainersNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.updateTraineeTrainers(1L, 2L));
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -230,7 +230,7 @@ class TraineeServiceImplTest {
 
         TrainerException e = assertThrows(TrainerException.class,
                 () -> traineeService.updateTraineeTrainers(1L, 2L));
-        assertEquals("Trainer with id 2 was not found", e.getMessage());
+        assertEquals("Trainer with id 2 was not found", e.getReason());
     }
 
 
@@ -253,6 +253,6 @@ class TraineeServiceImplTest {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.getTrainersNotAssignedToTrainee(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 }
