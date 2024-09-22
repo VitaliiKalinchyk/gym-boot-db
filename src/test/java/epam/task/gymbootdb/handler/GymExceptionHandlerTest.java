@@ -33,7 +33,7 @@ class GymExceptionHandlerTest {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleGymResponseStatusException(e);
 
-        asserResponseEntity(responseEntity, e.getStatusCode(), e.getMessage());
+        asserResponseEntity(responseEntity, e.getStatusCode(), e.getReason());
     }
 
     @Test
