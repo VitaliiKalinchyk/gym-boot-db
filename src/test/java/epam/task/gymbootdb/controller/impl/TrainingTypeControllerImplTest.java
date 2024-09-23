@@ -1,4 +1,4 @@
-package epam.task.gymbootdb.controller;
+package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.TrainingTypeDto;
 import epam.task.gymbootdb.service.TrainingTypeService;
@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TrainingTypeControllerTest {
+class TrainingTypeControllerImplTest {
 
     @InjectMocks
-    TrainingTypeController controller;
+    TrainingTypeControllerImpl controller;
 
     @Mock
     TrainingTypeService trainingTypeService;

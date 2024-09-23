@@ -3,27 +3,19 @@ package epam.task.gymbootdb.controller;
 import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.service.TraineeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 @RequestMapping("/trainees")
-@RequiredArgsConstructor
-public class TraineeController {
-
-    private final TraineeService traineeService;
+public interface TraineeController {
 
     @Operation(summary = "Get trainee by ID",
             description = "Fetches a trainee's details based on the provided ID.")
@@ -32,11 +24,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<TraineeDto> get(@PathVariable long id) {
-        TraineeDto trainee = traineeService.getById(id);
-
-        return ResponseEntity.ok(trainee);
-    }
+    ResponseEntity<TraineeDto> get(@PathVariable long id);
 
     @Operation(summary = "Create new trainee",
             description = "Creates a new trainee profile and returns the associated user credentials.")
@@ -45,11 +33,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "400", description = "Invalid trainee data")
     })
     @PostMapping
-    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeDto traineeDto) {
-        UserCredentials profile = traineeService.createProfile(traineeDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
-    }
+    ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeDto traineeDto);
 
     @Operation(summary = "Update trainee by ID",
             description = "Updates the details of an existing trainee based on the provided ID.")
@@ -59,12 +43,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "400", description = "Invalid trainee data")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<TraineeDto> update(@PathVariable long id, @Valid @RequestBody TraineeDto trainee) {
-        trainee.setId(id);
-        TraineeDto traineeDto = traineeService.update(trainee);
-
-        return ResponseEntity.ok(traineeDto);
-    }
+    ResponseEntity<TraineeDto> update(@PathVariable long id, @Valid @RequestBody TraineeDto trainee);
 
     @Operation(summary = "Change active status",
             description = "Changes the active status of a trainee based on the provided ID.")
@@ -73,11 +52,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> changeActiveStatus(@PathVariable long id) {
-        traineeService.changeStatus(id);
-
-        return ResponseEntity.ok().build();
-    }
+    ResponseEntity<Void> changeActiveStatus(@PathVariable long id);
 
     @Operation(summary = "Delete trainee by ID",
             description = "Deletes the trainee's profile based on the provided ID.")
@@ -86,11 +61,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) {
-        traineeService.deleteById(id);
-
-        return ResponseEntity.ok().build();
-    }
+    ResponseEntity<Void> delete(@PathVariable long id);
 
     @Operation(summary = "Get trainers not assigned to trainee",
             description = "Fetches a list of trainers that are not assigned to the trainee based on the provided ID.")
@@ -99,9 +70,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
     @GetMapping("/{id}/unassigned-trainers")
-    public ResponseEntity<List<TrainerDto>> getTrainersNotAssignedToTrainee(@PathVariable long id) {
-        return ResponseEntity.ok(traineeService.getTrainersNotAssignedToTrainee(id));
-    }
+    ResponseEntity<List<TrainerDto>> getTrainersNotAssignedToTrainee(@PathVariable long id);
 
     @Operation(summary = "Update trainee trainers",
             description = "Updates the list of trainers assigned to a trainee based on the provided trainee and trainer IDs.")
@@ -110,9 +79,5 @@ public class TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee or trainer not found")
     })
     @PutMapping("/{id}/trainers")
-    public ResponseEntity<Void> updateTraineeTrainers(@PathVariable long id, @RequestBody long trainerId) {
-        traineeService.updateTraineeTrainers(id, trainerId);
-
-        return ResponseEntity.ok().build();
-    }
+    ResponseEntity<Void> updateTraineeTrainers(@PathVariable long id, @RequestBody long trainerId);
 }

@@ -1,4 +1,4 @@
-package epam.task.gymbootdb.controller;
+package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.TrainerDto;
@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TraineeControllerTest {
+class TraineeControllerImplTest {
 
     @InjectMocks
-    private TraineeController traineeController;
+    private TraineeControllerImpl traineeController;
 
     @Mock
     private TraineeService traineeService;

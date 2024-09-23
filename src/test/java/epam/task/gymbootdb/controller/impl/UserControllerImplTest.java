@@ -1,4 +1,4 @@
-package epam.task.gymbootdb.controller;
+package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserControllerTest {
+class UserControllerImplTest {
 
     @InjectMocks
-    private UserController userController;
+    private UserControllerImpl userController;
 
     @Mock
     private UserService userService;
