@@ -27,7 +27,7 @@ class GymExceptionHandlerTest {
     public static final String ERROR_ID = "errorId";
 
     @Test
-    public void testGymResponseStatusException() {
+    void testGymResponseStatusException() {
         TraineeException e = new TraineeException(1);
 
         ResponseEntity<Map<String, Object>> responseEntity =
@@ -37,7 +37,7 @@ class GymExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleValidationException() {
+    void testHandleValidationException() {
         FieldError fieldError = new FieldError("objectName", FIELD_NAME, ERROR_MESSAGE);
         MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
         Mockito.when(exception.getFieldErrors()).thenReturn(Collections.singletonList(fieldError));
@@ -54,7 +54,7 @@ class GymExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleGlobalException() {
+    void testHandleGlobalException() {
         ResponseEntity<Map<String, Object>> responseEntity = handler.handleGlobalException(new Exception());
 
         asserResponseEntity(responseEntity, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");

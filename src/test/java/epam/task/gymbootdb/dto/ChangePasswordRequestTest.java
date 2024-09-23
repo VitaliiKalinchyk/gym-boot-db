@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChangePasswordRequestTest {
+class ChangePasswordRequestTest {
 
     private static final String NEW_PASSWORD = "newPassword1";
 
@@ -26,33 +26,33 @@ public class ChangePasswordRequestTest {
     }
 
     @Test
-    public void testValidChangePasswordRequest() {
+    void testValidChangePasswordRequest() {
         assertNoViolations(createRequest(getValidUserCredentials(), NEW_PASSWORD));
     }
 
     @Test
-    public void testNullUserCredentials() {
+    void testNullUserCredentials() {
         ChangePasswordRequest request = createRequest(null, NEW_PASSWORD);
 
         assertSingleViolation(request, "UserCredentials is required");
     }
 
     @Test
-    public void testInvalidUserCredentials() {
+    void testInvalidUserCredentials() {
         ChangePasswordRequest request = createRequest(getInvalidUserCredentials(), NEW_PASSWORD);
 
         assertSingleViolation(request, "Username is required");
     }
 
     @Test
-    public void testNullNewPassword() {
+    void testNullNewPassword() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), null);
 
         assertSingleViolation(request, "New password is required");
     }
 
     @Test
-    public void testNewPasswordTooShort() {
+    void testNewPasswordTooShort() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "short");
 
         assertSingleViolation(request,
@@ -60,7 +60,7 @@ public class ChangePasswordRequestTest {
     }
 
     @Test
-    public void testNewPasswordTooLong() {
+    void testNewPasswordTooLong() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "veryLongPassword123");
 
         assertSingleViolation(request,
@@ -68,7 +68,7 @@ public class ChangePasswordRequestTest {
     }
 
     @Test
-    public void testNewPasswordWithSpecialSymbol(){
+    void testNewPasswordWithSpecialSymbol(){
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), NEW_PASSWORD + "_");
 
         assertSingleViolation(request,

@@ -37,7 +37,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testLoginNoResponse() {
+    void testLoginNoResponse() {
         doThrow(new RuntimeException()).when(userService).matchCredentials(userCredentials);
 
         assertThrows(Exception.class, () -> userController.login(userCredentials));
@@ -51,7 +51,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void testChangePasswordNoResponse() {
+    void testChangePasswordNoResponse() {
         doThrow(new RuntimeException()).when(userService).changePassword(changePasswordRequest);
 
         assertThrows(Exception.class, () -> userController.changePassword(changePasswordRequest));

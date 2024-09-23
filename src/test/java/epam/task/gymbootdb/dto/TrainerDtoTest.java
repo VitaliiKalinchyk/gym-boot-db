@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TrainerDtoTest {
+class TrainerDtoTest {
 
     private static Validator validator;
 
@@ -24,26 +24,26 @@ public class TrainerDtoTest {
     }
 
     @Test
-    public void testValidTrainerDto() {
+    void testValidTrainerDto() {
         assertNoViolations(createDto(getUser(), getTrainingType()));
     }
 
     @Test
-    public void testNullUser() {
+    void testNullUser() {
         TrainerDto dto = createDto(null, getTrainingType());
 
         assertSingleViolation(dto, "User cannot be null");
     }
 
     @Test
-    public void testNotValidUserNoFirstName() {
+    void testNotValidUserNoFirstName() {
         TrainerDto dto = createDto(getUserNoFirstName(), getTrainingType());
 
         assertSingleViolation(dto, "First name cannot be null");
     }
 
     @Test
-    public void testNullTrainingType() {
+    void testNullTrainingType() {
         TrainerDto dto = createDto(getUser(), null);
 
         assertSingleViolation(dto, "TrainingType cannot be null");

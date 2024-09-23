@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserDtoTest {
+class UserDtoTest {
 
     private static final String FIRST_NAME = "Joe";
     private static final String LAST_NAME = "Doe";
@@ -33,49 +33,49 @@ public class UserDtoTest {
     }
 
     @Test
-    public void testValidUserDto() {
+    void testValidUserDto() {
         UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME);
 
         assertNoViolations(userDto);
     }
 
     @Test
-    public void testNullFirstName() {
+    void testNullFirstName() {
         UserDto userDto = createUserDto(null, LAST_NAME);
 
         assertSingleViolation(userDto, NULL_FIRST_NAME_ERROR);
     }
 
     @Test
-    public void testNullLastName() {
+    void testNullLastName() {
         UserDto userDto = createUserDto(FIRST_NAME, null);
 
         assertSingleViolation(userDto, NULL_LAST_NAME_ERROR);
     }
 
     @Test
-    public void testFirstNameTooLong() {
+    void testFirstNameTooLong() {
         UserDto userDto = createUserDto("A".repeat(46), LAST_NAME);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR);
     }
 
     @Test
-    public void testLastNameTooLong() {
+    void testLastNameTooLong() {
         UserDto userDto = createUserDto(FIRST_NAME, "A".repeat(46));
 
         assertSingleViolation(userDto, LAST_NAME_ERROR);
     }
 
     @Test
-    public void testFirstNameWithDigits() {
+    void testFirstNameWithDigits() {
         UserDto userDto = createUserDto("Joe1", LAST_NAME);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR);
     }
 
     @Test
-    public void testLastNameWithDigits() {
+    void testLastNameWithDigits() {
         UserDto userDto = createUserDto(FIRST_NAME, "Doe1");
 
         assertSingleViolation(userDto, LAST_NAME_ERROR);

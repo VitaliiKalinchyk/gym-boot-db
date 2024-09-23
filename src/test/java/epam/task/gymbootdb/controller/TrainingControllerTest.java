@@ -29,8 +29,8 @@ class TrainingControllerTest {
     private TrainingService trainingService;
 
     private static final TrainingDto trainingDto = TrainingDto.builder().id(1).build();
-    private static final long traineeId = 1L;
-    private static final long trainerId = 2L;
+    private static final long TRAINEE_ID = 1L;
+    private static final long TRAINER_ID = 2L;
 
     @Test
     void testCreateTraining() {
@@ -40,7 +40,7 @@ class TrainingControllerTest {
     }
 
     @Test
-    public void testCreateTrainingNoResponse() {
+    void testCreateTrainingNoResponse() {
         doThrow(new RuntimeException()).when(trainingService).create(trainingDto);
 
         assertThrows(RuntimeException.class, () -> trainingController.create(trainingDto));
@@ -50,12 +50,12 @@ class TrainingControllerTest {
     void testGetTraineeTrainings() {
         List<TrainingDto> trainings = List.of(trainingDto);
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder()
-                .traineeId(traineeId)
+                .traineeId(TRAINEE_ID)
                 .build();
 
         when(trainingService.getTraineeTrainings(request)).thenReturn(trainings);
 
-        ResponseEntity<List<TrainingDto>> response = trainingController.getTraineeTrainings(traineeId,
+        ResponseEntity<List<TrainingDto>> response = trainingController.getTraineeTrainings(TRAINEE_ID,
                 null, null, null, null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -68,7 +68,7 @@ class TrainingControllerTest {
     void testGetTraineeTrainingsNoResponse() {
         when(trainingService.getTraineeTrainings(any())).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> trainingController.getTraineeTrainings(traineeId,
+        assertThrows(RuntimeException.class, () -> trainingController.getTraineeTrainings(TRAINEE_ID,
                 null, null, null, null));
     }
 
@@ -76,13 +76,13 @@ class TrainingControllerTest {
     void testGetTrainerTrainings() {
         List<TrainingDto> trainings = List.of(trainingDto);
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder()
-                .trainerId(trainerId)
+                .trainerId(TRAINER_ID)
                 .build();
 
         when(trainingService.getTrainerTrainings(request)).thenReturn(trainings);
 
         ResponseEntity<List<TrainingDto>> response =
-                trainingController.getTrainerTrainings(trainerId, null, null, null);
+                trainingController.getTrainerTrainings(TRAINER_ID, null, null, null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -95,6 +95,6 @@ class TrainingControllerTest {
         when(trainingService.getTrainerTrainings(any())).thenThrow(new RuntimeException());
 
         assertThrows(RuntimeException.class,
-                () -> trainingController.getTrainerTrainings(trainerId, null, null, null));
+                () -> trainingController.getTrainerTrainings(TRAINER_ID, null, null, null));
     }
 }

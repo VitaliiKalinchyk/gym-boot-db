@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +60,7 @@ class RestLoggingInterceptorTest {
         boolean b = interceptor.preHandle(request, response, new Object());
 
         assertTrue(b);
-        verifyPreHandle("?" + PARAM_VALUE);
+        verify(log).info(LOG_REQUEST, ID, GET, URI, "?" + PARAM_VALUE);
     }
 
     @Test
@@ -74,7 +73,7 @@ class RestLoggingInterceptorTest {
         boolean b = interceptor.preHandle(request, response, new Object());
 
         assertTrue(b);
-        verifyPreHandle("");
+        verify(log).info(LOG_REQUEST, ID, GET, URI, "");
     }
 
     @Test
@@ -85,7 +84,7 @@ class RestLoggingInterceptorTest {
 
         interceptor.afterCompletion(request, response, new Object(), null);
 
-        verifyAfterCompletion(200, RESPONSE_OK);
+        verify(log).info(LOG_RESPONSE, ID, 200, RESPONSE_OK);
     }
 
     @Test
@@ -97,25 +96,6 @@ class RestLoggingInterceptorTest {
 
         interceptor.afterCompletion(request, response, new Object(), exception);
 
-        verifyAfterCompletion(500, INTERNAL_SERVER_ERROR);
-    }
-
-    private void verifyPreHandle(String PARAM_VALUE) {
-        verify(log).info(
-                eq(LOG_REQUEST),
-                eq(ID),
-                eq(GET),
-                eq(URI),
-                eq(PARAM_VALUE)
-        );
-    }
-
-    private void verifyAfterCompletion(int value, String responseOk) {
-        verify(log).info(
-                eq(LOG_RESPONSE),
-                eq(ID),
-                eq(value),
-                eq(responseOk)
-        );
+        verify(log).info(LOG_RESPONSE, ID, 500, INTERNAL_SERVER_ERROR);
     }
 }

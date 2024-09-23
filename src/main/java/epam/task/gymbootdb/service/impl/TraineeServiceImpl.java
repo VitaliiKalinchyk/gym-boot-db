@@ -69,7 +69,7 @@ public class TraineeServiceImpl implements TraineeService {
         TraineeDto dto = traineeMapper.toDto(traineeRepository.save(entity));
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
         log.debug("Trainee (id = {}) was updated. Service layer. TransactionId: {}",
-                entity.getId(), MDC.get("transactionId"));
+                entity.getId(), MDC.get(TRANSACTION_ID));
 
         return dto;
     }

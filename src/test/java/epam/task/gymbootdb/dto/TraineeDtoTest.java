@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TraineeDtoTest {
+class TraineeDtoTest {
 
     public static final LocalDate BIRTHDAY = LocalDate.of(2000, 1, 1);
     public static final String ADDRESS = "123 Main Street";
@@ -28,38 +28,38 @@ public class TraineeDtoTest {
     }
 
     @Test
-    public void testValidTraineeDto() {
+    void testValidTraineeDto() {
         assertNoViolations(createDto(getUser(), BIRTHDAY, ADDRESS));
     }
 
     @Test
-    public void testValidTraineeDtoNullOptionalFields() {
+    void testValidTraineeDtoNullOptionalFields() {
         assertNoViolations(createDto(getUser(), null, null));
     }
 
     @Test
-    public void testNullUser() {
+    void testNullUser() {
         TraineeDto dto = createDto(null, BIRTHDAY, ADDRESS);
 
         assertSingleViolation(dto, "User cannot be null");
     }
 
     @Test
-    public void testNotValidUser() {
+    void testNotValidUser() {
         TraineeDto dto = createDto(getUserNoFirstName(), BIRTHDAY, ADDRESS);
 
         assertSingleViolation(dto, "First name cannot be null");
     }
 
     @Test
-    public void testFutureBirthday() {
+    void testFutureBirthday() {
         TraineeDto dto = createDto(getUser(), LocalDate.now().plusDays(1), ADDRESS);
 
         assertSingleViolation(dto, "Birthday cannot be in the future");
     }
 
     @Test
-    public void testAddressTooLong() {
+    void testAddressTooLong() {
         TraineeDto dto = createDto(getUser(), BIRTHDAY, "A".repeat(121));
 
         assertSingleViolation(dto, "Address cannot exceed 120 characters");

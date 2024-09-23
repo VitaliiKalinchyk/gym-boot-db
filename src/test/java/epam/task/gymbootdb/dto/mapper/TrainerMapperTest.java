@@ -17,12 +17,12 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-public class TrainerMapperTest {
+class TrainerMapperTest {
 
     private final TrainerMapper mapper = Mappers.getMapper(TrainerMapper.class);
 
     @Test
-    public void testToDto() {
+    void testToDto() {
         TrainerDto dto = mapper.toDto(getTrainer1());
 
         assertTrainer(getTrainer1(), dto);
@@ -30,7 +30,7 @@ public class TrainerMapperTest {
     }
 
     @Test
-    public void testToEntity() {
+    void testToEntity() {
         Trainer trainer = mapper.toEntity(getDto());
 
         assertTrainer(trainer, getDto());
@@ -38,7 +38,7 @@ public class TrainerMapperTest {
     }
 
     @Test
-    public void testToDtoList() {
+    void testToDtoList() {
         List<TrainerDto> trainerDtos = mapper.toDtoList(List.of(getTrainer1(), getTrainer2()));
 
         assertTrainer(getTrainer1(), trainerDtos.get(0));

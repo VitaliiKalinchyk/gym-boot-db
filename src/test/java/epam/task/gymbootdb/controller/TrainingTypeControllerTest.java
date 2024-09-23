@@ -27,7 +27,7 @@ class TrainingTypeControllerTest {
     TrainingTypeService trainingTypeService;
 
     @Test
-    public void testGetAll() {
+    void testGetAll() {
         TrainingTypeDto yoga = new TrainingTypeDto(1, "YOGA");
         List<TrainingTypeDto> trainingTypes = List.of(yoga);
 
@@ -42,7 +42,7 @@ class TrainingTypeControllerTest {
     }
 
     @Test
-    public void testGetAllNoResponse() {
+    void testGetAllNoResponse() {
         when(trainingTypeService.getAll()).thenThrow(new RuntimeException());
 
         assertThrows(RuntimeException.class, () -> controller.getAll());

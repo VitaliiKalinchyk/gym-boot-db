@@ -16,7 +16,7 @@ class TrainingTypeMapperTest {
     private final TrainingTypeMapper mapper = Mappers.getMapper(TrainingTypeMapper.class);
 
     @Test
-    public void testToDtoList() {
+    void testToDtoList() {
         TrainingType trainingType1 = new TrainingType(1, "YOGA");
         TrainingType trainingType2 = new TrainingType(2, "ZUMBA");
         List<TrainingType> trainingTypes= List.of(trainingType1, trainingType2);

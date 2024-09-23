@@ -10,18 +10,18 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PasswordGeneratorImplTest {
+class PasswordGeneratorImplTest {
 
     private final PasswordGenerator passwordGenerator = new PasswordGeneratorImpl(10);
 
     @Test
-    public void testGeneratePasswordCorrectLength() {
+    void testGeneratePasswordCorrectLength() {
         String password = passwordGenerator.generatePassword();
         assertEquals(10, password.length());
     }
 
     @Test
-    public void testGeneratePasswordContainsRequiredCharacters() {
+    void testGeneratePasswordContainsRequiredCharacters() {
         String password = passwordGenerator.generatePassword();
 
         assertTrue(password.chars().anyMatch(Character::isUpperCase),
@@ -33,7 +33,7 @@ public class PasswordGeneratorImplTest {
     }
 
     @Test
-    public void testGeneratePasswordContainsOnlyAllowedCharacters() {
+    void testGeneratePasswordContainsOnlyAllowedCharacters() {
         String password = passwordGenerator.generatePassword();
 
         assertTrue(password.matches("[A-Za-z0-9]+"),
@@ -41,7 +41,7 @@ public class PasswordGeneratorImplTest {
     }
 
     @Test
-    public void testGenerateUniquePasswords() {
+    void testGenerateUniquePasswords() {
         int numberOfPasswordsToGenerate = 1000;
         Set<String> generatedPasswords = new HashSet<>();
 

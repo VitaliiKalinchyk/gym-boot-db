@@ -18,26 +18,26 @@ import org.mapstruct.factory.Mappers;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TrainingMapperTest {
+class TrainingMapperTest {
 
     private final TrainingMapper mapper = Mappers.getMapper(TrainingMapper.class);
 
     @Test
-    public void testToDto() {
+    void testToDto() {
         TrainingDto trainingDto = mapper.toDto(getTraining1());
 
         assertTraining(getTraining1(), trainingDto);
     }
 
     @Test
-    public void testToEntity() {
+    void testToEntity() {
         Training training = mapper.toEntity(getTrainingDto());
 
         assertTraining(training, getTrainingDto());
     }
 
     @Test
-    public void testToDtoList() {
+    void testToDtoList() {
         List<TrainingDto> trainingDtos = mapper.toDtoList(List.of(getTraining1(), getTraining2()));
 
         assertTraining(getTraining1(), trainingDtos.get(0));

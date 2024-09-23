@@ -190,7 +190,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainers() {
+    void testUpdateTraineeTrainers() {
         traineeEntity.setTrainers(new ArrayList<>());
         Trainer trainer = new Trainer();
 
@@ -204,7 +204,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainersTrainerAlreadyInList () {
+    void testUpdateTraineeTrainersTrainerAlreadyInList () {
         Trainer trainer = new Trainer();
         traineeEntity.setTrainers(List.of(trainer));
 
@@ -218,14 +218,14 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainersNoSuchTrainee() {
+    void testUpdateTraineeTrainersNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.updateTraineeTrainers(1L, 2L));
         assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
-    public void testUpdateTraineeTrainersNoSuchTrainer() {
+    void testUpdateTraineeTrainersNoSuchTrainer() {
         when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
 
         TrainerException e = assertThrows(TrainerException.class,

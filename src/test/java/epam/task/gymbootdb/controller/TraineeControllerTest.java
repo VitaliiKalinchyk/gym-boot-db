@@ -28,15 +28,15 @@ class TraineeControllerTest {
     @Mock
     private TraineeService traineeService;
 
-    private static final long traineeId = 1L;
+    private static final long TRAINEE_ID = 1L;
     private static final TraineeDto traineeDto = TraineeDto.builder().id(1).build();
     private static final UserCredentials credentials = new UserCredentials("Trainee", "password");
 
     @Test
     void testGetTrainee() {
-        when(traineeService.getById(traineeId)).thenReturn(traineeDto);
+        when(traineeService.getById(TRAINEE_ID)).thenReturn(traineeDto);
 
-        ResponseEntity<TraineeDto> response = traineeController.get(traineeId);
+        ResponseEntity<TraineeDto> response = traineeController.get(TRAINEE_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -45,9 +45,9 @@ class TraineeControllerTest {
 
     @Test
     void testGetTraineeNoResponse() {
-        when(traineeService.getById(traineeId)).thenThrow(new RuntimeException());
+        when(traineeService.getById(TRAINEE_ID)).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> traineeController.get(traineeId));
+        assertThrows(RuntimeException.class, () -> traineeController.get(TRAINEE_ID));
     }
 
     @Test
@@ -72,7 +72,7 @@ class TraineeControllerTest {
     void testUpdateTrainee() {
         when(traineeService.update(traineeDto)).thenReturn(traineeDto);
 
-        ResponseEntity<TraineeDto> response = traineeController.update(traineeId, traineeDto);
+        ResponseEntity<TraineeDto> response = traineeController.update(TRAINEE_ID, traineeDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -83,43 +83,43 @@ class TraineeControllerTest {
     void testUpdateTraineeNoResponse() {
         when(traineeService.update(traineeDto)).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class,() -> traineeController.update(traineeId, traineeDto));
+        assertThrows(RuntimeException.class,() -> traineeController.update(TRAINEE_ID, traineeDto));
     }
 
     @Test
     void testChangeActiveStatus() {
-        ResponseEntity<Void> response = traineeController.changeActiveStatus(traineeId);
+        ResponseEntity<Void> response = traineeController.changeActiveStatus(TRAINEE_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void testChangeActiveStatusNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).changeStatus(traineeId);
+        doThrow(new RuntimeException()).when(traineeService).changeStatus(TRAINEE_ID);
 
-        assertThrows(RuntimeException.class, () -> traineeController.changeActiveStatus(traineeId));
+        assertThrows(RuntimeException.class, () -> traineeController.changeActiveStatus(TRAINEE_ID));
     }
 
     @Test
     void testDeleteTrainee() {
-        ResponseEntity<Void> response = traineeController.delete(traineeId);
+        ResponseEntity<Void> response = traineeController.delete(TRAINEE_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void testDeleteTraineeNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).deleteById(traineeId);
+        doThrow(new RuntimeException()).when(traineeService).deleteById(TRAINEE_ID);
 
-        assertThrows(RuntimeException.class, () -> traineeController.delete(traineeId));
+        assertThrows(RuntimeException.class, () -> traineeController.delete(TRAINEE_ID));
     }
 
     @Test
     void testGetUnassignedTrainers() {
         List<TrainerDto> trainers = List.of(TrainerDto.builder().id(1).build());
-        when(traineeService.getTrainersNotAssignedToTrainee(traineeId)).thenReturn(trainers);
+        when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_ID)).thenReturn(trainers);
 
-        ResponseEntity<List<TrainerDto>> response = traineeController.getTrainersNotAssignedToTrainee(traineeId);
+        ResponseEntity<List<TrainerDto>> response = traineeController.getTrainersNotAssignedToTrainee(TRAINEE_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -128,22 +128,22 @@ class TraineeControllerTest {
 
     @Test
     void testGetUnassignedTrainersNoResponse() {
-        when(traineeService.getTrainersNotAssignedToTrainee(traineeId)).thenThrow(new RuntimeException());
+        when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_ID)).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> traineeController.getTrainersNotAssignedToTrainee(traineeId));
+        assertThrows(RuntimeException.class, () -> traineeController.getTrainersNotAssignedToTrainee(TRAINEE_ID));
     }
 
     @Test
     void testUpdateTraineeTrainers() {
-        ResponseEntity<Void> response = traineeController.updateTraineeTrainers(traineeId, 2L);
+        ResponseEntity<Void> response = traineeController.updateTraineeTrainers(TRAINEE_ID, 2L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void testUpdateTraineeTrainersNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).updateTraineeTrainers(traineeId, 2L);
+        doThrow(new RuntimeException()).when(traineeService).updateTraineeTrainers(TRAINEE_ID, 2L);
 
-        assertThrows(RuntimeException.class, () -> traineeController.updateTraineeTrainers(traineeId, 2L));
+        assertThrows(RuntimeException.class, () -> traineeController.updateTraineeTrainers(TRAINEE_ID, 2L));
     }
 }

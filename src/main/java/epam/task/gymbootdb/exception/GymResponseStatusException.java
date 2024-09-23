@@ -13,7 +13,7 @@ public abstract class GymResponseStatusException extends ResponseStatusException
     private final String transactionId;
     private final String errorId;
 
-    public GymResponseStatusException(HttpStatus status, String message) {
+    protected GymResponseStatusException(HttpStatus status, String message) {
         super(status, message);
         transactionId = MDC.get("transactionId");
         errorId = UUID.randomUUID().toString();
