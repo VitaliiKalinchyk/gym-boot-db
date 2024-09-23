@@ -16,6 +16,9 @@ spring:
     enabled: true
     change-log: classpath:/db/changelog/changelog.yml
 
+server:
+  port: ${SERVER_PORT}
+
 password:
   length: ${PASSWORD_LENGTH}
 bcrypt:

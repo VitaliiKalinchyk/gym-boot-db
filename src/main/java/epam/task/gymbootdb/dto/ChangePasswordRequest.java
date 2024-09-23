@@ -2,7 +2,7 @@ package epam.task.gymbootdb.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +20,7 @@ public class ChangePasswordRequest {
     UserCredentials userCredentials;
 
     @NotNull(message = "New password is required")
-    @Size(min = 8, max = 16, message = "New password must be between 8 and 16 characters")
+    @Pattern(regexp = "[a-zA-Z0-9]{8,16}",
+            message = "New password must be between 8 and 16 characters and contain only letters or digits")
     private String newPassword;
 }

@@ -12,14 +12,14 @@ class NameGeneratorImplTest {
     private final NameGenerator nameGenerator = new NameGeneratorImpl();
 
     @Test
-    public void testGenerateUsernameWithoutExistingUsernames() {
+    void testGenerateUsernameWithoutExistingUsernames() {
         String generatedUsername = nameGenerator.generateUsername("John", "Doe");
 
         assertEquals("John.Doe", generatedUsername);
     }
 
     @Test
-    public void testGenerateUsernameWithExistingUsernames() {
+    void testGenerateUsernameWithExistingUsernames() {
         List<String> existingUsernames = List.of("John.Doe1", "John.Doe2");
 
         String generatedUsername = nameGenerator.generateUsername("John.Doe", existingUsernames);
@@ -28,7 +28,7 @@ class NameGeneratorImplTest {
     }
 
     @Test
-    public void testGenerateUsernameWithSimilarUsernames() {
+    void testGenerateUsernameWithSimilarUsernames() {
         List<String> existingUsernames = List.of("John.Doe1", "John.Doe2", "john.doe7", "John.Doer5", "aJohn.Doer9");
 
         String generatedUsername = nameGenerator.generateUsername("John.Doe", existingUsernames);
@@ -37,7 +37,7 @@ class NameGeneratorImplTest {
     }
 
     @Test
-    public void testGenerateUsernameWithNoExistingIndexes() {
+    void testGenerateUsernameWithNoExistingIndexes() {
         List<String> existingUsernames = List.of("John.Doe");
 
         String generatedUsername = nameGenerator.generateUsername("John.Doe", existingUsernames);

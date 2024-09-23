@@ -135,24 +135,24 @@ class TraineeServiceImplTest {
     void testUpdateTraineeNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.update(traineeRequest));
 
-        assertEquals("Trainee with id 0 was not found", e.getMessage());
+        assertEquals("Trainee with id 0 was not found", e.getReason());
     }
 
     @Test
     void testSetActiveStatus() {
+        traineeEntity.getUser().setActive(false);
         when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
 
-        traineeService.setActiveStatus(1L, true);
+        traineeService.changeStatus(1L);
 
         assertTrue(traineeEntity.getUser().isActive(), "User should be active");
     }
 
     @Test
     void testSetActiveStatusNoSuchTrainee() {
-        TraineeException e = assertThrows(TraineeException.class,
-                () -> traineeService.setActiveStatus(1L, true));
+        TraineeException e = assertThrows(TraineeException.class, () -> traineeService.changeStatus(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -172,7 +172,7 @@ class TraineeServiceImplTest {
     void testGetByIdNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.getById(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -186,11 +186,11 @@ class TraineeServiceImplTest {
     @Test
     void testDeleteByIdNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.deleteById(1L));
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
-    public void testUpdateTraineeTrainers() {
+    void testUpdateTraineeTrainers() {
         traineeEntity.setTrainers(new ArrayList<>());
         Trainer trainer = new Trainer();
 
@@ -204,7 +204,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainersTrainerAlreadyInList () {
+    void testUpdateTraineeTrainersTrainerAlreadyInList () {
         Trainer trainer = new Trainer();
         traineeEntity.setTrainers(List.of(trainer));
 
@@ -218,19 +218,19 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    public void testUpdateTraineeTrainersNoSuchTrainee() {
+    void testUpdateTraineeTrainersNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.updateTraineeTrainers(1L, 2L));
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 
     @Test
-    public void testUpdateTraineeTrainersNoSuchTrainer() {
+    void testUpdateTraineeTrainersNoSuchTrainer() {
         when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
 
         TrainerException e = assertThrows(TrainerException.class,
                 () -> traineeService.updateTraineeTrainers(1L, 2L));
-        assertEquals("Trainer with id 2 was not found", e.getMessage());
+        assertEquals("Trainer with id 2 was not found", e.getReason());
     }
 
 
@@ -253,6 +253,6 @@ class TraineeServiceImplTest {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.getTrainersNotAssignedToTrainee(1L));
 
-        assertEquals("Trainee with id 1 was not found", e.getMessage());
+        assertEquals("Trainee with id 1 was not found", e.getReason());
     }
 }

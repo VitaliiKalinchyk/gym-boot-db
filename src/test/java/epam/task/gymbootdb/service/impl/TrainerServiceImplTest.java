@@ -125,24 +125,24 @@ class TrainerServiceImplTest {
     void testUpdateTrainerNoSuchTrainer() {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
-        assertEquals("Trainer with id 0 was not found", e.getMessage());
+        assertEquals("Trainer with id 0 was not found", e.getReason());
     }
 
     @Test
     void testSetActiveStatus() {
+        trainerEntity.getUser().setActive(false);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainerEntity));
 
-        trainerService.setActiveStatus(1L, true);
+        trainerService.setActiveStatus(1L);
 
         assertTrue(trainerEntity.getUser().isActive(), "User should be active");
     }
 
     @Test
     void testSetActiveStatusNoSuchTrainer() {
-        TrainerException e = assertThrows(TrainerException.class,
-                () -> trainerService.setActiveStatus(1, true));
+        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.setActiveStatus(1));
 
-        assertEquals("Trainer with id 1 was not found", e.getMessage());
+        assertEquals("Trainer with id 1 was not found", e.getReason());
     }
 
     @Test
@@ -162,6 +162,6 @@ class TrainerServiceImplTest {
     void testGetByIdNoSuchTrainer() {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getById(1L));
 
-        assertEquals("Trainer with id 1 was not found", e.getMessage());
+        assertEquals("Trainer with id 1 was not found", e.getReason());
     }
 }

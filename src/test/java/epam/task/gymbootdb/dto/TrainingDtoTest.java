@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TrainingDtoTest {
+class TrainingDtoTest {
 
     public static final String NAME = "Yoga Class";
     public static final LocalDate DATE = LocalDate.now().plusDays(1);
@@ -30,76 +30,85 @@ public class TrainingDtoTest {
     }
 
     @Test
-    public void testValidTrainingCreateRequest() {
+    void testValidTrainingCreateRequest() {
         assertNoViolations(createRequest(NAME, DATE, DURATION, ID, ID, ID));
     }
 
     @Test
-    public void testNameIsNull() {
+    void testNameIsNull() {
         TrainingDto request = createRequest(null, DATE, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Name cannot be null");
     }
 
     @Test
-    public void testNameTooShort() {
+    void testNameTooShort() {
         TrainingDto request = createRequest("A", DATE, DURATION, ID, ID, ID);
 
-        assertSingleViolation(request, "Name must be between 2 and 45 characters");
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
     }
 
     @Test
-    public void testNameTooLong() {
+    void testNameTooLong() {
         TrainingDto request = createRequest("A".repeat(46), DATE, DURATION, ID, ID, ID);
 
-        assertSingleViolation(request, "Name must be between 2 and 45 characters");
-
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
     }
 
     @Test
-    public void testNullDate() {
+    void testNameWithSpecialCharacters() {
+        TrainingDto request = createRequest(NAME +"_", DATE, DURATION, ID, ID, ID);
+
+        assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
+                "contain only letters, digits, dots or white spaces");
+    }
+
+    @Test
+    void testNullDate() {
         TrainingDto request = createRequest(NAME, null, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Date is required");
     }
 
     @Test
-    public void testDateInPast() {
+    void testDateInPast() {
         TrainingDto request = createRequest(NAME, LocalDate.now().minusDays(1), DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Date must be in the future");
     }
 
     @Test
-    public void testDurationTooShort() {
+    void testDurationTooShort() {
         TrainingDto request = createRequest(NAME, DATE,9, ID, ID, ID);
 
         assertSingleViolation(request, "Duration must be greater than 10");
     }
 
     @Test
-    public void testDurationTooLong() {
+    void testDurationTooLong() {
         TrainingDto request = createRequest(NAME, DATE,301, ID, ID, ID);
 
         assertSingleViolation(request, "Duration mustn't be greater than 300");
     }
 
     @Test
-    public void testNoTrainer() {
+    void testNoTrainer() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, 0, ID, ID);
 
         assertSingleViolation(request, "Trainer is required");
     }
 
     @Test
-    public void testNoTrainee() {
+    void testNoTrainee() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, ID, 0, ID);
 
         assertSingleViolation(request, "Trainee is required");
     }
 
     @Test
-    public void testNoTrainingType() {
+    void testNoTrainingType() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, ID, ID, 0);
 
         assertSingleViolation(request, "TrainingType is required");

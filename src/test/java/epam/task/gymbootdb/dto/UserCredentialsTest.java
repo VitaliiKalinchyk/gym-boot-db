@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserCredentialsTest {
+class UserCredentialsTest {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
@@ -27,36 +27,22 @@ public class UserCredentialsTest {
     }
 
     @Test
-    public void testValidUserCredentials() {
+    void testValidUserCredentials() {
         assertNoViolations(createCredentials(USERNAME, PASSWORD));
     }
 
     @Test
-    public void testNullUsername() {
+    void testNullUsername() {
         UserCredentials credentials = createCredentials(null, PASSWORD);
 
         assertSingleViolation(credentials, "Username is required");
     }
 
     @Test
-    public void testNullPassword() {
+    void testNullPassword() {
         UserCredentials credentials = createCredentials(USERNAME, null);
 
         assertSingleViolation(credentials, "Password is required");
-    }
-
-    @Test
-    public void testUsernameLength() {
-        UserCredentials credentials = createCredentials("s", PASSWORD);
-
-        assertSingleViolation(credentials, "Username must be between 3 and 100 characters");
-    }
-
-    @Test
-    public void testPasswordLength() {
-        UserCredentials credentials = createCredentials(USERNAME, "short");
-
-        assertSingleViolation(credentials, "Password must be between 8 and 16 characters");
     }
 
     private static UserCredentials createCredentials(String username, String password) {

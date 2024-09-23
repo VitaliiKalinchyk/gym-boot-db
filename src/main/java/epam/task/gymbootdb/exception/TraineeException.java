@@ -1,12 +1,9 @@
 package epam.task.gymbootdb.exception;
 
-public class TraineeException extends RuntimeException{
+import org.springframework.http.HttpStatus;
 
+public class TraineeException extends GymResponseStatusException {
     public TraineeException(long id) {
-        super("Trainee with id " + id + " was not found");
-    }
-
-    public TraineeException(String username) {
-        super("Trainee with username " + username + " was not found");
+        super(HttpStatus.NOT_FOUND, "Trainee with id " + id + " was not found");
     }
 }

@@ -1,8 +1,9 @@
 package epam.task.gymbootdb.exception;
 
-public class PasswordException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
+public class PasswordException extends GymResponseStatusException {
     public PasswordException() {
-        super("Wrong password");
+        super(HttpStatus.UNAUTHORIZED, "Wrong password");
     }
 }
