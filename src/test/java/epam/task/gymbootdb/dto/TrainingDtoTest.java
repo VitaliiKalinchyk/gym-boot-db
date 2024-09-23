@@ -55,7 +55,6 @@ class TrainingDtoTest {
 
         assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
                 "contain only letters, digits, dots or white spaces");
-
     }
 
     @Test

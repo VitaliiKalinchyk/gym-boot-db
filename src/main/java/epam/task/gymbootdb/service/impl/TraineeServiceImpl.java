@@ -112,6 +112,7 @@ public class TraineeServiceImpl implements TraineeService {
         if (!traineeRepository.existsById(id)) throw new TraineeException(id);
         log.debug("Trainee (id = {}) got unassigned trainers. Service layer. TransactionId: {}",
                 id, MDC.get(TRANSACTION_ID));
+      
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
     }
 

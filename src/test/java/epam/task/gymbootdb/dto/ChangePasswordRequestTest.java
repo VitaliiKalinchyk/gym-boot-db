@@ -27,6 +27,7 @@ class ChangePasswordRequestTest {
 
     @Test
     void testValidChangePasswordRequest() {
+
         assertNoViolations(createRequest(getValidUserCredentials(), NEW_PASSWORD));
     }
 
@@ -58,6 +59,7 @@ class ChangePasswordRequestTest {
         assertSingleViolation(request,
                 "New password must be between 8 and 16 characters and contain only letters or digits");
     }
+
 
     @Test
     void testNewPasswordTooLong() {

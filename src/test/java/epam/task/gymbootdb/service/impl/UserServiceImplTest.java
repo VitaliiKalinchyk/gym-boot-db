@@ -47,7 +47,6 @@ class UserServiceImplTest {
     void testMatchCredentialsNoUser() {
         UserException e = assertThrows(UserException.class, () -> userService.matchCredentials(userCredentials));
         assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getReason());
-    }
 
     @Test
     void testMatchCredentialsIncorrectPassword() {
