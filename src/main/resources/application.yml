@@ -14,7 +14,7 @@ spring:
         format_sql: true
   liquibase:
     enabled: true
-    change-log: classpath:/db/changelog/changelog.yml
+    change-log: classpath:/db/changelog/master-changelog.yml
 
 server:
   port: ${SERVER_PORT}

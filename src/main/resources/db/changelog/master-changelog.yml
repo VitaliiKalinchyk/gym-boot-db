@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: FillDatabaseWithTables
+      author: vitalii.kalinchyk
+      changes:
+        - sqlFile:
+            path: db/changelog/database-creation.sql
