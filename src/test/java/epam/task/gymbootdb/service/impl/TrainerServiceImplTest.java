@@ -6,7 +6,9 @@ import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TrainerException;
+import epam.task.gymbootdb.exception.TrainingTypeException;
 import epam.task.gymbootdb.repository.TrainerRepository;
+import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
@@ -34,6 +36,8 @@ class TrainerServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private TrainingTypeRepository trainingTypeRepository;
+    @Mock
     private TrainerMapper trainerMapper;
     @Mock
     private TraineeMapper traineeMapper;
@@ -55,7 +59,8 @@ class TrainerServiceImplTest {
     @BeforeEach
     void setUp() {
         user = User.builder().firstName("Joe").lastName("Doe").build();
-        trainerRequest = new TrainerDto();
+        TrainingTypeDto trainingType = TrainingTypeDto.builder().id(1).build();
+        trainerRequest = TrainerDto.builder().trainingType(trainingType).build();
         trainerEntity = new Trainer();
         trainerEntity.setUser(user);
         trainerResponse = new TrainerDto();
@@ -63,6 +68,7 @@ class TrainerServiceImplTest {
 
     @Test
     void testCreateProfile() {
+        when(trainingTypeRepository.existsById(anyLong())).thenReturn(true);
         when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
         when(passwordGenerator.generatePassword()).thenReturn("testPassword");
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");
@@ -79,7 +85,17 @@ class TrainerServiceImplTest {
     }
 
     @Test
+    void testCreateProfileNoSuchTrainingType() {
+        when(trainingTypeRepository.existsById(anyLong())).thenReturn(false);
+
+        TrainingTypeException e = assertThrows(TrainingTypeException.class,
+                () -> trainerService.createProfile(trainerRequest));
+        assertEquals("TrainingType with id 1 does not exist", e.getReason());
+    }
+
+    @Test
     void testCreateProfileUsernameExists() {
+        when(trainingTypeRepository.existsById(anyLong())).thenReturn(true);
         when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
         when(passwordGenerator.generatePassword()).thenReturn("testPassword");
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");

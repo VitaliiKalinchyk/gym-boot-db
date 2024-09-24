@@ -8,7 +8,9 @@ import epam.task.gymbootdb.dto.mapper.TrainerMapper;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TrainerException;
+import epam.task.gymbootdb.exception.TrainingTypeException;
 import epam.task.gymbootdb.repository.TrainerRepository;
+import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.service.TrainerService;
 import epam.task.gymbootdb.utils.NameGenerator;
@@ -30,6 +32,7 @@ public class TrainerServiceImpl implements TrainerService {
     public static final String TRANSACTION_ID = "transactionId";
 
     private final TrainerRepository trainerRepository;
+    private final TrainingTypeRepository trainingTypeRepository;
     private final UserRepository userRepository;
     private final TrainerMapper trainerMapper;
     private final TraineeMapper traineeMapper;
@@ -40,6 +43,8 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public UserCredentials createProfile(TrainerDto request) {
+        checkIfTrainingTypeExists(request);
+
         Trainer entity = trainerMapper.toEntity(request);
         String password = passwordGenerator.generatePassword();
         User user = entity.getUser();
@@ -90,6 +95,11 @@ public class TrainerServiceImpl implements TrainerService {
                 id, MDC.get(TRANSACTION_ID));
 
         return dto;
+    }
+
+    private void checkIfTrainingTypeExists(TrainerDto request) {
+        if (!trainingTypeRepository.existsById(request.getTrainingType().getId()))
+            throw new TrainingTypeException(request.getTrainingType().getId());
     }
 
     private String generateUsername(User user) {
