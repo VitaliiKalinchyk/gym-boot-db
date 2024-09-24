@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: FillDatabaseWithTables
+      author: vitalii.kalinchyk
+      changes:
+        - sqlFile:
+            path: db/changelog/mysql/database-creation.sql
+
+  - changeSet:
+      id: FillWithTestData
+      author: vitalii.kalinchyk
+      changes:
+        - sqlFile:
+            path: db/changelog/mysql/test-data.sql

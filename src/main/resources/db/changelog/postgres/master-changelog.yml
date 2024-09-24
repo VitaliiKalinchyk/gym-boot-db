@@ -4,4 +4,4 @@ databaseChangeLog:
       author: vitalii.kalinchyk
       changes:
         - sqlFile:
-            path: db/changelog/database-creation.sql
+            path: db/changelog/postgres/database-creation.sql
