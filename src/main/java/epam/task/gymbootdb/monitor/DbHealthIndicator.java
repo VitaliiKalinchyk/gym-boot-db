@@ -1,6 +1,5 @@
 package epam.task.gymbootdb.monitor;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -8,13 +7,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class DbHealthIndicator implements HealthIndicator {
 
-    @Value("${db}")
-    private String db;
+    private final String db;
 
     private final JdbcTemplate jdbcTemplate;
+
+    public DbHealthIndicator(@Value("${db}") String db, JdbcTemplate jdbcTemplate) {
+        this.db = db;
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public Health health() {
