@@ -3,7 +3,7 @@ CREATE TABLE training_type (
     name VARCHAR(45) NOT NULL UNIQUE
 );
 
-CREATE TABLE "user" (
+CREATE TABLE users (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     first_name VARCHAR(45) NOT NULL,
     last_name VARCHAR(45) NOT NULL,
@@ -12,21 +12,21 @@ CREATE TABLE "user" (
     is_active BOOLEAN NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_username ON "user" (username);
+CREATE UNIQUE INDEX idx_username ON users (username);
 
 CREATE TABLE trainee (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     birthday DATE,
     address VARCHAR(120),
     user_id BIGINT NOT NULL UNIQUE,
-    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE trainer (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT NOT NULL UNIQUE,
     training_type_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (training_type_id) REFERENCES training_type(id)
 );
 

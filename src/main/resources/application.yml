@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "optional:file:.env[.properties]"
   profiles:
     default: dev
   datasource:
@@ -19,20 +21,75 @@ password:
   length: ${PASSWORD_LENGTH}
 bcrypt:
   strength: ${BCRYPT_STRENGTH}
+db: ${DB}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: ${ENDPOINTS}
+  endpoint:
+    health:
+      enabled: ${HEALTH_ENABLED}
+      show-details: ${HEALTH_DETAILS}
+    info:
+      enabled: ${INFO_ENABLED}
+    prometheus:
+      enabled: ${PROMETHEUS_ENABLED}
+    loggers:
+      enabled: ${LOGGERS_ENABLED}
+    mappings:
+      enabled: ${MAPPINGS_ENABLED}
+    env:
+      enabled: ${ENV_ENABLED}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  info:
+    env:
+      enabled: true
+info:
+  app:
+    name: @project.name@
+    description: @project.description@
+    version: @project.version@
+    java:
+      version: @java.version@
+    build-timestamp: @maven.build.timestamp@
+  build:
+    description: ${VERSION}
 ---
 spring:
   config:
     activate:
       on-profile: dev
     import: "optional:file:.env-dev[.properties]"
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+logging:
+  level:
+    epam.task.gymbootdb: DEBUG
 ---
 spring:
   config:
     activate:
       on-profile: prod
     import: "optional:file:.env-prod[.properties]"
+
+server:
+  error:
+    include-message: always
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+    import: "optional:file:.env-test[.properties]"
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
