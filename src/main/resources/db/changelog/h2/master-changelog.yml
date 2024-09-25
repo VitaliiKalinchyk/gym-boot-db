@@ -4,4 +4,4 @@ databaseChangeLog:
       author: vitalii.kalinchyk
       changes:
         - sqlFile:
-            path: db/changelog/mysql/database-creation.sql
+            path: db/changelog/h2/database-creation.sql
