@@ -14,6 +14,19 @@ CREATE TABLE users (
 
 CREATE UNIQUE INDEX idx_username ON users (username);
 
+CREATE TABLE role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE users_has_role (
+    users_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (users_id, role_id),
+    FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE trainee (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     birthday DATE,
@@ -50,6 +63,9 @@ CREATE TABLE trainee_has_trainer (
     FOREIGN KEY (trainee_id) REFERENCES trainee(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (trainer_id) REFERENCES trainer(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+INSERT INTO role (name)
+VALUES ('ROLE_TRAINEE'), ('ROLE_TRAINER'), ('ROLE_ADMIN');
 
 INSERT INTO training_type (name)
 VALUES ('FITNESS'), ('YOGA'), ('ZUMBA'), ('STRETCHING'), ('RESISTANCE');
