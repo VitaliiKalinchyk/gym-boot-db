@@ -16,12 +16,14 @@ public class UserControllerImpl implements UserController {
 
     private final UserService userService;
 
+    @Override
     public ResponseEntity<Void> login(UserCredentials userCredentials){
         userService.matchCredentials(userCredentials);
 
         return ResponseEntity.ok().build();
     }
 
+    @Override
     public ResponseEntity<Void> changePassword(ChangePasswordRequest request) {
         userService.changePassword(request);
 

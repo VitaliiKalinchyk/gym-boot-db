@@ -17,18 +17,21 @@ public class TrainerControllerImpl implements TrainerController {
 
     private final TrainerService trainerService;
 
+    @Override
     public ResponseEntity<TrainerDto> get(long id) {
         TrainerDto trainerDto = trainerService.getById(id);
 
         return ResponseEntity.ok(trainerDto);
     }
 
+    @Override
     public ResponseEntity<UserCredentials> create(TrainerDto trainerDto) {
         UserCredentials profile = trainerService.createProfile(trainerDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(profile);
     }
 
+    @Override
     public ResponseEntity<TrainerDto> update(long id,TrainerDto trainerDto){
         trainerDto.setId(id);
         TrainerDto update = trainerService.update(trainerDto);
@@ -36,6 +39,7 @@ public class TrainerControllerImpl implements TrainerController {
         return ResponseEntity.ok(update);
     }
 
+    @Override
     public ResponseEntity<Void> changeActiveStatus(long id){
         trainerService.setActiveStatus(id);
 

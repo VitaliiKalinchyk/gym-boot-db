@@ -17,6 +17,7 @@ public class TrainingTypeControllerImpl implements TrainingTypeController {
 
     private final TrainingTypeService trainingTypeService;
 
+    @Override
     public ResponseEntity<List<TrainingTypeDto>> getAll() {
         return ResponseEntity.ok(trainingTypeService.getAll());
     }

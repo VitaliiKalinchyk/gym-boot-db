@@ -21,12 +21,14 @@ public class TrainingControllerImpl implements TrainingController {
 
     private final TrainingService trainingService;
 
+    @Override
     public ResponseEntity<Void> create(TrainingDto trainingDto) {
         trainingService.create(trainingDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     public ResponseEntity<List<TrainingDto>> getTraineeTrainings(long id, LocalDate fromDate, LocalDate toDate,
                                                                  Long trainerId, Long trainingTypeId) {
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder()
@@ -41,6 +43,7 @@ public class TrainingControllerImpl implements TrainingController {
         return ResponseEntity.ok(trainings);
     }
 
+    @Override
     public ResponseEntity<List<TrainingDto>> getTrainerTrainings(long id, LocalDate fromDate, LocalDate toDate,
                                                                  Long trainerId) {
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder()
