@@ -3,6 +3,9 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/.env-dev
+/.env-prod
+/.env-test
 /.env
 
 ### IntelliJ IDEA ###
@@ -10,3 +13,4 @@ target/
 *.iws
 *.iml
 *.ipr
+
