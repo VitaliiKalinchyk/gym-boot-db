@@ -7,22 +7,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/trainers")
 public interface TrainerController {
 
-    @Operation(summary = "Get trainer by ID",
-            description = "Fetches the trainer's details based on the provided ID.")
+    @Operation(summary = "Get trainer by username",
+            description = "Fetches the trainer's details based on the provided username.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found")
     })
-    @GetMapping("/{id}")
-    ResponseEntity<TrainerDto> get(@PathVariable long id);
+    ResponseEntity<TrainerDto> get(String username);
 
     @Operation(summary = "Create new trainer",
             description = "Creates a new trainer profile and returns the associated user credentials.")
@@ -30,16 +25,14 @@ public interface TrainerController {
             @ApiResponse(responseCode = "201", description = "Trainer created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid trainer data")
     })
-    @PostMapping
-    ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerDto trainerDto);
+    ResponseEntity<UserCredentials> create(TrainerDto trainerDto);
 
-    @Operation(summary = "Update trainer by ID",
-            description = "Updates the details of an existing trainer based on the provided ID.")
+    @Operation(summary = "Update trainer",
+            description = "Updates the details of an existing trainer.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer updated successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found"),
             @ApiResponse(responseCode = "400", description = "Invalid trainer data")
     })
-    @PutMapping("/{id}")
-    ResponseEntity<TrainerDto> update(@PathVariable long id, @Valid @RequestBody TrainerDto trainerDto);
+    ResponseEntity<TrainerDto> update(TrainerDto trainerDto);
 }

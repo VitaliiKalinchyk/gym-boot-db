@@ -2,7 +2,6 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.entity.Role;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.UserException;
@@ -15,12 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -50,7 +47,6 @@ class UserServiceImplTest {
      void testLoadUserByUsername() {
          user.setUsername("Joe");
          user.setPassword("pass");
-         user.setRoles(Set.of(Role.builder().name("ROLE_ADMIN").build()));
 
          when(userRepository.findByUsername("Joe")).thenReturn(Optional.of(user));
 
@@ -58,7 +54,6 @@ class UserServiceImplTest {
 
          assertEquals(user.getUsername(), joe.getUsername());
          assertEquals(user.getPassword(), joe.getPassword());
-         assertTrue(joe.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
      }
 
      @Test

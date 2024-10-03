@@ -14,19 +14,6 @@ CREATE TABLE users (
 
 CREATE UNIQUE INDEX idx_username ON users (username);
 
-CREATE TABLE role (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL UNIQUE
-);
-
-CREATE TABLE users_has_role (
-    users_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (users_id, role_id),
-    FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 CREATE TABLE trainee (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     birthday DATE,
@@ -64,28 +51,15 @@ CREATE TABLE trainee_has_trainer (
     FOREIGN KEY (trainer_id) REFERENCES trainer(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO role (name)
-VALUES ('ROLE_TRAINEE'), ('ROLE_TRAINER'), ('ROLE_ADMIN');
-
 INSERT INTO training_type (name)
 VALUES ('FITNESS'), ('YOGA'), ('ZUMBA');
 
 INSERT INTO users (first_name, last_name, username, password, is_active) VALUES
-    ('admin', 'admin', 'admin', 'admin', 1),
     ('Joe', 'Doe', 'Joe.Doe', 'password123', 1),
     ('Jane', 'Doe', 'Jane.Doe', 'password456', 1),
     ('Joe', 'Doe', 'Joe.Doe1', 'password123', 1),
     ('Jane', 'Doe', 'Jane.Doe1', 'password456', 0),
     ('Alex', 'Johnson', 'Alex.Johnson', 'password789', 0);
-
-INSERT INTO users_has_role(users_id, role_id) VALUES
-    ((SELECT u.id FROM users u WHERE username = 'admin'), (SELECT r.id FROM role r WHERE name = 'ROLE_ADMIN')),
-    ((SELECT u.id FROM users u WHERE username = 'Joe.Doe'), (SELECT r.id FROM role r WHERE name = 'ROLE_TRAINEE')),
-    ((SELECT u.id FROM users u WHERE username = 'Jane.Doe'), (SELECT r.id FROM role r WHERE name = 'ROLE_TRAINEE')),
-    ((SELECT u.id FROM users u WHERE username = 'Joe.Doe1'), (SELECT r.id FROM role r WHERE name = 'ROLE_TRAINER')),
-    ((SELECT u.id FROM users u WHERE username = 'Jane.Doe1'), (SELECT r.id FROM role r WHERE name = 'ROLE_TRAINER')),
-    ((SELECT u.id FROM users u WHERE username = 'Alex.Johnson'), (SELECT r.id FROM role r WHERE name = 'ROLE_TRAINEE'));
-
 
 INSERT INTO trainee (birthday, address, user_id) VALUES
     ('1990-01-01', '123 Main St', (SELECT id FROM users WHERE username = 'Joe.Doe')),

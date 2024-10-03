@@ -5,37 +5,64 @@ import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.TrainerService;
 
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.MDC;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/trainers")
+@Slf4j
 public class TrainerControllerImpl implements TrainerController {
+
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainerService trainerService;
 
     @Override
-    public ResponseEntity<TrainerDto> get(long id) {
-        TrainerDto trainerDto = trainerService.getById(id);
+    @GetMapping("/{username}")
+    public ResponseEntity<TrainerDto> get(@PathVariable String username) {
+        TrainerDto trainerDto = trainerService.getByUsername(username);
+        log.debug("Trainer (username = {}) was fetched. Controller layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return ResponseEntity.ok(trainerDto);
     }
 
     @Override
-    public ResponseEntity<UserCredentials> create(TrainerDto trainerDto) {
+    @PostMapping
+    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerDto trainerDto) {
         UserCredentials profile = trainerService.createProfile(trainerDto);
+        log.debug("Trainer (username = {}) was created. Controller layer. TransactionId: {}",
+                profile.getUsername(), MDC.get(TRANSACTION_ID));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(profile);
     }
 
     @Override
-    public ResponseEntity<TrainerDto> update(long id,TrainerDto trainerDto){
-        trainerDto.setId(id);
+    @PutMapping
+    public ResponseEntity<TrainerDto> update(@Valid @RequestBody TrainerDto trainerDto){
+        String username = getUsername();
+        trainerDto.getUser().setUsername(username);
+
         TrainerDto update = trainerService.update(trainerDto);
+        log.debug("Trainer (username = {}) was updated. Controller layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return ResponseEntity.ok(update);
+    }
+
+    private static String getUsername() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
     }
 }

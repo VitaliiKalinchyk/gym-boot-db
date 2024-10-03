@@ -17,9 +17,10 @@ import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.MDC;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TrainerServiceImpl implements TrainerService {
 
-    public static final String TRANSACTION_ID = "transactionId";
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
@@ -61,39 +62,41 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public TrainerDto update(TrainerDto request) {
-        Trainer entity = trainerRepository.findById(request.getId())
-                .orElseThrow(() -> new TrainerException(request.getId()));
+        String username = request.getUser().getUsername();
+        Trainer entity = trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TrainerException(username));
         updateTrainerFields(request.getUser(), entity.getUser());
 
         TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        log.debug("Trainer (id = {}) was updated. Service layer. TransactionId: {}",
-                entity.getId(), MDC.get(TRANSACTION_ID));
+        log.debug("Trainer (username = {}) was updated. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TrainerDto getById(long id) {
-        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
+    public TrainerDto getByUsername(String username) {
+        Trainer entity = trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TrainerException(username));
 
         TrainerDto dto = trainerMapper.toDto(entity);
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        log.debug("Trainer (id = {}) was gotten. Service layer. TransactionId: {}",
-                id, MDC.get(TRANSACTION_ID));
+        log.debug("Trainer (username = {}) was fetched. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return dto;
     }
 
     private void checkIfTrainingTypeExists(TrainerDto request) {
-        if (!trainingTypeRepository.existsById(request.getTrainingType().getId()))
+        if (!trainingTypeRepository.existsById(request.getTrainingType().getId())) {
             throw new TrainingTypeException(request.getTrainingType().getId());
+        }
     }
 
     private String generateUsername(User user) {
         String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
-
         return userRepository.existsByUsername(username) ?
                 nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
                 username;
@@ -105,7 +108,7 @@ public class TrainerServiceImpl implements TrainerService {
         user.setActive(true);
     }
 
-    private static void updateTrainerFields(UserDto userDto, User user) {
+    private void updateTrainerFields(UserDto userDto, User user) {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setActive(userDto.isActive());

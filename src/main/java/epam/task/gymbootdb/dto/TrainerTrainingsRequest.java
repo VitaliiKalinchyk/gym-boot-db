@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class TrainerTrainingsRequest {
-    private long trainerId;
+    private String username;
     private LocalDate fromDate;
     private LocalDate toDate;
     private Long traineeId;

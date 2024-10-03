@@ -28,7 +28,7 @@ class GymExceptionHandlerTest {
 
     @Test
     void testGymResponseStatusException() {
-        TraineeException e = new TraineeException(1);
+        TraineeException e = new TraineeException("username");
 
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleGymResponseStatusException(e);

@@ -18,9 +18,10 @@ import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.MDC;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ import java.util.List;
 @Slf4j
 public class TraineeServiceImpl implements TraineeService {
 
-    public static final String TRANSACTION_ID = "transactionId";
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
@@ -62,60 +63,64 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public TraineeDto update(TraineeDto request) {
-        Trainee entity = traineeRepository.findById(request.getId())
-                .orElseThrow(() -> new TraineeException(request.getId()));
+        String username = request.getUser().getUsername();
+        Trainee entity = traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TraineeException(username));
         updateTraineeFields(request, entity);
 
         TraineeDto dto = traineeMapper.toDto(traineeRepository.save(entity));
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        log.debug("Trainee (id = {}) was updated. Service layer. TransactionId: {}",
-                entity.getId(), MDC.get(TRANSACTION_ID));
+        log.debug("Trainee (username = {}) was updated. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TraineeDto getById(long id) {
-        Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
+    public TraineeDto getByUsername(String username) {
+        Trainee entity = traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TraineeException(username));
 
         TraineeDto dto = traineeMapper.toDto(entity);
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        log.debug("Trainee (id = {}) was gotten. Service layer. TransactionId: {}",
-                id, MDC.get(TRANSACTION_ID));
+        log.debug("Trainee (username = {}) was fetched. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return dto;
     }
 
     @Override
-    public void deleteById(long id) {
-        Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
-        log.debug("Trainee (id = {}) was deleted. Service layer. TransactionId: {}",
+    public void deleteByUsername(String username) {
+        Trainee entity = traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TraineeException(username));
+        log.debug("Trainee (username = {}) was deleted. Service layer. TransactionId: {}",
                 entity.getId(), MDC.get(TRANSACTION_ID));
 
         traineeRepository.delete(entity);
     }
 
     @Override
-    public List<TrainerDto> getTrainersNotAssignedToTrainee(long id) {
-        if (!traineeRepository.existsById(id)) throw new TraineeException(id);
-        log.debug("Trainee (id = {}) got unassigned trainers. Service layer. TransactionId: {}",
-                id, MDC.get(TRANSACTION_ID));
+    public List<TrainerDto> getTrainersNotAssignedToTrainee(String username) {
+        if (!traineeRepository.existsByUserUsername(username)) throw new TraineeException(username);
+        log.debug("Trainee (username = {}) got unassigned trainers. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
       
-        return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(id));
+        return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(username));
     }
 
     @Override
     @Transactional
-    public void updateTraineeTrainers(long traineeId, long trainerId) {
-        Trainee trainee = traineeRepository.findById(traineeId).orElseThrow(() -> new TraineeException(traineeId));
+    public void updateTraineeTrainers(String username, long trainerId) {
+        Trainee trainee = traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new TraineeException(username));
         Trainer trainer = trainerRepository.findById(trainerId).orElseThrow(() -> new TrainerException(trainerId));
 
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
-            log.debug("Trainee (id = {}) added new trainer to it's list (id = {}). Service layer. TransactionId: {}",
-                    traineeId, trainerId, MDC.get(TRANSACTION_ID));
+            log.debug("Trainee (username = {}) added new trainer to it's list (id = {}). " +
+                            "Service layer. TransactionId: {}", username, trainerId, MDC.get(TRANSACTION_ID));
         }
     }
 

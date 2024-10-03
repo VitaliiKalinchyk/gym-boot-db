@@ -26,6 +26,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainingServiceImplTest {
 
+    public static final String USERNAME = "Joe";
+
     @Mock
     private TrainingRepository trainingRepository;
     @Mock
@@ -98,10 +100,10 @@ class TrainingServiceImplTest {
 
     @Test
     void testGetTraineeTrainings() {
-        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeId(1L).build();
+        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
-        when(traineeRepository.existsById(1L)).thenReturn(true);
-        when(trainingRepository.findTraineeTrainingsByOptionalParams(anyLong(), any(), any(), any(), any()))
+        when(traineeRepository.existsByUserUsername(anyString())).thenReturn(true);
+        when(trainingRepository.findTraineeTrainingsByOptionalParams(anyString(), any(), any(), any(), any()))
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
@@ -109,23 +111,23 @@ class TrainingServiceImplTest {
 
         assertNotNull(result, "Trainee trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");
-        assertEquals(trainingResponse, result.get(0), "Returned training should match the expected value");
+        assertEquals(trainingResponse, result.getFirst(), "Returned training should match the expected value");
     }
 
     @Test
     void testGetTraineeTrainingsNoSuchTrainee() {
-        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().traineeId(1L).build();
+        TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.getTraineeTrainings(request));
-        assertEquals("Trainee with id 1 was not found", e.getReason());
+        assertEquals("Trainee with username Joe was not found", e.getReason());
     }
 
     @Test
     void testGetTrainerTrainings() {
-        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerId(1L).build();
+        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
-        when(trainerRepository.existsById(1L)).thenReturn(true);
-        when(trainingRepository.findTrainerTrainingsByOptionalParams(anyLong(), any(), any(), any()))
+        when(trainerRepository.existsByUserUsername(anyString())).thenReturn(true);
+        when(trainingRepository.findTrainerTrainingsByOptionalParams(anyString(), any(), any(), any()))
                 .thenReturn(List.of(trainingEntity));
         when(trainingMapper.toDtoList(anyList())).thenReturn(List.of(trainingResponse));
 
@@ -133,15 +135,15 @@ class TrainingServiceImplTest {
 
         assertNotNull(result, "Trainer trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");
-        assertEquals(trainingResponse, result.get(0), "Returned training should match the expected value");
+        assertEquals(trainingResponse, result.getFirst(), "Returned training should match the expected value");
     }
 
     @Test
     void testGetTrainerTrainingsNoSuchTrainer() {
-        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().trainerId(1L).build();
+        TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.getTrainerTrainings(request));
-        assertEquals("Trainer with id 1 was not found", e.getReason());
+        assertEquals("Trainer with username Joe was not found", e.getReason());
     }
 
     private void buildRequest() {

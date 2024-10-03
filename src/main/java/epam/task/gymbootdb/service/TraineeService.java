@@ -13,11 +13,11 @@ public interface TraineeService {
 
     TraineeDto update(TraineeDto trainee);
 
-    TraineeDto getById(long id);
+    TraineeDto getByUsername(String username);
 
-    void deleteById(long id);
+    void deleteByUsername(String username);
 
-    List<TrainerDto> getTrainersNotAssignedToTrainee(long id);
+    List<TrainerDto> getTrainersNotAssignedToTrainee(String username);
 
-    void updateTraineeTrainers(long traineeId, long trainerId);
+    void updateTraineeTrainers(String username, long trainerId);
 }

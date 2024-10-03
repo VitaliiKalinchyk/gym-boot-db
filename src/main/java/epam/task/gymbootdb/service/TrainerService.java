@@ -9,5 +9,5 @@ public interface TrainerService {
 
     TrainerDto update(TrainerDto trainer);
 
-    TrainerDto getById(long id);
+    TrainerDto getByUsername(String username);
 }

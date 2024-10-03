@@ -31,6 +31,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainerServiceImplTest {
 
+    public static final String USERNAME = "Joe";
+    public static final String LAST_NAME = "Smith";
+    public static final String ENCODED_PASSWORD = "encodedPassword";
+    public static final String JANE_SMITH = "Jane.Smith";
+    public static final String JANE = "Jane";
+    public static final String PASSWORD = "password";
+
     @Mock
     private TrainerRepository trainerRepository;
     @Mock
@@ -58,9 +65,10 @@ class TrainerServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder().firstName("Joe").lastName("Doe").build();
+        user = User.builder().firstName(USERNAME).lastName(LAST_NAME).build();
         TrainingTypeDto trainingType = TrainingTypeDto.builder().id(1).build();
-        trainerRequest = TrainerDto.builder().trainingType(trainingType).build();
+        trainerRequest = new TrainerDto();
+        trainerRequest.setTrainingType(trainingType);
         trainerEntity = new Trainer();
         trainerEntity.setUser(user);
         trainerResponse = new TrainerDto();
@@ -68,26 +76,17 @@ class TrainerServiceImplTest {
 
     @Test
     void testCreateProfile() {
-        when(trainingTypeRepository.existsById(anyLong())).thenReturn(true);
-        when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
-        when(passwordGenerator.generatePassword()).thenReturn("testPassword");
-        when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");
-        when(userRepository.existsByUsername(anyString())).thenReturn(false);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        prepareCreateProfileMocks(false);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
 
-        assertNotNull(result, "User credentials should not be null");
-        assertEquals("testUsername", result.getUsername(), "Username should match");
-        assertEquals("testPassword", result.getPassword(), "Password should match");
+        assertUserCredentials(result, USERNAME);
         assertTrue(user.isActive(), "User should be active");
-        assertEquals("encodedPassword", user.getPassword(), "Password should be encoded");
+        assertEquals(ENCODED_PASSWORD, user.getPassword(), "Password should be encoded");
     }
 
     @Test
     void testCreateProfileNoSuchTrainingType() {
-        when(trainingTypeRepository.existsById(anyLong())).thenReturn(false);
-
         TrainingTypeException e = assertThrows(TrainingTypeException.class,
                 () -> trainerService.createProfile(trainerRequest));
         assertEquals("TrainingType with id 1 does not exist", e.getReason());
@@ -95,35 +94,20 @@ class TrainerServiceImplTest {
 
     @Test
     void testCreateProfileUsernameExists() {
-        when(trainingTypeRepository.existsById(anyLong())).thenReturn(true);
-        when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
-        when(passwordGenerator.generatePassword()).thenReturn("testPassword");
-        when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn("testUsername");
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
-        when(userRepository.findUsernamesByUsernameStartsWith("testUsername")).thenReturn(List.of("testUsername"));
-        when(nameGenerator.generateUsername("testUsername", List.of("testUsername")))
-                .thenReturn("testUsername1");
-
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        prepareCreateProfileMocks(true);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
 
-        assertNotNull(result, "User credentials should not be null");
-        assertEquals("testUsername1", result.getUsername(), "Username should match");
-        assertEquals("testPassword", result.getPassword(), "Password should match");
+        assertUserCredentials(result, USERNAME + 1);
         assertTrue(user.isActive(), "User should be active");
         assertEquals("encodedPassword", user.getPassword(), "Password should be encoded");
     }
 
     @Test
     void testUpdateTrainer() {
-        trainerRequest.setUser(UserDto.builder()
-                .firstName("Jane")
-                .lastName("Smith")
-                .username("Jane.Smith")
-                .active(false).build());
+        trainerRequest.setUser(createUserDto());
 
-        when(trainerRepository.findById(trainerRequest.getId())).thenReturn(Optional.of(trainerEntity));
+        when(trainerRepository.findByUserUsername(JANE_SMITH)).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(any())).thenReturn(trainerResponse);
         when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
 
@@ -131,26 +115,25 @@ class TrainerServiceImplTest {
 
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
-        assertEquals(trainerRequest.getUser().getFirstName(), trainerEntity.getUser().getFirstName());
-        assertEquals(trainerRequest.getUser().getLastName(), trainerEntity.getUser().getLastName());
-        assertEquals(trainerRequest.getUser().isActive(), trainerEntity.getUser().isActive());
         assertEquals(1, result.getTrainees().size());
+        assertTrainerUpdatedFields();
     }
 
     @Test
     void testUpdateTrainerNoSuchTrainer() {
+        trainerRequest.setUser(new UserDto());
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
-        assertEquals("Trainer with id 0 was not found", e.getReason());
+        assertEquals("Trainer with username null was not found", e.getReason());
     }
 
     @Test
-    void testGetById() {
-        when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainerEntity));
+    void testGetByUsername() {
+        when(trainerRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(trainerEntity)).thenReturn(trainerResponse);
         when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
 
-        TrainerDto result = trainerService.getById(1L);
+        TrainerDto result = trainerService.getByUsername(USERNAME);
 
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
@@ -158,9 +141,42 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testGetByIdNoSuchTrainer() {
-        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getById(1L));
+    void testGetByUsernameNoSuchTrainer() {
+        TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getByUsername(USERNAME));
 
-        assertEquals("Trainer with id 1 was not found", e.getReason());
+        assertEquals("Trainer with username Joe was not found", e.getReason());
+    }
+
+    private void prepareCreateProfileMocks(boolean usernameExists) {
+        when(trainingTypeRepository.existsById(anyLong())).thenReturn(true);
+        when(trainerMapper.toEntity(trainerRequest)).thenReturn(trainerEntity);
+        when(passwordGenerator.generatePassword()).thenReturn(PASSWORD);
+        when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn(USERNAME);
+        when(userRepository.existsByUsername(anyString())).thenReturn(usernameExists);
+        if (usernameExists) {
+            when(userRepository.findUsernamesByUsernameStartsWith(USERNAME)).thenReturn(List.of(USERNAME));
+            when(nameGenerator.generateUsername(USERNAME, List.of(USERNAME))).thenReturn(USERNAME + "1");
+        }
+        when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);
+    }
+
+    private void assertUserCredentials(UserCredentials result, String expectedUsername) {
+        assertNotNull(result, "User credentials should not be null");
+        assertEquals(expectedUsername, result.getUsername(), "Username should match");
+        assertEquals(PASSWORD, result.getPassword(), "Password should match");
+    }
+
+    private UserDto createUserDto() {
+        UserDto userDto = new UserDto();
+        userDto.setFirstName(JANE);
+        userDto.setLastName(LAST_NAME);
+        userDto.setUsername(JANE_SMITH);
+        return userDto;
+    }
+
+    private void assertTrainerUpdatedFields() {
+        assertEquals(trainerRequest.getUser().getFirstName(), trainerEntity.getUser().getFirstName());
+        assertEquals(trainerRequest.getUser().getLastName(), trainerEntity.getUser().getLastName());
+        assertEquals(trainerRequest.getUser().isActive(), trainerEntity.getUser().isActive());
     }
 }

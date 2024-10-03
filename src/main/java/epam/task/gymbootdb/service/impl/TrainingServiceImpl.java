@@ -13,9 +13,10 @@ import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.MDC;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 public class TrainingServiceImpl implements TrainingService {
 
-    public static final String TRANSACTION_ID = "transactionId";
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
@@ -46,43 +47,41 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<TrainingDto> getTraineeTrainings(TraineeTrainingsRequest request) {
-        long traineeId = request.getTraineeId();
-        checkIfTraineeExists(traineeId);
-        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(traineeId,
+        String username = request.getUsername();
+        checkIfTraineeExists(username);
+
+        List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
-        log.debug("Trainee (id = {}) got his trainings. Service layer. TransactionId: {}",
-                request.getTraineeId(), MDC.get(TRANSACTION_ID));
+        log.debug("Trainee (username = {}) got his trainings. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return trainingMapper.toDtoList(entities);
     }
 
     @Override
     public List<TrainingDto> getTrainerTrainings(TrainerTrainingsRequest request) {
-        long trainerId = request.getTrainerId();
-        checkIfTrainerExists(trainerId);
-        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(trainerId,
+        String username = request.getUsername();
+        checkIfTrainerExists(username);
+
+        List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTraineeId());
-        log.debug("Trainer (id = {}) got his trainings. Service layer. TransactionId: {}",
-                request.getTraineeId(), MDC.get(TRANSACTION_ID));
+        log.debug("Trainer (username = {}) got his trainings. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
 
         return trainingMapper.toDtoList(entities);
     }
 
     private void checkIfEntitiesExist(long traineeId, long trainerId, long trainingTypeId) {
-        checkIfTraineeExists(traineeId);
-        checkIfTrainerExists(trainerId);
-        checkIfTrainingTypeExists(trainingTypeId);
+        if (!traineeRepository.existsById(traineeId)) throw new TraineeException(traineeId);
+        if (!trainerRepository.existsById(trainerId)) throw new TrainerException(trainerId);
+        if (!trainingTypeRepository.existsById(trainingTypeId)) throw new TrainingTypeException(trainingTypeId);
     }
 
-    private void checkIfTraineeExists(long id) {
-        if (!traineeRepository.existsById(id)) throw new TraineeException(id);
+    private void checkIfTraineeExists(String username) {
+        if (!traineeRepository.existsByUserUsername(username)) throw new TraineeException(username);
     }
 
-    private void checkIfTrainerExists(long id) {
-        if (!trainerRepository.existsById(id)) throw new TrainerException(id);
-    }
-
-    private void checkIfTrainingTypeExists(long id) {
-        if (!trainingTypeRepository.existsById(id)) throw new TrainingTypeException(id);
+    private void checkIfTrainerExists(String username) {
+        if (!trainerRepository.existsByUserUsername(username)) throw new TrainerException(username);
     }
 }

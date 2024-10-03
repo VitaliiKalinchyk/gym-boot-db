@@ -2,8 +2,10 @@ package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.service.TrainerService;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,16 +29,28 @@ class TrainerControllerImplTest {
 
     @Mock
     private TrainerService trainerService;
+    @Mock
+    private Authentication authentication;
+    @Mock
+    private SecurityContext securityContext;
 
-    private static final long TRAINER_ID = 1L;
-    private static final TrainerDto trainerDto = TrainerDto.builder().id(1).build();
-    private static final UserCredentials userCredentials = new UserCredentials("Trainer", "password");
+    private TrainerDto trainerDto;
+    private UserCredentials credentials;
+
+    private static final String TRAINER_USERNAME = "Joe.Doe";
+
+    @BeforeEach
+    void setUp() {
+        trainerDto = TrainerDto.builder().user(new UserDto()).build();
+        credentials = new UserCredentials("Trainee", "password");
+        setUpSecurityContext();
+    }
 
     @Test
     void testGetTrainer() {
-        when(trainerService.getById(TRAINER_ID)).thenReturn(trainerDto);
+        when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
-        ResponseEntity<TrainerDto> response = trainerController.get(TRAINER_ID);
+        ResponseEntity<TrainerDto> response = trainerController.get(TRAINER_USERNAME);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -42,20 +59,20 @@ class TrainerControllerImplTest {
 
     @Test
     void testGetTrainerNoResponse() {
-        when(trainerService.getById(TRAINER_ID)).thenThrow(new RuntimeException());
+        when(trainerService.getByUsername(TRAINER_USERNAME)).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> trainerController.get(TRAINER_ID));
+        assertThrows(RuntimeException.class, () -> trainerController.get(TRAINER_USERNAME));
     }
 
     @Test
     void testCreateTrainer() {
-        when(trainerService.createProfile(trainerDto)).thenReturn(userCredentials);
+        when(trainerService.createProfile(trainerDto)).thenReturn(credentials);
 
         ResponseEntity<UserCredentials> response = trainerController.create(trainerDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(userCredentials, response.getBody());
+        assertEquals(credentials, response.getBody());
     }
 
     @Test
@@ -69,7 +86,7 @@ class TrainerControllerImplTest {
     void testUpdateTrainer() {
         when(trainerService.update(trainerDto)).thenReturn(trainerDto);
 
-        ResponseEntity<TrainerDto> response = trainerController.update(TRAINER_ID, trainerDto);
+        ResponseEntity<TrainerDto> response = trainerController.update(trainerDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -80,6 +97,12 @@ class TrainerControllerImplTest {
     void testUpdateTrainerNoResponse() {
         when(trainerService.update(trainerDto)).thenThrow(new RuntimeException());
 
-        assertThrows(RuntimeException.class, () -> trainerController.update(TRAINER_ID, trainerDto));
+        assertThrows(RuntimeException.class, () -> trainerController.update(trainerDto));
+    }
+
+    private void setUpSecurityContext() {
+        SecurityContextHolder.setContext(securityContext);
+        lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        lenient().when(authentication.getName()).thenReturn(TRAINER_USERNAME);
     }
 }

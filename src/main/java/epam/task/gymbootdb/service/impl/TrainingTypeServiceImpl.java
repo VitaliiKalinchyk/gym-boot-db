@@ -18,14 +18,14 @@ import java.util.List;
 @Slf4j
 public class TrainingTypeServiceImpl implements TrainingTypeService {
 
-    public static final String TRANSACTION_ID = "transactionId";
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainingTypeRepository trainingTypeRepository;
     private final TrainingTypeMapper trainingTypeMapper;
 
     @Override
     public List<TrainingTypeDto> getAll() {
-        log.debug("TrainingTypes was gotten . Service layer. TransactionId: {}", MDC.get(TRANSACTION_ID));
+        log.debug("TrainingTypes were fetched. Service layer. TransactionId: {}", MDC.get(TRANSACTION_ID));
         return trainingTypeMapper.toDtoList(trainingTypeRepository.findAll());
     }
 }

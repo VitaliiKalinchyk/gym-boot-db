@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    public static final String TRANSACTION_ID = "transactionId";
+    private static final String TRANSACTION_ID = "transactionId";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException(username));
-        log.debug("User (id = {}) is trying to log in. Service layer. TransactionId: {}",
+        log.debug("User (username = {}) is trying to log in. Service layer. TransactionId: {}",
                 username, MDC.get(TRANSACTION_ID));
 
         return new GymUserDetails(user);
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         entity.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(entity);
-        log.debug("User (id = {}) changed its password. Service layer. TransactionId: {}",
+        log.debug("User (username = {}) changed its password. Service layer. TransactionId: {}",
                 userCredentials.getUsername(), MDC.get(TRANSACTION_ID));
     }
 
