@@ -43,13 +43,6 @@ public class TraineeControllerImpl implements TraineeController {
     }
 
     @Override
-    public ResponseEntity<Void> changeActiveStatus(long id) {
-        traineeService.changeStatus(id);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @Override
     public ResponseEntity<Void> delete(long id) {
         traineeService.deleteById(id);
 

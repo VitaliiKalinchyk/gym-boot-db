@@ -139,23 +139,6 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testSetActiveStatus() {
-        traineeEntity.getUser().setActive(false);
-        when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
-
-        traineeService.changeStatus(1L);
-
-        assertTrue(traineeEntity.getUser().isActive(), "User should be active");
-    }
-
-    @Test
-    void testSetActiveStatusNoSuchTrainee() {
-        TraineeException e = assertThrows(TraineeException.class, () -> traineeService.changeStatus(1L));
-
-        assertEquals("Trainee with id 1 was not found", e.getReason());
-    }
-
-    @Test
     void testGetById() {
         when(traineeRepository.findById(1L)).thenReturn(Optional.of(traineeEntity));
         when(traineeMapper.toDto(traineeEntity)).thenReturn(traineeResponse);
@@ -245,7 +228,7 @@ class TraineeServiceImplTest {
 
         assertNotNull(result, "Trainer list should not be null");
         assertEquals(1, result.size(), "Should return one trainer");
-        assertEquals(trainerDto, result.get(0));
+        assertEquals(trainerDto, result.getFirst());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
+import epam.task.gymbootdb.dto.GymUserDetails;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
@@ -13,13 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.MDC;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     public static final String TRANSACTION_ID = "transactionId";
 
@@ -27,10 +30,23 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void matchCredentials(UserCredentials user) {
-        getAndCheckUser(user.getUsername(), user.getPassword());
-        log.debug("User (id = {}) logged in. Service layer. TransactionId: {}",
-                user.getUsername(), MDC.get(TRANSACTION_ID));
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException(username));
+        log.debug("User (id = {}) is trying to log in. Service layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
+
+        return new GymUserDetails(user);
+    }
+
+    @Override
+    public void changeStatus(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException(username));
+        boolean status = user.isActive();
+        user.setActive(!status);
+        log.debug("User (username = {}) changed status to {}. Service layer. TransactionId: {}",
+                username, !status, MDC.get(TRANSACTION_ID));
+
+        userRepository.save(user);
     }
 
     @Override

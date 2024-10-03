@@ -9,7 +9,5 @@ public interface TrainerService {
 
     TrainerDto update(TrainerDto trainer);
 
-    void setActiveStatus(long id);
-
     TrainerDto getById(long id);
 }

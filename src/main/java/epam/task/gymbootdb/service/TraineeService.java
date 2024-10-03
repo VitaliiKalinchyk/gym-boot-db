@@ -13,8 +13,6 @@ public interface TraineeService {
 
     TraineeDto update(TraineeDto trainee);
 
-    void changeStatus(long id);
-
     TraineeDto getById(long id);
 
     void deleteById(long id);

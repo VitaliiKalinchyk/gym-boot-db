@@ -30,20 +30,6 @@ class UserControllerImplTest {
             new ChangePasswordRequest(userCredentials, "newPass");
 
     @Test
-    void testLoginSuccess() {
-        ResponseEntity<Void> response = userController.login(userCredentials);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void testLoginNoResponse() {
-        doThrow(new RuntimeException()).when(userService).matchCredentials(userCredentials);
-
-        assertThrows(Exception.class, () -> userController.login(userCredentials));
-    }
-
-    @Test
     void testChangePasswordSuccess() {
         ResponseEntity<Void> response = userController.changePassword(changePasswordRequest);
 

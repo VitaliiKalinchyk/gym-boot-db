@@ -2,7 +2,6 @@ package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.controller.UserController;
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
-import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,8 @@ public class UserControllerImpl implements UserController {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<Void> login(UserCredentials userCredentials){
-        userService.matchCredentials(userCredentials);
+    public ResponseEntity<Void> changeActiveStatus(String username) {
+        userService.changeStatus(username);
 
         return ResponseEntity.ok().build();
     }

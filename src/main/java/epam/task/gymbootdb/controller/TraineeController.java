@@ -45,15 +45,6 @@ public interface TraineeController {
     @PutMapping("/{id}")
     ResponseEntity<TraineeDto> update(@PathVariable long id, @Valid @RequestBody TraineeDto trainee);
 
-    @Operation(summary = "Change active status",
-            description = "Changes the active status of a trainee based on the provided ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainee status changed successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainee not found")
-    })
-    @PatchMapping("/{id}/status")
-    ResponseEntity<Void> changeActiveStatus(@PathVariable long id);
-
     @Operation(summary = "Delete trainee by ID",
             description = "Deletes the trainee's profile based on the provided ID.")
     @ApiResponses(value = {

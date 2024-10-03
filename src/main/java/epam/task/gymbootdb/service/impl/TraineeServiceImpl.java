@@ -75,17 +75,6 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void changeStatus(long id) {
-        Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));
-        boolean status = entity.getUser().isActive();
-        entity.getUser().setActive(!status);
-        log.debug("Trainee (id = {}) changed status to {}. Service layer. TransactionId: {}",
-                id, status, MDC.get(TRANSACTION_ID));
-
-        traineeRepository.save(entity);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public TraineeDto getById(long id) {
         Trainee entity = traineeRepository.findById(id).orElseThrow(() -> new TraineeException(id));

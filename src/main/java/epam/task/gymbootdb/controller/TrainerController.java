@@ -42,13 +42,4 @@ public interface TrainerController {
     })
     @PutMapping("/{id}")
     ResponseEntity<TrainerDto> update(@PathVariable long id, @Valid @RequestBody TrainerDto trainerDto);
-
-    @Operation(summary = "Change trainer active status",
-            description = "Changes the active status of a trainer based on the provided ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainer status changed successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found")
-    })
-    @PatchMapping("/{id}/status")
-    ResponseEntity<Void> changeActiveStatus(@PathVariable long id);
 }

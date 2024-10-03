@@ -1,7 +1,6 @@
 package epam.task.gymbootdb.controller;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
-import epam.task.gymbootdb.dto.UserCredentials;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,17 +11,17 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/login")
+@RequestMapping("/users")
 public interface UserController {
 
-    @Operation(summary = "User login",
-            description = "Validates user credentials and authenticates the user.")
+    @Operation(summary = "Change active status",
+            description = "Changes the active status of a trainee based on the provided ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful authentication"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+            @ApiResponse(responseCode = "200", description = "Trainee status changed successfully"),
+            @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    @GetMapping
-    ResponseEntity<Void> login(@Valid @RequestBody UserCredentials userCredentials);
+    @PatchMapping("/status")
+    ResponseEntity<Void> changeActiveStatus(@RequestParam String username);
 
     @Operation(summary = "Change user password",
             description = "Allows users to change their password after providing the correct credentials.")

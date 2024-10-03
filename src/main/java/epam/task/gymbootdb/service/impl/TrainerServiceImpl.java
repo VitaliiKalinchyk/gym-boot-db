@@ -74,17 +74,6 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void setActiveStatus(long id) {
-        Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));
-        boolean status = !entity.getUser().isActive();
-        entity.getUser().setActive(status);
-        log.debug("Trainee (id = {}) changed status to {}. Service layer. TransactionId: {}",
-                id, status, MDC.get(TRANSACTION_ID));
-
-        trainerRepository.save(entity);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public TrainerDto getById(long id) {
         Trainer entity = trainerRepository.findById(id).orElseThrow(() -> new TrainerException(id));

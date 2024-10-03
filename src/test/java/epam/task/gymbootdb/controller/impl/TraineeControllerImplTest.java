@@ -87,20 +87,6 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testChangeActiveStatus() {
-        ResponseEntity<Void> response = traineeController.changeActiveStatus(TRAINEE_ID);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void testChangeActiveStatusNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).changeStatus(TRAINEE_ID);
-
-        assertThrows(RuntimeException.class, () -> traineeController.changeActiveStatus(TRAINEE_ID));
-    }
-
-    @Test
     void testDeleteTrainee() {
         ResponseEntity<Void> response = traineeController.delete(TRAINEE_ID);
 
