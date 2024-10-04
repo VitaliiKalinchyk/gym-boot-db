@@ -41,6 +41,17 @@ public class TraineeControllerImpl implements TraineeController {
     }
 
     @Override
+    @GetMapping("/profile")
+    public ResponseEntity<TraineeDto> get() {
+        String username = getUsername();
+        TraineeDto trainee = traineeService.getByUsername(username);
+        log.debug("Trainee (username = {}) was fetched by itself. Controller layer. TransactionId: {}",
+                 username, MDC.get(TRANSACTION_ID));
+
+        return ResponseEntity.ok(trainee);
+    }
+
+    @Override
     @PostMapping
     public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeDto traineeDto) {
         UserCredentials profile = traineeService.createProfile(traineeDto);

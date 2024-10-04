@@ -19,6 +19,14 @@ public interface TrainerController {
     })
     ResponseEntity<TrainerDto> get(String username);
 
+    @Operation(summary = "Get trainer's profile",
+            description = "Fetches a trainer's details based on authentication.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trainer retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Trainer not found")
+    })
+    ResponseEntity<TrainerDto> get();
+
     @Operation(summary = "Create new trainer",
             description = "Creates a new trainer profile and returns the associated user credentials.")
     @ApiResponses(value = {

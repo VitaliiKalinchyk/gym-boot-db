@@ -24,7 +24,7 @@ public class PasswordGeneratorImpl implements PasswordGenerator {
 
     private final int passwordLength;
 
-    public PasswordGeneratorImpl(@Value("${password.length}") int passwordLength) {
+    public PasswordGeneratorImpl(@Value("${security.password.length}") int passwordLength) {
         this.passwordLength = passwordLength;
     }
 

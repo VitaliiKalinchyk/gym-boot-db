@@ -2,12 +2,17 @@ package epam.task.gymbootdb.handler;
 
 import epam.task.gymbootdb.exception.TraineeException;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -51,6 +56,46 @@ class GymExceptionHandlerTest {
         assertTrue(body.containsKey(FIELD_NAME));
         assertTrue(body.containsKey(ERROR_ID));
         assertTrue(body.containsValue(Collections.singletonList(ERROR_MESSAGE)));
+    }
+
+    @Test
+    void testHandleAuthenticationException() {
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleAuthenticationException(new BadCredentialsException("bad credentials"));
+
+        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Wrong username or password");
+    }
+
+    @Test
+    void testHandleExpiredJwtException() {
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleExpiredJwtException(new ExpiredJwtException(null, null, null));
+
+        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "JWT expired");
+    }
+
+    @Test
+    void testHandleMalformedJwtException() {
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleMalformedJwtException(new MalformedJwtException(null));
+
+        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Token format is invalid");
+    }
+
+    @Test
+    void testHandleSignatureException() {
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleSignatureException(new SignatureException(null));
+
+        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Invalid token signature");
+    }
+
+    @Test
+    void testHandleJwtException() {
+        ResponseEntity<Map<String, Object>> responseEntity =
+                handler.handleJwtException(new JwtException(null));
+
+        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Invalid JWT");
     }
 
     @Test

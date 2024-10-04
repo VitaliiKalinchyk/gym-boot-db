@@ -38,6 +38,17 @@ public class TrainerControllerImpl implements TrainerController {
     }
 
     @Override
+    @GetMapping("/profile")
+    public ResponseEntity<TrainerDto> get() {
+        String username = getUsername();
+        TrainerDto trainerDto = trainerService.getByUsername(username);
+        log.debug("Trainer (username = {}) was fetched by itself. Controller layer. TransactionId: {}",
+                username, MDC.get(TRANSACTION_ID));
+
+        return ResponseEntity.ok(trainerDto);
+    }
+
+    @Override
     @PostMapping
     public ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerDto trainerDto) {
         UserCredentials profile = trainerService.createProfile(trainerDto);

@@ -65,6 +65,24 @@ class TrainerControllerImplTest {
     }
 
     @Test
+    void testGetTrainerProfile() {
+        when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
+
+        ResponseEntity<TrainerDto> response = trainerController.get();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(trainerDto, response.getBody());
+    }
+
+    @Test
+    void testGetTrainerProfileNoResponse() {
+        when(trainerService.getByUsername(TRAINER_USERNAME)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> trainerController.get());
+    }
+
+    @Test
     void testCreateTrainer() {
         when(trainerService.createProfile(trainerDto)).thenReturn(credentials);
 

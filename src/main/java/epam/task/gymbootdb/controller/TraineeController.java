@@ -21,6 +21,14 @@ public interface TraineeController {
     })
     ResponseEntity<TraineeDto> get(String username);
 
+    @Operation(summary = "Get trainee's profile",
+            description = "Fetches a trainee's details based on authentication.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trainee retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Trainee not found")
+    })
+    ResponseEntity<TraineeDto> get();
+
     @Operation(summary = "Create new trainee",
             description = "Creates a new trainee profile and returns the associated user credentials.")
     @ApiResponses(value = {

@@ -68,6 +68,24 @@ class TraineeControllerImplTest {
     }
 
     @Test
+    void testGetTraineeProfile() {
+        when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
+
+        ResponseEntity<TraineeDto> response = traineeController.get();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(traineeDto, response.getBody());
+    }
+
+    @Test
+    void testGetTraineeProfileNoResponse() {
+        when(traineeService.getByUsername(TRAINEE_USERNAME)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> traineeController.get());
+    }
+
+    @Test
     void testCreateTrainee() {
         when(traineeService.createProfile(traineeDto)).thenReturn(credentials);
 
