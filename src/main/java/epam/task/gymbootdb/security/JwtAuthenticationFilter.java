@@ -33,7 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request){
         String requestURI = request.getRequestURI();
-        return (request.getMethod().equalsIgnoreCase("POST") &&
+        return (requestURI.startsWith("/actuator")
+                || requestURI.startsWith("/swagger-ui")
+                || requestURI.startsWith("/v3/api-docs")
+                || request.getMethod().equalsIgnoreCase("POST") &&
                 (requestURI.equals("/trainees") ||
                         requestURI.equals("/trainers") ||
                         requestURI.equals("/auth/login")));
