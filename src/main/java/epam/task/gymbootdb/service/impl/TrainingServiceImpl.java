@@ -10,12 +10,10 @@ import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.MDC;
 
 import org.springframework.stereotype.Service;
 
@@ -23,16 +21,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TrainingServiceImpl implements TrainingService {
-
-    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final TrainingMapper trainingMapper;
+    private final LoggingService loggingService;
 
     @Override
     public void create(TrainingDto request) {
@@ -41,8 +37,7 @@ public class TrainingServiceImpl implements TrainingService {
         Training entity = trainingMapper.toEntity(request);
 
         trainingRepository.save(entity);
-        log.debug("Training (id = {}) was created. Service layer. TransactionId: {}",
-                entity.getId(), MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("created new training");
     }
 
     @Override
@@ -52,8 +47,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
-        log.debug("Trainee (username = {}) got his trainings. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("fetched it's trainee trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }
@@ -65,8 +59,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTraineeId());
-        log.debug("Trainer (username = {}) got his trainings. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("fetched it's trainer trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }

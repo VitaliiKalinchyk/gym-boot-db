@@ -4,6 +4,7 @@ import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TraineeService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,8 @@ class TraineeControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private LoggingService loggingService;
 
     private TraineeDto traineeDto;
     private UserCredentials credentials;
@@ -58,6 +61,7 @@ class TraineeControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(traineeDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -76,6 +80,7 @@ class TraineeControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(traineeDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -94,6 +99,7 @@ class TraineeControllerImplTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(credentials, response.getBody());
+        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
@@ -112,6 +118,7 @@ class TraineeControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(traineeDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -126,6 +133,7 @@ class TraineeControllerImplTest {
         ResponseEntity<Void> response = traineeController.delete();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -145,6 +153,7 @@ class TraineeControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(trainers, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -159,6 +168,7 @@ class TraineeControllerImplTest {
         ResponseEntity<Void> response = traineeController.updateTraineeTrainers(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test

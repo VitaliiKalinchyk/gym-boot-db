@@ -1,6 +1,7 @@
 package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ class TrainingControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private LoggingService loggingService;
 
     private static final TrainingDto trainingDto = TrainingDto.builder().id(1).build();
     private static final String USERNAME = "Joe";
@@ -47,6 +50,7 @@ class TrainingControllerImplTest {
         ResponseEntity<Void> response = trainingController.create(trainingDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -69,6 +73,7 @@ class TrainingControllerImplTest {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
         assertEquals(trainingDto, response.getBody().getFirst());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -92,6 +97,7 @@ class TrainingControllerImplTest {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
         assertEquals(trainingDto, response.getBody().getFirst());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test

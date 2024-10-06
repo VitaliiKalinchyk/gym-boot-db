@@ -3,6 +3,7 @@ package epam.task.gymbootdb.controller.impl;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.dto.UserDto;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ class TrainerControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private LoggingService loggingService;
 
     private TrainerDto trainerDto;
     private UserCredentials credentials;
@@ -55,6 +58,7 @@ class TrainerControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(trainerDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -73,6 +77,7 @@ class TrainerControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(trainerDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -91,6 +96,7 @@ class TrainerControllerImplTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(credentials, response.getBody());
+        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
@@ -109,6 +115,7 @@ class TrainerControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(trainerDto, response.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test

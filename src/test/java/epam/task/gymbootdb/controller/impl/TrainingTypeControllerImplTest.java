@@ -1,6 +1,7 @@
 package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.TrainingTypeDto;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingTypeService;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +28,8 @@ class TrainingTypeControllerImplTest {
 
     @Mock
     TrainingTypeService trainingTypeService;
+    @Mock
+    LoggingService loggingService;
 
     @Test
     void testGetAll() {
@@ -38,7 +43,8 @@ class TrainingTypeControllerImplTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals(yoga, response.getBody().get(0));
+        assertEquals(yoga, response.getBody().getFirst());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test

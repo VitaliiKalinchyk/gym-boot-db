@@ -5,12 +5,10 @@ import epam.task.gymbootdb.dto.JwtToken;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 
+import epam.task.gymbootdb.service.LoggingService;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,19 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthControllerImpl implements AuthController {
 
-    private static final String TRANSACTION_ID = "transactionId";
-
     private final AuthService authService;
+    private final LoggingService loggingService;
 
     @Override
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@Valid @RequestBody UserCredentials credentials) {
         String token = authService.authenticate(credentials);
-        log.debug("User (username = {}) logged in. Controller layer. TransactionId: {}",
-                credentials.getUsername(), MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("logged in", credentials.getUsername());
 
         return ResponseEntity.ok(new JwtToken(token));
     }
@@ -40,7 +35,7 @@ public class AuthControllerImpl implements AuthController {
     @Override
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
-        log.debug("User logged out. Controller layer. TransactionId: {}", MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("logged out");
 
         return ResponseEntity.ok("Logout successful");
     }

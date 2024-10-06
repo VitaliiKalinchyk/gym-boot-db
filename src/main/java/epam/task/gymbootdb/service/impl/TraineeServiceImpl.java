@@ -13,14 +13,12 @@ import epam.task.gymbootdb.exception.TrainerException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TraineeService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.MDC;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,10 +28,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TraineeServiceImpl implements TraineeService {
-
-    private static final String TRANSACTION_ID = "transactionId";
 
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
@@ -43,6 +38,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
+    private final LoggingService loggingService;
 
     @Override
     @Transactional
@@ -54,8 +50,7 @@ public class TraineeServiceImpl implements TraineeService {
         setUserFields(user, username, password);
 
         traineeRepository.save(entity);
-        log.debug("Trainee (id = {}, username = {}) was created. Service layer. TransactionId: {}",
-                entity.getId(), username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was created", username);
 
         return new UserCredentials(username, password);
     }
@@ -70,8 +65,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(traineeRepository.save(entity));
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        log.debug("Trainee (username = {}) was updated. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was updated", username);
 
         return dto;
     }
@@ -84,8 +78,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(entity);
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        log.debug("Trainee (username = {}) was fetched. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was fetched", username);
 
         return dto;
     }
@@ -94,8 +87,7 @@ public class TraineeServiceImpl implements TraineeService {
     public void deleteByUsername(String username) {
         Trainee entity = traineeRepository.findByUserUsername(username)
                 .orElseThrow(() -> new TraineeException(username));
-        log.debug("Trainee (username = {}) was deleted. Service layer. TransactionId: {}",
-                entity.getId(), MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was deleted", username);
 
         traineeRepository.delete(entity);
     }
@@ -103,8 +95,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public List<TrainerDto> getTrainersNotAssignedToTrainee(String username) {
         if (!traineeRepository.existsByUserUsername(username)) throw new TraineeException(username);
-        log.debug("Trainee (username = {}) got unassigned trainers. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("got it's unassigned trainers", username);
       
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(username));
     }
@@ -119,8 +110,7 @@ public class TraineeServiceImpl implements TraineeService {
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
-            log.debug("Trainee (username = {}) added new trainer to it's list (id = {}). " +
-                            "Service layer. TransactionId: {}", username, trainerId, MDC.get(TRANSACTION_ID));
+            loggingService.logDebugService("added new trainer to it's list", username);
         }
     }
 

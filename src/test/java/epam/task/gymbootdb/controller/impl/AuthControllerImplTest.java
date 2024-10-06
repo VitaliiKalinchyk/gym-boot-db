@@ -4,6 +4,7 @@ import epam.task.gymbootdb.dto.JwtToken;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 
+import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerImplTest {
@@ -28,6 +27,8 @@ class AuthControllerImplTest {
 
     @Mock
     AuthService authService;
+    @Mock
+    LoggingService loggingService;
 
     @Test
     void testLogin() {
@@ -38,6 +39,7 @@ class AuthControllerImplTest {
         assertNotNull(login);
         assertEquals(HttpStatus.OK, login.getStatusCode());
         assertEquals(new JwtToken("token"), login.getBody());
+        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
@@ -54,5 +56,6 @@ class AuthControllerImplTest {
         assertNotNull(logout);
         assertEquals(HttpStatus.OK, logout.getStatusCode());
         assertEquals("Logout successful", logout.getBody());
+        verify(loggingService).logDebugController(anyString());
     }
 }

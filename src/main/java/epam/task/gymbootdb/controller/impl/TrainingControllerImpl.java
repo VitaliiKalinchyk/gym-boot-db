@@ -4,13 +4,12 @@ import epam.task.gymbootdb.controller.TrainingController;
 import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainingDto;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.MDC;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +22,16 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/trainings")
-@Slf4j
 public class TrainingControllerImpl implements TrainingController {
 
-    private static final String TRANSACTION_ID = "transactionId";
-
     private final TrainingService trainingService;
+    private final LoggingService loggingService;
 
     @Override
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody TrainingDto trainingDto) {
         trainingService.create(trainingDto);
-        log.debug("Training was created. Controller layer. TransactionId: {}", MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("created training: " + trainingDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -57,8 +54,7 @@ public class TrainingControllerImpl implements TrainingController {
                 .build();
 
         List<TrainingDto> trainings = trainingService.getTraineeTrainings(request);
-        log.debug("Trainee (username = {}) got it's trainings. Controller layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("fetched it's trainee's trainings");
 
         return ResponseEntity.ok(trainings);
     }
@@ -79,8 +75,7 @@ public class TrainingControllerImpl implements TrainingController {
                 .build();
 
         List<TrainingDto> trainings = trainingService.getTrainerTrainings(request);
-        log.debug("Trainer (username = {}) got it's trainings. Controller layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("fetched it's trainer's trainings");
 
         return ResponseEntity.ok(trainings);
     }
