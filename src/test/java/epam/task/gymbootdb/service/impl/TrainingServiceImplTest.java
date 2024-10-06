@@ -2,6 +2,7 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.*;
 import epam.task.gymbootdb.dto.mapper.TrainingMapper;
+import epam.task.gymbootdb.entity.Trainee;
 import epam.task.gymbootdb.entity.Training;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -48,19 +50,22 @@ class TrainingServiceImplTest {
     private TrainingDto trainingRequest;
     private Training trainingEntity;
     private TrainingDto trainingResponse;
+    private Trainee trainee;
 
     @BeforeEach
     void setUp() {
         trainingRequest = new TrainingDto();
         trainingEntity = new Training();
         trainingResponse = new TrainingDto();
+        trainee = new Trainee();
+
     }
 
     @Test
     void testCreateTraining() {
         buildRequest();
 
-        when(traineeRepository.existsById(1L)).thenReturn(true);
+        when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
         when(trainerRepository.existsById(1L)).thenReturn(true);
         when(trainingTypeRepository.existsById(1L)).thenReturn(true);
         when(trainingMapper.toEntity(trainingRequest)).thenReturn(trainingEntity);
@@ -76,14 +81,14 @@ class TrainingServiceImplTest {
         buildRequest();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.create(trainingRequest));
-        assertEquals("Trainee with id 1 was not found", e.getReason());
+        assertEquals("Trainee with username name was not found", e.getReason());
     }
 
     @Test
     void testCreateTrainingNoSuchTrainer() {
         buildRequest();
 
-        when(traineeRepository.existsById(1L)).thenReturn(true);
+        when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.create(trainingRequest));
 
@@ -94,7 +99,7 @@ class TrainingServiceImplTest {
     void testCreateTrainingNoSuchTrainingType() {
         buildRequest();
 
-        when(traineeRepository.existsById(1L)).thenReturn(true);
+        when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
         when(trainerRepository.existsById(1L)).thenReturn(true);
 
         TrainingTypeException e = assertThrows(TrainingTypeException.class,
@@ -153,7 +158,7 @@ class TrainingServiceImplTest {
     }
 
     private void buildRequest() {
-        trainingRequest.setTrainee(TraineeDto.builder().id(1).build());
+        trainingRequest.setTrainee(TraineeDto.builder().user(UserDto.builder().username("name").build()).build());
         trainingRequest.setTrainer(TrainerDto.builder().id(1).build());
         trainingRequest.setTrainingType(TrainingTypeDto.builder().id(1).build());
     }

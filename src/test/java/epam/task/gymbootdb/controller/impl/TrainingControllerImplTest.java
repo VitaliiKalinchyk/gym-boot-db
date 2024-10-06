@@ -37,7 +37,8 @@ class TrainingControllerImplTest {
     @Mock
     private LoggingService loggingService;
 
-    private static final TrainingDto trainingDto = TrainingDto.builder().id(1).build();
+    private static final TraineeDto traineeDto = TraineeDto.builder().user(new UserDto()).build();
+    private static final TrainingDto trainingDto = TrainingDto.builder().id(1).trainee(traineeDto).build();
     private static final String USERNAME = "Joe";
 
     @BeforeEach
@@ -50,7 +51,7 @@ class TrainingControllerImplTest {
         ResponseEntity<Void> response = trainingController.create(trainingDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        verify(loggingService).logDebugController(anyString());
+        verify(loggingService).logDebugController(anyString(),anyString());
     }
 
     @Test

@@ -30,8 +30,10 @@ public class TrainingControllerImpl implements TrainingController {
     @Override
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody TrainingDto trainingDto) {
+        String username = getUsername();
+        trainingDto.getTrainee().getUser().setUsername(username);
         trainingService.create(trainingDto);
-        loggingService.logDebugController("created training: " + trainingDto);
+        loggingService.logDebugController("created training: " + trainingDto, username);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
