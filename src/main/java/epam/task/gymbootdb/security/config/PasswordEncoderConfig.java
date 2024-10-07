@@ -1,4 +1,4 @@
-package epam.task.gymbootdb.security;
+package epam.task.gymbootdb.security.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

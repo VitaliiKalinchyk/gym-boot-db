@@ -2,8 +2,8 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.security.JwtService;
-import epam.task.gymbootdb.security.LoginAttemptService;
+import epam.task.gymbootdb.security.service.JwtService;
+import epam.task.gymbootdb.security.service.LoginAttemptService;
 import epam.task.gymbootdb.service.AuthService;
 
 import epam.task.gymbootdb.service.LoggingService;

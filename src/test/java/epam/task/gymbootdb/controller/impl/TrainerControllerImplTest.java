@@ -13,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,76 +51,41 @@ class TrainerControllerImplTest {
     void testGetTrainer() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
-        ResponseEntity<TrainerDto> response = trainerController.get(TRAINER_USERNAME);
+        TrainerDto response = trainerController.get(TRAINER_USERNAME);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(trainerDto, response.getBody());
+        assertEquals(trainerDto, response);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testGetTrainerNoResponse() {
-        when(trainerService.getByUsername(TRAINER_USERNAME)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> trainerController.get(TRAINER_USERNAME));
     }
 
     @Test
     void testGetTrainerProfile() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
-        ResponseEntity<TrainerDto> response = trainerController.get();
+        TrainerDto response = trainerController.get();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(trainerDto, response.getBody());
+        assertEquals(trainerDto, response);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testGetTrainerProfileNoResponse() {
-        when(trainerService.getByUsername(TRAINER_USERNAME)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> trainerController.get());
     }
 
     @Test
     void testCreateTrainer() {
         when(trainerService.createProfile(trainerDto)).thenReturn(credentials);
 
-        ResponseEntity<UserCredentials> response = trainerController.create(trainerDto);
+        UserCredentials response = trainerController.create(trainerDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(credentials, response.getBody());
+        assertEquals(credentials, response);
         verify(loggingService).logDebugController(anyString(), anyString());
-    }
-
-    @Test
-    void testCreateTrainerNoResponse() {
-        when(trainerService.createProfile(trainerDto)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> trainerController.create(trainerDto));
     }
 
     @Test
     void testUpdateTrainer() {
         when(trainerService.update(trainerDto)).thenReturn(trainerDto);
 
-        ResponseEntity<TrainerDto> response = trainerController.update(trainerDto);
+        TrainerDto response = trainerController.update(trainerDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(trainerDto, response.getBody());
+        assertEquals(trainerDto, response);
+        assertEquals(TRAINER_USERNAME, trainerDto.getUser().getUsername());
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testUpdateTrainerNoResponse() {
-        when(trainerService.update(trainerDto)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> trainerController.update(trainerDto));
     }
 
     private void setUpSecurityContext() {

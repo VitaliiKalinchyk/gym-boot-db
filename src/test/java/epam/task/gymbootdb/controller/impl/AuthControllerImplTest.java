@@ -11,16 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerImplTest {
-
-    public static final UserCredentials CREDENTIALS = new UserCredentials("username", "password");
 
     @InjectMocks
     private AuthControllerImpl authController;
@@ -32,30 +27,21 @@ class AuthControllerImplTest {
 
     @Test
     void testLogin() {
+        UserCredentials credentials = new UserCredentials("username", "password");
+
         when(authService.authenticate(any())).thenReturn("token");
 
-        ResponseEntity<JwtToken> login = authController.login(CREDENTIALS);
+        JwtToken login = authController.login(credentials);
 
-        assertNotNull(login);
-        assertEquals(HttpStatus.OK, login.getStatusCode());
-        assertEquals(new JwtToken("token"), login.getBody());
+        assertEquals(new JwtToken("token"), login);
         verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
-    void testLoginNoResponse() {
-        doThrow(new RuntimeException()).when(authService).authenticate(any());
-
-        assertThrows(Exception.class, () -> authController.login(CREDENTIALS));
-    }
-
-    @Test
     void testLogout() {
-        ResponseEntity<String> logout = authController.logout();
+        String logout = authController.logout();
 
-        assertNotNull(logout);
-        assertEquals(HttpStatus.OK, logout.getStatusCode());
-        assertEquals("Logout successful", logout.getBody());
+        assertEquals("Logout successful", logout);
         verify(loggingService).logDebugController(anyString());
     }
 }

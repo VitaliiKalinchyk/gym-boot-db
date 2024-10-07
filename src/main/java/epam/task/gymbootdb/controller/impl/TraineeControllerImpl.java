@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,67 +27,64 @@ public class TraineeControllerImpl implements TraineeController {
 
     @Override
     @GetMapping("/{username}")
-    public ResponseEntity<TraineeDto> get(@PathVariable String username) {
+    public TraineeDto get(@PathVariable String username) {
         TraineeDto trainee = traineeService.getByUsername(username);
         loggingService.logDebugController("was fetched");
 
-        return ResponseEntity.ok(trainee);
+        return trainee;
     }
 
     @Override
     @GetMapping("/profile")
-    public ResponseEntity<TraineeDto> get() {
+    public TraineeDto get() {
         TraineeDto trainee = traineeService.getByUsername(getUsername());
         loggingService.logDebugController("was fetched by itself");
 
-        return ResponseEntity.ok(trainee);
+        return trainee;
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeDto traineeDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserCredentials create(@Valid @RequestBody TraineeDto traineeDto) {
         UserCredentials profile = traineeService.createProfile(traineeDto);
         loggingService.logDebugController("was created as trainee", profile.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
+        return profile;
     }
 
     @Override
     @PutMapping
-    public ResponseEntity<TraineeDto> update(@Valid @RequestBody TraineeDto trainee) {
+    public TraineeDto update(@Valid @RequestBody TraineeDto trainee) {
         trainee.getUser().setUsername(getUsername());
 
         TraineeDto traineeDto = traineeService.update(trainee);
         loggingService.logDebugController("was updated");
 
-        return ResponseEntity.ok(traineeDto);
+        return traineeDto;
     }
 
     @Override
     @DeleteMapping
-    public ResponseEntity<Void> delete() {
+    public void delete() {
         traineeService.deleteByUsername(getUsername());
         loggingService.logDebugController("was deleted");
-
-        return ResponseEntity.ok().build();
     }
 
     @Override
     @GetMapping("/unassigned-trainers")
-    public ResponseEntity<List<TrainerDto>> getTrainersNotAssignedToTrainee() {
+    public List<TrainerDto> getTrainersNotAssignedToTrainee() {
         List<TrainerDto> trainersNotAssignedToTrainee = traineeService.getTrainersNotAssignedToTrainee(getUsername());
         loggingService.logDebugController("got unassigned trainers");
 
-        return ResponseEntity.ok(trainersNotAssignedToTrainee);
+        return trainersNotAssignedToTrainee;
     }
 
     @Override
     @PutMapping("/trainers")
-    public ResponseEntity<Void> updateTraineeTrainers(@RequestParam long trainerId) {
+    public void updateTraineeTrainers(@RequestParam long trainerId) {
         traineeService.updateTraineeTrainers(getUsername(), trainerId);
         loggingService.logDebugController("added new trainer to it's list");
-
-        return ResponseEntity.ok().build();
     }
 
     private static String getUsername() {

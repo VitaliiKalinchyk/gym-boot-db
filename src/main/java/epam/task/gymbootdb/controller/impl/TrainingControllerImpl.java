@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,18 +28,17 @@ public class TrainingControllerImpl implements TrainingController {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody TrainingDto trainingDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@Valid @RequestBody TrainingDto trainingDto) {
         String username = getUsername();
         trainingDto.getTrainee().getUser().setUsername(username);
         trainingService.create(trainingDto);
         loggingService.logDebugController("created training: " + trainingDto, username);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
     @GetMapping("/trainee")
-    public ResponseEntity<List<TrainingDto>> getTraineeTrainings(
+    public List<TrainingDto> getTraineeTrainings(
             @RequestParam(name = "from-date", required = false) LocalDate fromDate,
             @RequestParam(name = "to-date", required = false) LocalDate toDate,
             @RequestParam(name = "trainer-id", required = false) Long trainerId,
@@ -58,12 +56,12 @@ public class TrainingControllerImpl implements TrainingController {
         List<TrainingDto> trainings = trainingService.getTraineeTrainings(request);
         loggingService.logDebugController("fetched it's trainee's trainings");
 
-        return ResponseEntity.ok(trainings);
+        return trainings;
     }
 
     @Override
     @GetMapping("/trainer")
-    public ResponseEntity<List<TrainingDto>> getTrainerTrainings(
+    public List<TrainingDto> getTrainerTrainings(
             @RequestParam(name = "from-date", required = false) LocalDate fromDate,
             @RequestParam(name = "to-date", required = false) LocalDate toDate,
             @RequestParam(name = "trainee-id", required = false) Long trainerId)
@@ -79,7 +77,7 @@ public class TrainingControllerImpl implements TrainingController {
         List<TrainingDto> trainings = trainingService.getTrainerTrainings(request);
         loggingService.logDebugController("fetched it's trainer's trainings");
 
-        return ResponseEntity.ok(trainings);
+        return trainings;
     }
 
     private static String getUsername() {

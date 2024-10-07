@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,22 +22,18 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PatchMapping("/status")
-    public ResponseEntity<Void> changeActiveStatus() {
+    public void changeActiveStatus() {
         userService.changeStatus(getUsername());
         loggingService.logDebugController("changed it's active status");
-
-        return ResponseEntity.ok().build();
     }
 
     @Override
     @PutMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         request.getUserCredentials().setUsername(getUsername());
 
         userService.changePassword(request);
         loggingService.logDebugController("changed it's password");
-
-        return ResponseEntity.ok().build();
     }
 
     private static String getUsername() {

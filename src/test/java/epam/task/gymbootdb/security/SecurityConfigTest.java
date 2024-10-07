@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.security;
 
+import epam.task.gymbootdb.security.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

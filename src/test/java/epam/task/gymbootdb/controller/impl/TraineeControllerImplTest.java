@@ -14,8 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,91 +54,49 @@ class TraineeControllerImplTest {
     void testGetTrainee() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
-        ResponseEntity<TraineeDto> response = traineeController.get(TRAINEE_USERNAME);
+        TraineeDto response = traineeController.get(TRAINEE_USERNAME);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(traineeDto, response.getBody());
+        assertEquals(traineeDto, response);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testGetTraineeNoResponse() {
-        when(traineeService.getByUsername(TRAINEE_USERNAME)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> traineeController.get(TRAINEE_USERNAME));
     }
 
     @Test
     void testGetTraineeProfile() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
-        ResponseEntity<TraineeDto> response = traineeController.get();
+        TraineeDto response = traineeController.get();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(traineeDto, response.getBody());
+        assertEquals(traineeDto, response);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testGetTraineeProfileNoResponse() {
-        when(traineeService.getByUsername(TRAINEE_USERNAME)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> traineeController.get());
     }
 
     @Test
     void testCreateTrainee() {
         when(traineeService.createProfile(traineeDto)).thenReturn(credentials);
 
-        ResponseEntity<UserCredentials> response = traineeController.create(traineeDto);
+        UserCredentials response = traineeController.create(traineeDto);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(credentials, response.getBody());
+        assertEquals(credentials, response);
         verify(loggingService).logDebugController(anyString(), anyString());
-    }
-
-    @Test
-    void testCreateTraineeNoResponse() {
-        when(traineeService.createProfile(traineeDto)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> traineeController.create(traineeDto));
     }
 
     @Test
     void testUpdateTrainee() {
         when(traineeService.update(traineeDto)).thenReturn(traineeDto);
 
-        ResponseEntity<TraineeDto> response = traineeController.update(traineeDto);
+        TraineeDto response = traineeController.update(traineeDto);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(traineeDto, response.getBody());
+        assertEquals(traineeDto, response);
+        assertEquals(TRAINEE_USERNAME, traineeDto.getUser().getUsername());
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testUpdateTraineeNoResponse() {
-        when(traineeService.update(traineeDto)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> traineeController.update(traineeDto));
     }
 
     @Test
     void testDeleteTrainee() {
-        ResponseEntity<Void> response = traineeController.delete();
+        assertDoesNotThrow(() -> traineeController.delete());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(traineeService).deleteByUsername(TRAINEE_USERNAME);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testDeleteTraineeNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).deleteByUsername(TRAINEE_USERNAME);
-
-        assertThrows(RuntimeException.class, () -> traineeController.delete());
     }
 
     @Test
@@ -148,34 +104,18 @@ class TraineeControllerImplTest {
         List<TrainerDto> trainers = List.of(TrainerDto.builder().id(1).build());
         when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_USERNAME)).thenReturn(trainers);
 
-        ResponseEntity<List<TrainerDto>> response = traineeController.getTrainersNotAssignedToTrainee();
+        List<TrainerDto> response = traineeController.getTrainersNotAssignedToTrainee();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(trainers, response.getBody());
+        assertEquals(trainers, response);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testGetUnassignedTrainersNoResponse() {
-        when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_USERNAME)).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> traineeController.getTrainersNotAssignedToTrainee());
     }
 
     @Test
     void testUpdateTraineeTrainers() {
-        ResponseEntity<Void> response = traineeController.updateTraineeTrainers(1L);
+        assertDoesNotThrow(() -> traineeController.updateTraineeTrainers(1L));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(traineeService).updateTraineeTrainers(TRAINEE_USERNAME, 1L);
         verify(loggingService).logDebugController(anyString());
-    }
-
-    @Test
-    void testUpdateTraineeTrainersNoResponse() {
-        doThrow(new RuntimeException()).when(traineeService).updateTraineeTrainers(TRAINEE_USERNAME, 1L);
-
-        assertThrows(RuntimeException.class, () -> traineeController.updateTraineeTrainers(1L));
     }
 
     private void setUpSecurityContext() {

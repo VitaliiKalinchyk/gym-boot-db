@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.security;
 
+import epam.task.gymbootdb.security.service.LoginAttemptService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

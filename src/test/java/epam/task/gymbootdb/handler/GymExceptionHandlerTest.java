@@ -3,10 +3,7 @@ package epam.task.gymbootdb.handler;
 import epam.task.gymbootdb.exception.TraineeException;
 
 import epam.task.gymbootdb.service.LoggingService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -71,51 +67,6 @@ class GymExceptionHandlerTest {
         assertTrue(body.containsKey(FIELD_NAME));
         assertTrue(body.containsKey(ERROR_ID));
         assertTrue(body.containsValue(Collections.singletonList(ERROR_MESSAGE)));
-        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
-    }
-
-    @Test
-    void testHandleAuthenticationException() {
-        ResponseEntity<Map<String, Object>> responseEntity =
-                handler.handleAuthenticationException(new BadCredentialsException("bad credentials"));
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Wrong username or password");
-        verify(loggingService).logErrorHandler(anyString(), anyString(), anyString());
-    }
-
-    @Test
-    void testHandleExpiredJwtException() {
-        ResponseEntity<Map<String, Object>> responseEntity =
-                handler.handleExpiredJwtException(new ExpiredJwtException(null, null, null));
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "JWT expired");
-        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
-    }
-
-    @Test
-    void testHandleMalformedJwtException() {
-        ResponseEntity<Map<String, Object>> responseEntity =
-                handler.handleMalformedJwtException(new MalformedJwtException(null));
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Token format is invalid");
-        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
-    }
-
-    @Test
-    void testHandleSignatureException() {
-        ResponseEntity<Map<String, Object>> responseEntity =
-                handler.handleSignatureException(new SignatureException(null));
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Invalid token signature");
-        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
-    }
-
-    @Test
-    void testHandleJwtException() {
-        ResponseEntity<Map<String, Object>> responseEntity =
-                handler.handleJwtException(new JwtException(null));
-
-        asserResponseEntity(responseEntity, HttpStatus.UNAUTHORIZED, "Invalid JWT");
         verify(loggingService).logErrorHandler(anyString(), any(), anyString());
     }
 

@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.springframework.http.ResponseEntity;
-
 public interface AuthController {
 
     @Operation(summary = "User login",
@@ -17,7 +15,7 @@ public interface AuthController {
             @ApiResponse(responseCode = "200", description = "Login successful, JWT token returned"),
             @ApiResponse(responseCode = "401", description = "Unauthorized, invalid credentials")
     })
-    ResponseEntity<JwtToken> login(UserCredentials credentials);
+    JwtToken login(UserCredentials credentials);
 
     @Operation(summary = "User logout",
             description = "Logs out the user and invalidates the JWT token.")
@@ -25,5 +23,5 @@ public interface AuthController {
             @ApiResponse(responseCode = "200", description = "Logout successful"),
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
-    ResponseEntity<String> logout();
+    String logout();
 }

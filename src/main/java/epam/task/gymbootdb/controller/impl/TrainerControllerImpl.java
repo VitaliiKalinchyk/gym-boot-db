@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,40 +24,41 @@ public class TrainerControllerImpl implements TrainerController {
 
     @Override
     @GetMapping("/{username}")
-    public ResponseEntity<TrainerDto> get(@PathVariable String username) {
+    public TrainerDto get(@PathVariable String username) {
         TrainerDto trainerDto = trainerService.getByUsername(username);
         loggingService.logDebugController("was fetched");
 
-        return ResponseEntity.ok(trainerDto);
+        return trainerDto;
     }
 
     @Override
     @GetMapping("/profile")
-    public ResponseEntity<TrainerDto> get() {
+    public TrainerDto get() {
         TrainerDto trainerDto = trainerService.getByUsername(getUsername());
         loggingService.logDebugController("was fetched by itself");
 
-        return ResponseEntity.ok(trainerDto);
+        return trainerDto;
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TrainerDto trainerDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserCredentials create(@Valid @RequestBody TrainerDto trainerDto) {
         UserCredentials profile = trainerService.createProfile(trainerDto);
         loggingService.logDebugController("was created as trainer", profile.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
+        return profile;
     }
 
     @Override
     @PutMapping
-    public ResponseEntity<TrainerDto> update(@Valid @RequestBody TrainerDto trainerDto){
+    public TrainerDto update(@Valid @RequestBody TrainerDto trainerDto){
         trainerDto.getUser().setUsername(getUsername());
 
         TrainerDto update = trainerService.update(trainerDto);
         loggingService.logDebugController("was updated");
 
-        return ResponseEntity.ok(update);
+        return update;
     }
 
     private static String getUsername() {

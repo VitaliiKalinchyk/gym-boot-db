@@ -16,6 +16,8 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+  servlet:
+    context-path: /api
 
 
 security:

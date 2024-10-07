@@ -7,7 +7,6 @@ import epam.task.gymbootdb.service.TrainingTypeService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +23,9 @@ public class TrainingTypeControllerImpl implements TrainingTypeController {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<TrainingTypeDto>> getAll() {
+    public List<TrainingTypeDto> getAll() {
         loggingService.logDebugController("fetched all training types");
 
-        return ResponseEntity.ok(trainingTypeService.getAll());
+        return trainingTypeService.getAll();
     }
 }

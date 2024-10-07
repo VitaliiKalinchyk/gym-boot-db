@@ -1,5 +1,6 @@
 package epam.task.gymbootdb.security;
 
+import epam.task.gymbootdb.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,49 +37,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return (requestURI.startsWith("/actuator")
                 || requestURI.startsWith("/swagger-ui")
                 || requestURI.startsWith("/v3/api-docs")
-                || request.getMethod().equalsIgnoreCase("POST") &&
-                (requestURI.equals("/trainees") ||
-                        requestURI.equals("/trainers") ||
-                        requestURI.equals("/auth/login")));
+                || request.getMethod().equalsIgnoreCase("POST")
+                    && (requestURI.equals("/trainees")
+                    || requestURI.equals("/trainers")
+                    || requestURI.equals("/auth/login")));
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull  FilterChain filterChain) throws IOException, ServletException {
-        final String jwt = extractJwtFromRequest(request);
+        String jwt = extractJwtFromRequest(request);
 
         if (jwt == null) {
-            log.warn("JWT token is missing. Proceeding without authentication.");
-            filterChain.doFilter(request, response);
-            return;
-        }
+            proceedWithoutJwt(request, response, filterChain);
+        } else {
+            try {
+                String username = jwtService.extractUsername(jwt);
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        try {
-            final String username = jwtService.extractUsername(jwt);
+                if (username != null && (authentication == null || !authentication.isAuthenticated())) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (username != null && (authentication == null || !authentication.isAuthenticated())) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    log.warn("Invalid JWT token for user: {}", username);
+                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                        proceedWithValidJwt(request, userDetails);
+                    } else {
+                        log.warn("Invalid JWT token for user: {}", username);
+                    }
                 }
+
+                filterChain.doFilter(request, response);
+
+            } catch (Exception exception) {
+                handlerExceptionResolver.resolveException(request, response, null, exception);
             }
-
-            filterChain.doFilter(request, response);
-
-        } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
 
@@ -90,4 +82,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+    private void proceedWithoutJwt(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   FilterChain filterChain) throws IOException, ServletException {
+        log.warn("JWT token is missing. Proceeding without authentication.");
+        filterChain.doFilter(request, response);
+    }
+
+    private void proceedWithValidJwt(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
 }

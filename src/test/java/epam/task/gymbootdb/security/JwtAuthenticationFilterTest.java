@@ -2,6 +2,7 @@ package epam.task.gymbootdb.security;
 
 import epam.task.gymbootdb.dto.GymUserDetails;
 import epam.task.gymbootdb.entity.User;
+import epam.task.gymbootdb.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,7 +55,7 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    void doFilterInternalShouldProceedWithoutAuthenticationWhenJwtIsNull() throws Exception {
+    void doFilterInternalShouldProceedWithoutJwtAuthenticationWhenJwtIsNull() throws Exception {
         when(request.getHeader("Authorization")).thenReturn(null);
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);

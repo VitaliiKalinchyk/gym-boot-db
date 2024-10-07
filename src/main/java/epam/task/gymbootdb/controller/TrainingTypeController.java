@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface TrainingTypeController {
@@ -18,5 +16,5 @@ public interface TrainingTypeController {
             @ApiResponse(responseCode = "200", description = "Training types retrieved successfully"),
             @ApiResponse(responseCode = "500", description = "Server error while fetching training types")
     })
-    ResponseEntity<List<TrainingTypeDto>> getAll();
+    List<TrainingTypeDto> getAll();
 }

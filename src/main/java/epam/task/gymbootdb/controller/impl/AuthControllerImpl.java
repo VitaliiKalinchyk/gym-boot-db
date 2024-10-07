@@ -4,12 +4,11 @@ import epam.task.gymbootdb.controller.AuthController;
 import epam.task.gymbootdb.dto.JwtToken;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
-
 import epam.task.gymbootdb.service.LoggingService;
-import jakarta.validation.Valid;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,18 +24,18 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<JwtToken> login(@Valid @RequestBody UserCredentials credentials) {
+    public JwtToken login(@Valid @RequestBody UserCredentials credentials) {
         String token = authService.authenticate(credentials);
         loggingService.logDebugController("logged in", credentials.getUsername());
 
-        return ResponseEntity.ok(new JwtToken(token));
+        return new JwtToken(token);
     }
 
     @Override
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public String logout() {
         loggingService.logDebugController("logged out");
 
-        return ResponseEntity.ok("Logout successful");
+        return "Logout successful";
     }
 }

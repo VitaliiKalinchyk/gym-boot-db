@@ -1,5 +1,7 @@
-package epam.task.gymbootdb.security;
+package epam.task.gymbootdb.security.config;
 
+import epam.task.gymbootdb.security.JwtAuthenticationFilter;
+import epam.task.gymbootdb.security.UnauthorizedAuthenticationEntryPoint;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;

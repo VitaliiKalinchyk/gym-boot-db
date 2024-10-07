@@ -2,6 +2,7 @@ package epam.task.gymbootdb.security;
 
 import epam.task.gymbootdb.dto.GymUserDetails;
 import epam.task.gymbootdb.entity.User;
+import epam.task.gymbootdb.security.service.JwtService;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

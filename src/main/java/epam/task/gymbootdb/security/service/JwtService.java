@@ -1,4 +1,4 @@
-package epam.task.gymbootdb.security;
+package epam.task.gymbootdb.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
