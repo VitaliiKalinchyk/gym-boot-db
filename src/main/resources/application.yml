@@ -16,11 +16,23 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+  servlet:
+    context-path: /api
 
-password:
-  length: ${PASSWORD_LENGTH}
-bcrypt:
-  strength: ${BCRYPT_STRENGTH}
+
+security:
+  bcrypt:
+    strength: ${BCRYPT_STRENGTH}
+  password:
+    length: ${PASSWORD_LENGTH}
+  jwt:
+    secret-key: ${JWT_KEY}
+    expiration-time: ${JWT_EXPIRATION_TIME}
+  login:
+    attempts: ${MAX_LOGIN_ATTEMPTS}
+  lockout:
+    duration: ${LOGIN_LOCKOUT_DURATION}
+    cleaning-rate: ${LOCKOUT_CLEANING_RATE}
 db: ${DB}
 
 management:

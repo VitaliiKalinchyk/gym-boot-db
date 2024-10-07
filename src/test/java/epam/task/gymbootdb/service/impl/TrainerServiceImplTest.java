@@ -10,6 +10,7 @@ import epam.task.gymbootdb.exception.TrainingTypeException;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
@@ -54,6 +55,8 @@ class TrainerServiceImplTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private NameGenerator nameGenerator;
+    @Mock
+    private LoggingService loggingService;
 
     @InjectMocks
     private TrainerServiceImpl trainerService;
@@ -83,6 +86,7 @@ class TrainerServiceImplTest {
         assertUserCredentials(result, USERNAME);
         assertTrue(user.isActive(), "User should be active");
         assertEquals(ENCODED_PASSWORD, user.getPassword(), "Password should be encoded");
+        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -117,6 +121,7 @@ class TrainerServiceImplTest {
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
         assertEquals(1, result.getTrainees().size());
         assertTrainerUpdatedFields();
+        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -138,6 +143,7 @@ class TrainerServiceImplTest {
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
         assertEquals(1, result.getTrainees().size());
+        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test

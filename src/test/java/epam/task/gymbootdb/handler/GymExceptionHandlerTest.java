@@ -2,9 +2,15 @@ package epam.task.gymbootdb.handler;
 
 import epam.task.gymbootdb.exception.TraineeException;
 
+import epam.task.gymbootdb.service.LoggingService;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +21,20 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class GymExceptionHandlerTest {
 
-    private static final GymExceptionHandler handler = new GymExceptionHandler();
+    @InjectMocks
+    private GymExceptionHandler handler;
+
+    @Mock
+    private LoggingService loggingService;
+
     public static final String TRANSACTION_ID = "timestamp";
     public static final String MESSAGE = "message";
     public static final String FIELD_NAME = "fieldName";
@@ -34,6 +49,7 @@ class GymExceptionHandlerTest {
                 handler.handleGymResponseStatusException(e);
 
         asserResponseEntity(responseEntity, e.getStatusCode(), e.getReason());
+        verify(loggingService).logErrorHandler(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -51,6 +67,7 @@ class GymExceptionHandlerTest {
         assertTrue(body.containsKey(FIELD_NAME));
         assertTrue(body.containsKey(ERROR_ID));
         assertTrue(body.containsValue(Collections.singletonList(ERROR_MESSAGE)));
+        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
     }
 
     @Test
@@ -58,6 +75,7 @@ class GymExceptionHandlerTest {
         ResponseEntity<Map<String, Object>> responseEntity = handler.handleGlobalException(new Exception());
 
         asserResponseEntity(responseEntity, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
+        verify(loggingService).logErrorHandler(anyString(), any(), anyString());
     }
 
     private static void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity,

@@ -12,14 +12,12 @@ import epam.task.gymbootdb.exception.TrainingTypeException;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.MDC;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TrainerServiceImpl implements TrainerService {
-
-    private static final String TRANSACTION_ID = "transactionId";
 
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
@@ -40,6 +35,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
+    private final LoggingService loggingService;
 
     @Override
     @Transactional
@@ -53,8 +49,7 @@ public class TrainerServiceImpl implements TrainerService {
         setUserFields(user, username, password);
 
         trainerRepository.save(entity);
-        log.debug("Trainer (id = {}, username = {}) was created. Service layer. TransactionId: {}",
-                entity.getId(), username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was created", username);
 
         return new UserCredentials(username, password);
     }
@@ -69,8 +64,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        log.debug("Trainer (username = {}) was updated. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was updated", username);
 
         return dto;
     }
@@ -83,8 +77,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(entity);
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        log.debug("Trainer (username = {}) was fetched. Service layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugService("was fetched", username);
 
         return dto;
     }

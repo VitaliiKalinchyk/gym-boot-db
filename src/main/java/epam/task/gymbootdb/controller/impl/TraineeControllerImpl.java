@@ -4,17 +4,14 @@ import epam.task.gymbootdb.controller.TraineeController;
 import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TraineeService;
 
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.MDC;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,76 +20,71 @@ import java.util.List;
 @RestController
 @RequestMapping("/trainees")
 @RequiredArgsConstructor
-@Slf4j
 public class TraineeControllerImpl implements TraineeController {
 
-    private static final String TRANSACTION_ID = "transactionId";
-
     private final TraineeService traineeService;
+    private final LoggingService loggingService;
 
     @Override
     @GetMapping("/{username}")
-    public ResponseEntity<TraineeDto> get(@PathVariable String username) {
+    public TraineeDto get(@PathVariable String username) {
         TraineeDto trainee = traineeService.getByUsername(username);
-        log.debug("Trainee (username = {}) was fetched. Controller layer. TransactionId: {}",
-                 username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("was fetched");
 
-        return ResponseEntity.ok(trainee);
+        return trainee;
+    }
+
+    @Override
+    @GetMapping("/profile")
+    public TraineeDto get() {
+        TraineeDto trainee = traineeService.getByUsername(getUsername());
+        loggingService.logDebugController("was fetched by itself");
+
+        return trainee;
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<UserCredentials> create(@Valid @RequestBody TraineeDto traineeDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserCredentials create(@Valid @RequestBody TraineeDto traineeDto) {
         UserCredentials profile = traineeService.createProfile(traineeDto);
-        log.debug("Trainee (username = {}) was created. Controller layer. TransactionId: {}",
-                profile.getUsername(), MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("was created as trainee", profile.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(profile);
+        return profile;
     }
 
     @Override
     @PutMapping
-    public ResponseEntity<TraineeDto> update(@Valid @RequestBody TraineeDto trainee) {
-        String username = getUsername();
-        trainee.getUser().setUsername(username);
+    public TraineeDto update(@Valid @RequestBody TraineeDto trainee) {
+        trainee.getUser().setUsername(getUsername());
 
         TraineeDto traineeDto = traineeService.update(trainee);
-        log.debug("Trainee (username = {}) was updated. Controller layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+        loggingService.logDebugController("was updated");
 
-        return ResponseEntity.ok(traineeDto);
+        return traineeDto;
     }
 
     @Override
     @DeleteMapping
-    public ResponseEntity<Void> delete() {
-        String username = getUsername();
-        traineeService.deleteByUsername(username);
-        log.debug("Trainee (username = {}) was deleted. Controller layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
-
-        return ResponseEntity.ok().build();
+    public void delete() {
+        traineeService.deleteByUsername(getUsername());
+        loggingService.logDebugController("was deleted");
     }
 
     @Override
     @GetMapping("/unassigned-trainers")
-    public ResponseEntity<List<TrainerDto>> getTrainersNotAssignedToTrainee() {
-        String username = getUsername();
-        log.debug("Trainee (username = {}) got unassigned trainers. Controller layer. TransactionId: {}",
-                username, MDC.get(TRANSACTION_ID));
+    public List<TrainerDto> getTrainersNotAssignedToTrainee() {
+        List<TrainerDto> trainersNotAssignedToTrainee = traineeService.getTrainersNotAssignedToTrainee(getUsername());
+        loggingService.logDebugController("got unassigned trainers");
 
-        return ResponseEntity.ok(traineeService.getTrainersNotAssignedToTrainee(username));
+        return trainersNotAssignedToTrainee;
     }
 
     @Override
     @PutMapping("/trainers")
-    public ResponseEntity<Void> updateTraineeTrainers(@RequestParam long trainerId) {
-        String username = getUsername();
-        traineeService.updateTraineeTrainers(username, trainerId);
-        log.debug("Trainee (username = {}) added new trainer to it's list (id = {}). " +
-                "Controller layer. TransactionId: {}", username, trainerId, MDC.get(TRANSACTION_ID));
-
-        return ResponseEntity.ok().build();
+    public void updateTraineeTrainers(@RequestParam long trainerId) {
+        traineeService.updateTraineeTrainers(getUsername(), trainerId);
+        loggingService.logDebugController("added new trainer to it's list");
     }
 
     private static String getUsername() {

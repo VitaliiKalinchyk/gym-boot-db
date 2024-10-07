@@ -1,6 +1,7 @@
 package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,27 +32,25 @@ class TrainingControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
+    @Mock
+    private LoggingService loggingService;
 
-    private static final TrainingDto trainingDto = TrainingDto.builder().id(1).build();
+    private TrainingDto trainingDto;
     private static final String USERNAME = "Joe";
 
     @BeforeEach
     void setUp() {
+        TraineeDto traineeDto = TraineeDto.builder().user(new UserDto()).build();
+        trainingDto = TrainingDto.builder().id(1).trainee(traineeDto).build();
         setUpSecurityContext();
     }
 
     @Test
     void testCreateTraining() {
-        ResponseEntity<Void> response = trainingController.create(trainingDto);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    }
-
-    @Test
-    void testCreateTrainingNoResponse() {
-        doThrow(new RuntimeException()).when(trainingService).create(trainingDto);
-
-        assertThrows(RuntimeException.class, () -> trainingController.create(trainingDto));
+        assertDoesNotThrow(() -> trainingController.create(trainingDto));
+        assertEquals(USERNAME, trainingDto.getTrainee().getUser().getUsername());
+        verify(trainingService).create(trainingDto);
+        verify(loggingService).logDebugController(anyString(),anyString());
     }
 
     @Test
@@ -62,21 +59,12 @@ class TrainingControllerImplTest {
 
         when(trainingService.getTraineeTrainings(any())).thenReturn(trainings);
 
-        ResponseEntity<List<TrainingDto>> response = trainingController.getTraineeTrainings(null, null,
+        List<TrainingDto> response = trainingController.getTraineeTrainings(null, null,
                 null, null);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(trainingDto, response.getBody().getFirst());
-    }
-
-    @Test
-    void testGetTraineeTrainingsNoResponse() {
-        when(trainingService.getTraineeTrainings(any())).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class, () -> trainingController.getTraineeTrainings(null, null,
-                null, null));
+        assertEquals(1, response.size());
+        assertEquals(trainingDto, response.getFirst());
+        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -85,21 +73,11 @@ class TrainingControllerImplTest {
 
         when(trainingService.getTrainerTrainings(any())).thenReturn(trainings);
 
-        ResponseEntity<List<TrainingDto>> response =
-                trainingController.getTrainerTrainings(null, null, null);
+        List<TrainingDto> response = trainingController.getTrainerTrainings(null, null, null);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(trainingDto, response.getBody().getFirst());
-    }
-
-    @Test
-    void testGetTrainerTrainingsNoResponse() {
-        when(trainingService.getTrainerTrainings(any())).thenThrow(new RuntimeException());
-
-        assertThrows(RuntimeException.class,
-                () -> trainingController.getTrainerTrainings(null, null, null));
+        assertEquals(1, response.size());
+        assertEquals(trainingDto, response.getFirst());
+        verify(loggingService).logDebugController(anyString());
     }
 
     private void setUpSecurityContext() {

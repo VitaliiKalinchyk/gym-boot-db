@@ -5,6 +5,7 @@ import epam.task.gymbootdb.dto.mapper.TrainingTypeMapper;
 import epam.task.gymbootdb.entity.TrainingType;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 
+import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +27,8 @@ class TrainingTypeServiceImplTest {
     private TrainingTypeRepository trainingTypeRepository;
     @Mock
     private  TrainingTypeMapper trainingTypeMapper;
+    @Mock
+    private LoggingService loggingService;
 
     @Test
     void testGetAll() {
@@ -36,5 +41,6 @@ class TrainingTypeServiceImplTest {
         List<TrainingTypeDto> all = trainingTypeService.getAll();
 
         assertEquals(1, all.size());
+        verify(loggingService).logDebugService(anyString());
     }
 }
