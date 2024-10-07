@@ -1,7 +1,7 @@
 package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.controller.AuthController;
-import epam.task.gymbootdb.dto.JwtToken;
+import epam.task.gymbootdb.dto.JwtTokenDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 import epam.task.gymbootdb.service.LoggingService;
@@ -24,11 +24,11 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/login")
-    public JwtToken login(@Valid @RequestBody UserCredentials credentials) {
+    public JwtTokenDto login(@Valid @RequestBody UserCredentials credentials) {
         String token = authService.authenticate(credentials);
         loggingService.logDebugController("logged in", credentials.getUsername());
 
-        return new JwtToken(token);
+        return new JwtTokenDto(token);
     }
 
     @Override

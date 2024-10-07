@@ -1,6 +1,6 @@
 package epam.task.gymbootdb.controller.impl;
 
-import epam.task.gymbootdb.dto.JwtToken;
+import epam.task.gymbootdb.dto.JwtTokenDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 
@@ -31,9 +31,9 @@ class AuthControllerImplTest {
 
         when(authService.authenticate(any())).thenReturn("token");
 
-        JwtToken login = authController.login(credentials);
+        JwtTokenDto login = authController.login(credentials);
 
-        assertEquals(new JwtToken("token"), login);
+        assertEquals(new JwtTokenDto("token"), login);
         verify(loggingService).logDebugController(anyString(), anyString());
     }
 
