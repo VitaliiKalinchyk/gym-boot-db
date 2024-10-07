@@ -14,6 +14,19 @@ CREATE TABLE users (
 
 CREATE UNIQUE INDEX idx_username ON users (username);
 
+CREATE TABLE role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(40) NOT NULL UNIQUE
+);
+
+CREATE TABLE users_has_role (
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE trainee (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     birthday DATE,
@@ -51,5 +64,13 @@ CREATE TABLE trainee_has_trainer (
     FOREIGN KEY (trainer_id) REFERENCES trainer(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE jwt_token (
+    token VARCHAR(512) PRIMARY KEY ,
+    expiration_time TIMESTAMP NOT NULL
+);
+
 INSERT INTO training_type (name)
 VALUES ('FITNESS'), ('YOGA'), ('ZUMBA'), ('STRETCHING'), ('RESISTANCE');
+
+INSERT INTO role (name)
+VALUES ('ROLE_TRAINER'), ('ROLE_TRAINEE'), ('ROLE_ADMIN');
