@@ -1,6 +1,6 @@
 package epam.task.gymbootdb.security;
 
-import epam.task.gymbootdb.security.service.JwtService;
+import epam.task.gymbootdb.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,18 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request){
-        String requestURI = request.getRequestURI();
-        return (requestURI.startsWith("/actuator")
-                || requestURI.startsWith("/swagger-ui")
-                || requestURI.startsWith("/v3/api-docs")
-                || request.getMethod().equalsIgnoreCase("POST")
-                    && (requestURI.equals("/trainees")
-                    || requestURI.equals("/trainers")
-                    || requestURI.equals("/auth/login")));
-    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,

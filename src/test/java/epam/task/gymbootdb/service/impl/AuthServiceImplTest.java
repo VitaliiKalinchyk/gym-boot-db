@@ -2,8 +2,6 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.security.service.JwtService;
-import epam.task.gymbootdb.security.service.LoginAttemptService;
 
 import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +32,9 @@ public class AuthServiceImplTest {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private JwtService jwtService;
+    private JwtServiceImpl jwtServiceImpl;
     @Mock
-    private LoginAttemptService loginAttempt;
+    private LoginAttemptServiceImpl loginAttempt;
     @Mock
     private LoggingService loggingService;
     @Mock
@@ -53,7 +51,7 @@ public class AuthServiceImplTest {
     void testAuthenticateSuccess() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(jwtService.generateToken(any())).thenReturn(MOCKED_TOKEN);
+        when(jwtServiceImpl.generateToken(any())).thenReturn(MOCKED_TOKEN);
 
         String token = authService.authenticate(credentials);
 

@@ -84,7 +84,7 @@ public class TraineeControllerImpl implements TraineeController {
     @PutMapping("/trainers")
     public void updateTraineeTrainers(@RequestParam long trainerId) {
         traineeService.updateTraineeTrainers(getUsername(), trainerId);
-        loggingService.logDebugController("added new trainer to it's list");
+        loggingService.logDebugController("added new trainer to its list");
     }
 
     private static String getUsername() {

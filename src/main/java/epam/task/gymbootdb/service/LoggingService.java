@@ -1,8 +1,5 @@
 package epam.task.gymbootdb.service;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public interface LoggingService {
 
     void logInfoInterceptorPreHandle(String methodName, String uri, String queryString);
@@ -12,6 +9,8 @@ public interface LoggingService {
     void logDebugController(String message);
 
     void logDebugController(String message, String username);
+
+    void logDebugAdminController(String message, String username);
 
     void logDebugService(String message);
 

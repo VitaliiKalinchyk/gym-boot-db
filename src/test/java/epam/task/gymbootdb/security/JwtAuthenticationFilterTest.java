@@ -2,7 +2,7 @@ package epam.task.gymbootdb.security;
 
 import epam.task.gymbootdb.dto.GymUserDetails;
 import epam.task.gymbootdb.entity.User;
-import epam.task.gymbootdb.security.service.JwtService;
+import epam.task.gymbootdb.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,7 +46,7 @@ class JwtAuthenticationFilterTest {
 
     @BeforeEach
     void setup() {
-        User user = User.builder().username("testUser").password("passwords").build();
+        User user = User.builder().username("testUser").password("passwords").roles(new HashSet<>()).build();
         userDetails = new GymUserDetails(user);
         SecurityContextHolder.clearContext();
     }

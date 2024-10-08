@@ -10,6 +10,7 @@ import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TraineeException;
 import epam.task.gymbootdb.exception.TrainerException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final TraineeMapper traineeMapper;
     private final TrainerMapper trainerMapper;
     private final PasswordGenerator passwordGenerator;
@@ -95,7 +98,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public List<TrainerDto> getTrainersNotAssignedToTrainee(String username) {
         if (!traineeRepository.existsByUserUsername(username)) throw new TraineeException(username);
-        loggingService.logDebugService("got it's unassigned trainers", username);
+        loggingService.logDebugService("got its unassigned trainers", username);
       
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(username));
     }
@@ -110,7 +113,7 @@ public class TraineeServiceImpl implements TraineeService {
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
-            loggingService.logDebugService("added new trainer to it's list", username);
+            loggingService.logDebugService("added new trainer to its list", username);
         }
     }
 
@@ -126,6 +129,7 @@ public class TraineeServiceImpl implements TraineeService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
+        user.setRoles(Set.of(roleRepository.findByName("ROLE_TRAINEE")));
     }
 
     private static void updateTraineeFields(TraineeDto request, Trainee entity) {

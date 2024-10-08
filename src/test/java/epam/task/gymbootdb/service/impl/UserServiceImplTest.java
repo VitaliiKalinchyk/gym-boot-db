@@ -2,9 +2,11 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.entity.Role;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.UserException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 
 import epam.task.gymbootdb.service.LoggingService;
@@ -18,12 +20,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -32,6 +35,8 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoleRepository roleRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -52,6 +57,7 @@ class UserServiceImplTest {
      void testLoadUserByUsername() {
          user.setUsername("Joe");
          user.setPassword("pass");
+         user.setRoles(new HashSet<>());
 
          when(userRepository.findByUsername("Joe")).thenReturn(Optional.of(user));
 
@@ -111,5 +117,24 @@ class UserServiceImplTest {
         PasswordException e = assertThrows(PasswordException.class, () -> userService.changePassword(request));
 
         assertEquals("Wrong password", e.getReason());
+    }
+
+    @Test
+    void testCreateAdmin() {
+        when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.FALSE);
+        when(roleRepository.findByName(anyString())).thenReturn(new Role());
+
+        userService.createAdmin("Joe.Doe", "password");
+
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void testCreateAdminAlreadyExists() {
+        when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.TRUE);
+
+        userService.createAdmin("Joe.Doe", "password");
+
+        verify(userRepository, never()).save(any());
     }
 }
