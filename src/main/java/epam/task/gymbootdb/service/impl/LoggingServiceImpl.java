@@ -38,6 +38,12 @@ public class LoggingServiceImpl implements LoggingService {
     }
 
     @Override
+    public void logDebugAdminController(String message, String username) {
+        log.debug("Transaction ID: {},Admin {} User (username = {}). Controller layer",
+                getTransactionId(), message, username);
+    }
+
+    @Override
     public void logDebugService(String message) {
         logDebugService(message, getUsername());
 

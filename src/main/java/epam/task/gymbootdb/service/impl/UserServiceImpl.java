@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         entity.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(entity);
-        loggingService.logDebugService("changed it's password");
+        loggingService.logDebugService("changed its password");
     }
 
     private User getAndCheckUser(String username, String password){

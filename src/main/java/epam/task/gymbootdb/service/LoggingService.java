@@ -10,6 +10,8 @@ public interface LoggingService {
 
     void logDebugController(String message, String username);
 
+    void logDebugAdminController(String message, String username);
+
     void logDebugService(String message);
 
     void logDebugService(String message, String username);

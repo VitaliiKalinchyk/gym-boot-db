@@ -24,7 +24,7 @@ public class UserControllerImpl implements UserController {
     @PatchMapping("/status")
     public void changeActiveStatus() {
         userService.changeStatus(getUsername());
-        loggingService.logDebugController("changed it's active status");
+        loggingService.logDebugController("changed its active status");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UserControllerImpl implements UserController {
         request.getUserCredentials().setUsername(getUsername());
 
         userService.changePassword(request);
-        loggingService.logDebugController("changed it's password");
+        loggingService.logDebugController("changed its password");
     }
 
     private static String getUsername() {

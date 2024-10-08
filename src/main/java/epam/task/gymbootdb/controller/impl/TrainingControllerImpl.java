@@ -54,7 +54,7 @@ public class TrainingControllerImpl implements TrainingController {
                 .build();
 
         List<TrainingDto> trainings = trainingService.getTraineeTrainings(request);
-        loggingService.logDebugController("fetched it's trainee's trainings");
+        loggingService.logDebugController("fetched its trainee's trainings");
 
         return trainings;
     }
@@ -75,7 +75,7 @@ public class TrainingControllerImpl implements TrainingController {
                 .build();
 
         List<TrainingDto> trainings = trainingService.getTrainerTrainings(request);
-        loggingService.logDebugController("fetched it's trainer's trainings");
+        loggingService.logDebugController("fetched its trainer's trainings");
 
         return trainings;
     }

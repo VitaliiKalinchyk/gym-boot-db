@@ -52,7 +52,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
-        loggingService.logDebugService("fetched it's trainee trainings", username);
+        loggingService.logDebugService("fetched its trainee trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }
@@ -64,7 +64,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTraineeId());
-        loggingService.logDebugService("fetched it's trainer trainings", username);
+        loggingService.logDebugService("fetched its trainer trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }
