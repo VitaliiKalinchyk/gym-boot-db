@@ -4,6 +4,7 @@ import epam.task.gymbootdb.dto.JwtTokenDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 
+import epam.task.gymbootdb.service.JwtService;
 import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,8 @@ class AuthControllerImplTest {
     AuthService authService;
     @Mock
     LoggingService loggingService;
+    @Mock
+    JwtService jwtService;
 
     @Test
     void testLogin() {
@@ -39,9 +42,10 @@ class AuthControllerImplTest {
 
     @Test
     void testLogout() {
-        String logout = authController.logout();
+        String logout = authController.logout("Bearer token");
 
         assertEquals("Logout successful", logout);
-        verify(loggingService).logDebugController(anyString());
+        verify(jwtService).saveToBlacklist("token");
+        verify(loggingService).logDebugController(anyString(), nullable(String.class));
     }
 }

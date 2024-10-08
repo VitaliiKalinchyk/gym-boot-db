@@ -1,39 +1,44 @@
-package epam.task.gymbootdb.security.service;
+package epam.task.gymbootdb.utils.impl;
 
+import epam.task.gymbootdb.utils.LoginAttemptUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Component
 @Slf4j
-public class LoginAttemptService {
+public class LoginAttemptUtilImpl implements LoginAttemptUtil {
     private final Map<String, Integer> attempts = new ConcurrentHashMap<>();
     private final Map<String, Long> lockoutTime = new ConcurrentHashMap<>();
 
     private final int maxAttempts;
     private final Duration lockoutDuration;
 
-    public LoginAttemptService(@Value("${security.login.attempts}") int maxAttempts,
-                               @Value("${security.lockout.duration}")Duration lockoutDuration) {
+    public LoginAttemptUtilImpl(@Value("${security.login.attempts}") int maxAttempts,
+                                @Value("${security.lockout.duration}")Duration lockoutDuration) {
         this.maxAttempts = maxAttempts;
         this.lockoutDuration = lockoutDuration;
     }
 
+    @Override
     public boolean isBlocked(String username) {
         return lockoutTime.containsKey(username) &&
                 (System.currentTimeMillis() - lockoutTime.get(username) < lockoutDuration.toMillis());
     }
 
+    @Override
     public void loginSucceeded(String username) {
         attempts.remove(username);
         lockoutTime.remove(username);
     }
 
+    @Override
     public void loginFailed(String username) {
         attempts.put(username, attempts.getOrDefault(username, 0) + 1);
         if (attempts.get(username) >= maxAttempts) {

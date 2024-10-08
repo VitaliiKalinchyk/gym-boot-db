@@ -2,7 +2,7 @@ package epam.task.gymbootdb.security;
 
 import epam.task.gymbootdb.dto.GymUserDetails;
 import epam.task.gymbootdb.entity.User;
-import epam.task.gymbootdb.security.service.JwtService;
+import epam.task.gymbootdb.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -23,5 +23,5 @@ public interface AuthController {
             @ApiResponse(responseCode = "200", description = "Logout successful"),
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
-    String logout();
+    String logout(String authorization);
 }

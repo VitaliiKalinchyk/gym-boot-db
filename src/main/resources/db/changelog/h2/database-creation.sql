@@ -64,7 +64,7 @@ CREATE TABLE trainee_has_trainer (
     FOREIGN KEY (trainer_id) REFERENCES trainer(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE jwt_token (
+CREATE TABLE jwt_blacklist (
     token VARCHAR(512) PRIMARY KEY ,
     expiration_time TIMESTAMP NOT NULL
 );

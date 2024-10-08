@@ -2,8 +2,7 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.security.service.JwtService;
-import epam.task.gymbootdb.security.service.LoginAttemptService;
+import epam.task.gymbootdb.utils.impl.LoginAttemptUtilImpl;
 import epam.task.gymbootdb.service.AuthService;
 
 import epam.task.gymbootdb.service.LoggingService;
@@ -21,8 +20,8 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final LoginAttemptService loginAttempt;
+    private final JwtServiceImpl jwtServiceImpl;
+    private final LoginAttemptUtilImpl loginAttempt;
     private final LoggingService loggingService;
 
     @Override
@@ -35,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
             throw new LoginAttemptException(username);
         }
 
-        String token = jwtService.generateToken(getUserDetails(credentials, username));
+        String token = jwtServiceImpl.generateToken(getUserDetails(credentials, username));
         loggingService.logDebugService("authenticated successfully and token generated", username);
 
         return token;

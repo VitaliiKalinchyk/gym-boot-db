@@ -2,7 +2,6 @@ package epam.task.gymbootdb.security.config;
 
 import epam.task.gymbootdb.security.JwtAuthenticationFilter;
 import epam.task.gymbootdb.security.UnauthorizedAuthenticationEntryPoint;
-import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,11 +46,6 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(entryPoint)
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .logoutSuccessHandler((request, response, authentication) ->
-                                response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
