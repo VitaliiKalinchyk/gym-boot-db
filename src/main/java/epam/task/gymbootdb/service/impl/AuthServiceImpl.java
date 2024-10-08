@@ -2,7 +2,6 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.utils.impl.LoginAttemptUtilImpl;
 import epam.task.gymbootdb.service.AuthService;
 
 import epam.task.gymbootdb.service.LoggingService;
@@ -21,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
-    private final LoginAttemptUtilImpl loginAttempt;
+    private final LoginAttemptServiceImpl loginAttempt;
     private final LoggingService loggingService;
 
     @Override

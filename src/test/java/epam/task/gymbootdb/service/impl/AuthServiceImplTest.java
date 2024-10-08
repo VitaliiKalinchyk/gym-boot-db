@@ -2,7 +2,6 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.utils.impl.LoginAttemptUtilImpl;
 
 import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +34,7 @@ public class AuthServiceImplTest {
     @Mock
     private JwtServiceImpl jwtServiceImpl;
     @Mock
-    private LoginAttemptUtilImpl loginAttempt;
+    private LoginAttemptServiceImpl loginAttempt;
     @Mock
     private LoggingService loggingService;
     @Mock

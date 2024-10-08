@@ -1,27 +1,27 @@
-package epam.task.gymbootdb.utils.impl;
+package epam.task.gymbootdb.service.impl;
 
-import epam.task.gymbootdb.utils.LoginAttemptUtil;
+import epam.task.gymbootdb.service.LoginAttemptService;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+@Service
 @Slf4j
-public class LoginAttemptUtilImpl implements LoginAttemptUtil {
+public class LoginAttemptServiceImpl implements LoginAttemptService {
     private final Map<String, Integer> attempts = new ConcurrentHashMap<>();
     private final Map<String, Long> lockoutTime = new ConcurrentHashMap<>();
 
     private final int maxAttempts;
     private final Duration lockoutDuration;
 
-    public LoginAttemptUtilImpl(@Value("${security.login.attempts}") int maxAttempts,
-                                @Value("${security.lockout.duration}")Duration lockoutDuration) {
+    public LoginAttemptServiceImpl(@Value("${security.login.attempts}") int maxAttempts,
+                                   @Value("${security.lockout.duration}")Duration lockoutDuration) {
         this.maxAttempts = maxAttempts;
         this.lockoutDuration = lockoutDuration;
     }
@@ -46,8 +46,8 @@ public class LoginAttemptUtilImpl implements LoginAttemptUtil {
         }
     }
 
-    @Scheduled(fixedRateString = "${security.lockout.cleaning-rate}")
-    private void removeExpiredBlocks() {
+    @Override
+    public void removeExpiredBlocks() {
         long currentTime = System.currentTimeMillis();
         lockoutTime.entrySet().removeIf(entry -> currentTime - entry.getValue() > lockoutDuration.toMillis());
 
