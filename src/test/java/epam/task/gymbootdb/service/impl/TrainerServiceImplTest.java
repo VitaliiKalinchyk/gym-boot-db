@@ -3,10 +3,12 @@ package epam.task.gymbootdb.service.impl;
 import epam.task.gymbootdb.dto.*;
 import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
+import epam.task.gymbootdb.entity.Role;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TrainerException;
 import epam.task.gymbootdb.exception.TrainingTypeException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
@@ -45,6 +47,8 @@ class TrainerServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private TrainingTypeRepository trainingTypeRepository;
+    @Mock
+    private RoleRepository roleRepository;
     @Mock
     private TrainerMapper trainerMapper;
     @Mock
@@ -164,6 +168,7 @@ class TrainerServiceImplTest {
             when(nameGenerator.generateUsername(USERNAME, List.of(USERNAME))).thenReturn(USERNAME + "1");
         }
         when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);
+        when(roleRepository.findByName(anyString())).thenReturn(new Role());
     }
 
     private void assertUserCredentials(UserCredentials result, String expectedUsername) {

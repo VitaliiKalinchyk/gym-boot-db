@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +46,7 @@ class JwtAuthenticationFilterTest {
 
     @BeforeEach
     void setup() {
-        User user = User.builder().username("testUser").password("passwords").build();
+        User user = User.builder().username("testUser").password("passwords").roles(new HashSet<>()).build();
         userDetails = new GymUserDetails(user);
         SecurityContextHolder.clearContext();
     }

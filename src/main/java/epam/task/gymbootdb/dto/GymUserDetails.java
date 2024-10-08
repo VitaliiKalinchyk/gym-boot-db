@@ -24,6 +24,7 @@ public class GymUserDetails implements UserDetails {
         username = user.getUsername();
         password = user.getPassword();
         isActive = user.isActive();
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
     }
 
     @Override

@@ -7,4 +7,6 @@ public interface UserService {
     void changeStatus(String username);
 
     void changePassword(ChangePasswordRequest request);
+
+    void createAdmin(String adminName, String adminPassword);
 }

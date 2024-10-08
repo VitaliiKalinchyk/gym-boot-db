@@ -33,6 +33,9 @@ security:
   lockout:
     duration: ${LOGIN_LOCKOUT_DURATION}
     cleaning-rate: ${LOCKOUT_CLEANING_RATE}
+  admin:
+    name: ${ADMIN_NAME}
+    password: ${ADMIN_PASSWORD}
 db: ${DB}
 
 management:

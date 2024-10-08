@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,7 +35,7 @@ class JwtServiceImplTest {
     @BeforeEach
     void setUp() {
         jwtService = new JwtServiceImpl(jwtBlacklistRepository, "A".repeat(256), 1_000_000);
-        User user = User.builder().username(USERNAME).password("password").build();
+        User user = User.builder().username(USERNAME).password("password").roles(new HashSet<>()).build();
         userDetails = new GymUserDetails(user);
     }
 
@@ -68,7 +70,7 @@ class JwtServiceImplTest {
 
     @Test
     void testIsTokenValidShouldReturnFalseForInvalidUsername() {
-        User user = User.builder().username("wrongUsername").build();
+        User user = User.builder().username("wrongUsername").roles(new HashSet<>()).build();
         GymUserDetails gymUserDetails = new GymUserDetails(user);
 
         String token = jwtService.generateToken(gymUserDetails);

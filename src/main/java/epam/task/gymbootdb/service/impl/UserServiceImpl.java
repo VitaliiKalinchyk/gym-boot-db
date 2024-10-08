@@ -6,22 +6,29 @@ import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.UserException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoggingService loggingService;
 
@@ -50,6 +57,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         userRepository.save(entity);
         loggingService.logDebugService("changed its password");
+    }
+
+    @Override
+    public void createAdmin(String adminName, String adminPassword) {
+        if (!userRepository.existsByUsername(adminName)) {
+            User user = User.builder()
+                    .firstName(adminName)
+                    .lastName(adminName)
+                    .username(adminName)
+                    .password(passwordEncoder.encode(adminPassword))
+                    .isActive(true)
+                    .roles(Set.of(roleRepository.findByName("ROLE_ADMIN")))
+                    .build();
+
+            userRepository.save(user);
+            log.warn("Created admin");
+        }
     }
 
     private User getAndCheckUser(String username, String password){
