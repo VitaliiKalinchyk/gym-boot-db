@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -110,6 +111,10 @@ public class TraineeServiceImpl implements TraineeService {
                 .orElseThrow(() -> new TraineeException(username));
         Trainer trainer = trainerRepository.findById(trainerId).orElseThrow(() -> new TrainerException(trainerId));
 
+        if (trainee.getTrainers() == null) {
+            trainee.setTrainers(new ArrayList<>());
+        }
+
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
@@ -121,7 +126,7 @@ public class TraineeServiceImpl implements TraineeService {
         String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
 
         return userRepository.existsByUsername(username) ?
-                nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
+                nameGenerator.generateUsername(username, userRepository.findByUsernameStartingWith(username)) :
                 username;
     }
 

@@ -32,13 +32,11 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/logout")
-    public String logout(@RequestHeader String authorization) {
+    public void logout(@RequestHeader String authorization) {
         String token = getToken(authorization);
 
         jwtService.saveToBlacklist(token);
         loggingService.logDebugController("logged out", jwtService.extractUsername(token));
-
-        return "Logout successful";
     }
 
     private String getToken(String authorization) {

@@ -95,7 +95,7 @@ public class TrainerServiceImpl implements TrainerService {
     private String generateUsername(User user) {
         String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
         return userRepository.existsByUsername(username) ?
-                nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
+                nameGenerator.generateUsername(username, userRepository.findByUsernameStartingWith(username)) :
                 username;
     }
 

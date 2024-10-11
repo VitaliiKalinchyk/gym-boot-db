@@ -27,6 +27,8 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String BEARER = "Bearer ";
+
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -63,10 +65,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER)) {
+            return authorizationHeader.substring(BEARER.length());
         }
         return null;
     }

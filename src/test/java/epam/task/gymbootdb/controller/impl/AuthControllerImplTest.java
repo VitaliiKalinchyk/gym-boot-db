@@ -42,9 +42,8 @@ class AuthControllerImplTest {
 
     @Test
     void testLogout() {
-        String logout = authController.logout("Bearer token");
+        assertDoesNotThrow(() -> authController.logout("Bearer token"));
 
-        assertEquals("Logout successful", logout);
         verify(jwtService).saveToBlacklist("token");
         verify(loggingService).logDebugController(anyString(), nullable(String.class));
     }

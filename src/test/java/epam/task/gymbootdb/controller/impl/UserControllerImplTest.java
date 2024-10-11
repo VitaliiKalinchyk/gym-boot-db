@@ -3,8 +3,8 @@ package epam.task.gymbootdb.controller.impl;
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.LoggingService;
-
 import epam.task.gymbootdb.service.UserService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

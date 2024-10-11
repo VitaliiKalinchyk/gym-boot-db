@@ -164,7 +164,7 @@ class TrainerServiceImplTest {
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn(USERNAME);
         when(userRepository.existsByUsername(anyString())).thenReturn(usernameExists);
         if (usernameExists) {
-            when(userRepository.findUsernamesByUsernameStartsWith(USERNAME)).thenReturn(List.of(USERNAME));
+            when(userRepository.findByUsernameStartingWith(USERNAME)).thenReturn(List.of(USERNAME));
             when(nameGenerator.generateUsername(USERNAME, List.of(USERNAME))).thenReturn(USERNAME + "1");
         }
         when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);

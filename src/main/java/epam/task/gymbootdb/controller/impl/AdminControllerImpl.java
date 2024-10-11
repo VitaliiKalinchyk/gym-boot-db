@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -67,7 +68,7 @@ public class AdminControllerImpl implements AdminController {
 
     @Override
     @PutMapping("/trainers/{username}")
-    public TrainerDto updateTrainer(@PathVariable String username, @RequestBody TrainerDto trainerDto) {
+    public TrainerDto updateTrainer(@PathVariable String username,@Valid @RequestBody TrainerDto trainerDto) {
         trainerDto.getUser().setUsername(username);
 
         TrainerDto update = trainerService.update(trainerDto);
@@ -78,6 +79,7 @@ public class AdminControllerImpl implements AdminController {
 
     @Override
     @PostMapping("/trainings/{username}")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createTraining(@PathVariable String username, @Valid @RequestBody TrainingDto trainingDto) {
         trainingDto.getTrainee().getUser().setUsername(username);
         trainingService.create(trainingDto);

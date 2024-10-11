@@ -20,6 +20,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Gym API")
                         .version("1.0")
-                        .description("API documentation for project EPAM lab project"));
+                        .description("API documentation for EPAM lab gym project"));
     }
 }

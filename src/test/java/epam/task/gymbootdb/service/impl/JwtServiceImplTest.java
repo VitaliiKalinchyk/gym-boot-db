@@ -55,6 +55,14 @@ class JwtServiceImplTest {
     }
 
     @Test
+    void testGenerateTokenWithExpiration() {
+        String token = jwtService.generateToken(userDetails, 0);
+
+        assertNotNull(token);
+        assertFalse(token.isEmpty());
+    }
+
+    @Test
     void testIsTokenValid() {
         String token = jwtService.generateToken(userDetails);
 
@@ -80,8 +88,7 @@ class JwtServiceImplTest {
 
     @Test
     void testIsTokenValidExpiredToken() {
-        jwtService = new JwtServiceImpl(jwtBlacklistRepository, "A".repeat(256), 0);
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetails, -1);
 
         assertThrows(ExpiredJwtException.class, () -> jwtService.isTokenValid(token, userDetails));
     }

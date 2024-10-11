@@ -45,6 +45,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public String generateToken(UserDetails userDetails, long expiration) {
+        return buildToken(new HashMap<>(), userDetails, expiration);
+    }
+
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
 

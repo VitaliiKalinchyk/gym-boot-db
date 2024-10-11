@@ -7,6 +7,8 @@ public interface JwtService {
 
     String generateToken(UserDetails userDetails);
 
+    String generateToken(UserDetails userDetails, long expiration);
+
     boolean isTokenValid(String token, UserDetails userDetails);
 
     void saveToBlacklist(String token);
