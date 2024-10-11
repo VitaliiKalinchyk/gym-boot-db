@@ -40,14 +40,14 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testExtractUsername() {
+    void extractUsername() {
         String token = jwtService.generateToken(userDetails);
         String username = jwtService.extractUsername(token);
         assertEquals(USERNAME, username);
     }
 
     @Test
-    void testGenerateToken() {
+    void generateToken() {
         String token = jwtService.generateToken(userDetails);
 
         assertNotNull(token);
@@ -55,7 +55,7 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testGenerateTokenWithExpiration() {
+    void generateTokenWithExpiration() {
         String token = jwtService.generateToken(userDetails, 0);
 
         assertNotNull(token);
@@ -63,21 +63,21 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testIsTokenValid() {
+    void isTokenValid() {
         String token = jwtService.generateToken(userDetails);
 
         assertTrue(jwtService.isTokenValid(token, userDetails));
     }
 
     @Test
-    void testIsTokenValidShouldReturnFalseForInvalidToken() {
+    void isTokenValidShouldReturnFalseForInvalidToken() {
         String invalidToken = "invalidToken";
 
         assertThrows(JwtException.class, () -> jwtService.isTokenValid(invalidToken, userDetails));
     }
 
     @Test
-    void testIsTokenValidShouldReturnFalseForInvalidUsername() {
+    void isTokenValidShouldReturnFalseForInvalidUsername() {
         User user = User.builder().username("wrongUsername").roles(new HashSet<>()).build();
         GymUserDetails gymUserDetails = new GymUserDetails(user);
 
@@ -87,14 +87,14 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testIsTokenValidExpiredToken() {
+    void isTokenValidExpiredToken() {
         String token = jwtService.generateToken(userDetails, -1);
 
         assertThrows(ExpiredJwtException.class, () -> jwtService.isTokenValid(token, userDetails));
     }
 
     @Test
-    void testIsTokenValidShouldReturnFalseForBlacklistedToken() {
+    void isTokenValidShouldReturnFalseForBlacklistedToken() {
         String token = jwtService.generateToken(userDetails);
 
         when(jwtBlacklistRepository.existsById(token)).thenReturn(Boolean.TRUE);
@@ -103,7 +103,7 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testSaveToBlacklist() {
+    void saveToBlacklist() {
         String token = jwtService.generateToken(userDetails);
 
         jwtService.saveToBlacklist(token);
@@ -112,7 +112,7 @@ class JwtServiceImplTest {
     }
 
     @Test
-    void testDeleteExpiredTokens() {
+    void deleteExpiredTokens() {
         jwtService.deleteExpiredTokens();
 
         verify(jwtBlacklistRepository).deleteAllByExpirationTimeBefore(any());

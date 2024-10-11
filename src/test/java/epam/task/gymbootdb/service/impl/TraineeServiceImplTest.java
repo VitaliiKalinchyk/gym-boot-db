@@ -80,7 +80,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testCreateProfile() {
+    void createProfile() {
         prepareCreateProfileMocks(false);
 
         UserCredentials result = traineeService.createProfile(traineeRequest);
@@ -91,7 +91,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testCreateProfileUsernameExists() {
+    void createProfileUsernameExists() {
         prepareCreateProfileMocks(true);
 
         UserCredentials result = traineeService.createProfile(traineeRequest);
@@ -102,7 +102,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainee() {
+    void updateTrainee() {
         traineeRequest.setBirthday(LocalDate.now());
         traineeRequest.setAddress("address");
         traineeRequest.setUser(createUserDto());
@@ -120,7 +120,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testUpdateTraineeNoSuchTrainee() {
+    void updateTraineeNoSuchTrainee() {
         traineeRequest.setUser(new UserDto());
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.update(traineeRequest));
 
@@ -128,7 +128,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testGetByUsername() {
+    void getByUsername() {
         when(traineeRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(traineeEntity));
         when(traineeMapper.toDto(traineeEntity)).thenReturn(traineeResponse);
         when(trainerMapper.toDtoList(any())).thenReturn(List.of(new TrainerDto()));
@@ -141,14 +141,14 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testGetByUsernameNoSuchTrainee() {
+    void getByUsernameNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.getByUsername(USERNAME));
 
         assertEquals("Trainee with username Joe was not found", e.getReason());
     }
 
     @Test
-    void testDeleteByUsername() {
+    void deleteByUsername() {
         when(traineeRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(traineeEntity));
 
         assertDoesNotThrow(() -> traineeService.deleteByUsername(USERNAME));
@@ -156,13 +156,13 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testDeleteByUsernameNoSuchTrainee() {
+    void deleteByUsernameNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class, () -> traineeService.deleteByUsername(USERNAME));
         assertEquals("Trainee with username Joe was not found", e.getReason());
     }
 
     @Test
-    void testGetTrainersNotAssignedToTrainee() {
+    void getTrainersNotAssignedToTrainee() {
         TrainerDto trainerDto = new TrainerDto();
 
         when(traineeRepository.existsByUserUsername(USERNAME)).thenReturn(true);
@@ -176,7 +176,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testGetTrainersNotAssignedToTraineeNoSuchTrainee() {
+    void getTrainersNotAssignedToTraineeNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.getTrainersNotAssignedToTrainee(USERNAME));
 
@@ -184,7 +184,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testUpdateTraineeTrainers() {
+    void updateTraineeTrainers() {
         traineeEntity.setTrainers(new ArrayList<>());
         Trainer trainer = new Trainer();
 
@@ -198,7 +198,7 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testUpdateTraineeTrainersTrainerAlreadyInList () {
+    void updateTraineeTrainersTrainerAlreadyInList () {
         Trainer trainer = new Trainer();
         traineeEntity.setTrainers(List.of(trainer));
 
@@ -212,14 +212,14 @@ class TraineeServiceImplTest {
     }
 
     @Test
-    void testUpdateTraineeTrainersNoSuchTrainee() {
+    void updateTraineeTrainersNoSuchTrainee() {
         TraineeException e = assertThrows(TraineeException.class,
                 () -> traineeService.updateTraineeTrainers(USERNAME, 1L));
         assertEquals("Trainee with username Joe was not found", e.getReason());
     }
 
     @Test
-    void testUpdateTraineeTrainersNoSuchTrainer() {
+    void updateTraineeTrainersNoSuchTrainer() {
         when(traineeRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(traineeEntity));
 
         TrainerException e = assertThrows(TrainerException.class,

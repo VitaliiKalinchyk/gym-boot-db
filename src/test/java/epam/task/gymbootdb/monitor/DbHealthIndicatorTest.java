@@ -28,7 +28,7 @@ class DbHealthIndicatorTest {
     }
 
     @Test
-    void testHealth(){
+    void health(){
         doNothing().when(jdbcTemplate).execute("SELECT 1");
 
         Health health = dbHealthIndicator.health();
@@ -40,7 +40,7 @@ class DbHealthIndicatorTest {
         assertTrue(details.containsKey("responseTime"));
     }
     @Test
-    void testHealthNoConnection(){
+    void healthNoConnection(){
         doThrow(new RuntimeException("message")).when(jdbcTemplate).execute("SELECT 1");
 
         Health health = dbHealthIndicator.health();

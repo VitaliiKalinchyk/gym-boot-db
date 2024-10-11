@@ -45,7 +45,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testAuthenticateSuccess() {
+    void authenticateSuccess() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtServiceImpl.generateToken(any())).thenReturn(MOCKED_TOKEN);
@@ -57,7 +57,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testAuthenticateUserBlocked() {
+    void authenticateUserBlocked() {
         when(loginAttempt.isBlocked(USERNAME)).thenReturn(true);
 
         LoginAttemptException e = assertThrows(LoginAttemptException.class, () -> authService.authenticate(credentials));
@@ -65,7 +65,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testAuthenticateBadCredentials() {
+    void authenticateBadCredentials() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Login failed"));
 

@@ -23,7 +23,7 @@ class GymAuthExceptionHandlerTest {
     public static final String MESSAGE = "message";
 
     @Test
-    void testHandleAuthenticationException() {
+    void handleAuthenticationException() {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleAuthenticationException(new BadCredentialsException("bad credentials"));
 
@@ -31,7 +31,7 @@ class GymAuthExceptionHandlerTest {
     }
 
     @Test
-    void testHandleExpiredJwtException() {
+    void handleExpiredJwtException() {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleExpiredJwtException(new ExpiredJwtException(null, null, null));
 
@@ -39,7 +39,7 @@ class GymAuthExceptionHandlerTest {
     }
 
     @Test
-    void testHandleMalformedJwtException() {
+    void handleMalformedJwtException() {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleMalformedJwtException(new MalformedJwtException(null));
 
@@ -47,7 +47,7 @@ class GymAuthExceptionHandlerTest {
     }
 
     @Test
-    void testHandleSignatureException() {
+    void handleSignatureException() {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleSignatureException(new SignatureException(null));
 
@@ -55,7 +55,7 @@ class GymAuthExceptionHandlerTest {
     }
 
     @Test
-    void testHandleJwtException() {
+    void handleJwtException() {
         ResponseEntity<Map<String, Object>> responseEntity =
                 handler.handleJwtException(new JwtException(null));
 

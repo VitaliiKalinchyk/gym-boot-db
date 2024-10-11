@@ -28,38 +28,38 @@ class TraineeDtoTest {
     }
 
     @Test
-    void testValidTraineeDto() {
+    void validTraineeDto() {
         assertNoViolations(createDto(getUser(), BIRTHDAY, ADDRESS));
     }
 
     @Test
-    void testValidTraineeDtoNullOptionalFields() {
+    void validTraineeDtoNullOptionalFields() {
         assertNoViolations(createDto(getUser(), null, null));
     }
 
     @Test
-    void testNullUser() {
+    void nullUser() {
         TraineeDto dto = createDto(null, BIRTHDAY, ADDRESS);
 
         assertSingleViolation(dto, "User cannot be null");
     }
 
     @Test
-    void testNotValidUser() {
+    void notValidUser() {
         TraineeDto dto = createDto(getUserNoFirstName(), BIRTHDAY, ADDRESS);
 
         assertSingleViolation(dto, "First name cannot be null");
     }
 
     @Test
-    void testFutureBirthday() {
+    void futureBirthday() {
         TraineeDto dto = createDto(getUser(), LocalDate.now().plusDays(1), ADDRESS);
 
         assertSingleViolation(dto, "Birthday cannot be in the future");
     }
 
     @Test
-    void testAddressTooLong() {
+    void addressTooLong() {
         TraineeDto dto = createDto(getUser(), BIRTHDAY, "A".repeat(121));
 
         assertSingleViolation(dto, "Address cannot exceed 120 characters");

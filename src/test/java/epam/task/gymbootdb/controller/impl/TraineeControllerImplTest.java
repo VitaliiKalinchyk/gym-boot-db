@@ -48,7 +48,7 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testGetTraineeProfileTrainee() {
+    void getTraineeProfileTrainee() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
         TraineeDto response = traineeController.getTraineeProfile(TRAINEE_USERNAME);
@@ -57,7 +57,7 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testGetTraineeProfileTraineeProfile() {
+    void getTraineeProfileTraineeProfile() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
         TraineeDto response = traineeController.getTraineeProfile();
@@ -66,7 +66,7 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testCreateTraineeTrainee() {
+    void createTraineeTrainee() {
         when(traineeService.createProfile(traineeDto)).thenReturn(credentials);
 
         UserCredentials response = traineeController.createTrainee(traineeDto);
@@ -75,7 +75,7 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testUpdateTraineeProfileTrainee() {
+    void updateTraineeProfileTrainee() {
         when(traineeService.update(traineeDto)).thenReturn(traineeDto);
 
         TraineeDto response = traineeController.updateTraineeProfile(traineeDto);
@@ -85,14 +85,14 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testDeleteTraineeTrainee() {
+    void deleteTraineeTrainee() {
         assertDoesNotThrow(() -> traineeController.deleteTrainee());
 
         verify(traineeService).deleteByUsername(TRAINEE_USERNAME);
     }
 
     @Test
-    void testGetTraineeProfileUnassignedTrainers() {
+    void getTraineeProfileUnassignedTrainers() {
         List<TrainerDto> trainers = List.of(TrainerDto.builder().id(1).build());
         when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_USERNAME)).thenReturn(trainers);
 
@@ -102,7 +102,7 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testUpdateTraineeProfileTraineeTrainers() {
+    void updateTraineeProfileTraineeTrainers() {
         assertDoesNotThrow(() -> traineeController.updateTraineeTrainers(1L));
 
         verify(traineeService).updateTraineeTrainers(TRAINEE_USERNAME, 1L);

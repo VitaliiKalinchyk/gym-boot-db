@@ -19,7 +19,7 @@ class ExpiredTokenCleanupSchedulerTest {
     private JwtService jwtService;
 
     @Test
-    void testCleanExpiredToken() {
+    void cleanExpiredToken() {
         expiredTokenCleanupScheduler.cleanExpiredTokens();
 
         verify(jwtService).deleteExpiredTokens();

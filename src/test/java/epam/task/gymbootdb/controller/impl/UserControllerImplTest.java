@@ -41,13 +41,13 @@ class UserControllerImplTest {
     }
 
     @Test
-    void testChangeUserActiveStatus() {
+    void changeUserActiveStatus() {
         assertDoesNotThrow(() -> userController.changeUserActiveStatus());
         verify(userService).changeStatus(USERNAME);
     }
 
     @Test
-    void testChangeUserPasswordSuccess() {
+    void changeUserPasswordSuccess() {
         UserCredentials userCredentials = new UserCredentials(USERNAME, PASSWORD);
         ChangePasswordRequest request = new ChangePasswordRequest(userCredentials, NEW_PASS);
 

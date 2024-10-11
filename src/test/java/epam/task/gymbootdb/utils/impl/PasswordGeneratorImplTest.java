@@ -15,13 +15,13 @@ class PasswordGeneratorImplTest {
     private final PasswordGenerator passwordGenerator = new PasswordGeneratorImpl(10);
 
     @Test
-    void testGeneratePasswordCorrectLength() {
+    void generatePasswordCorrectLength() {
         String password = passwordGenerator.generatePassword();
         assertEquals(10, password.length());
     }
 
     @Test
-    void testGeneratePasswordContainsRequiredCharacters() {
+    void generatePasswordContainsRequiredCharacters() {
         String password = passwordGenerator.generatePassword();
 
         assertTrue(password.chars().anyMatch(Character::isUpperCase),
@@ -33,7 +33,7 @@ class PasswordGeneratorImplTest {
     }
 
     @Test
-    void testGeneratePasswordContainsOnlyAllowedCharacters() {
+    void generatePasswordContainsOnlyAllowedCharacters() {
         String password = passwordGenerator.generatePassword();
 
         assertTrue(password.matches("[A-Za-z0-9]+"),
@@ -41,7 +41,7 @@ class PasswordGeneratorImplTest {
     }
 
     @Test
-    void testGenerateUniquePasswords() {
+    void generateUniquePasswords() {
         int numberOfPasswordsToGenerate = 1000;
         Set<String> generatedPasswords = new HashSet<>();
 

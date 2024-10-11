@@ -22,12 +22,12 @@ class LoginAttemptServiceImplTest {
     }
 
     @Test
-    void testIsBlocked() {
+    void isBlocked() {
         assertFalse(loginAttemptService.isBlocked(USERNAME));
     }
 
     @Test
-    void testLoginFailedShouldLockUserAfterMaxAttempts() {
+    void loginFailedShouldLockUserAfterMaxAttempts() {
         for (int i = 0; i < MAX_ATTEMPTS; i++) {
             loginAttemptService.loginFailed(USERNAME);
         }
@@ -36,7 +36,7 @@ class LoginAttemptServiceImplTest {
     }
 
     @Test
-    void testLoginSucceededShouldClearAttemptsWhenLoginIsSuccessful() {
+    void loginSucceededShouldClearAttemptsWhenLoginIsSuccessful() {
         for (int i = 0; i < MAX_ATTEMPTS - 1; i++) {
             loginAttemptService.loginFailed(USERNAME);
         }
@@ -47,7 +47,7 @@ class LoginAttemptServiceImplTest {
     }
 
     @Test
-    void testRemoveExpiredBlocks() {
+    void removeExpiredBlocks() {
         loginAttemptService = new LoginAttemptServiceImpl(1, Duration.ZERO);
 
         loginAttemptService.loginFailed(USERNAME);

@@ -26,7 +26,7 @@ class SecurityConfigTest {
     HttpSecurity http;
 
     @Test
-    void testSecurityFilterChain() throws Exception {
+    void securityFilterChain() throws Exception {
         when(http.csrf(any())).thenReturn(http);
         when(http.cors(any())).thenReturn(http);
         when(http.sessionManagement(any())).thenReturn(http);

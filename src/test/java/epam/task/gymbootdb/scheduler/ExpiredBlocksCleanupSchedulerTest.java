@@ -19,7 +19,7 @@ class ExpiredBlocksCleanupSchedulerTest {
     private LoginAttemptService loginAttemptService;
 
     @Test
-    void testCleanExpiredBlocks() {
+    void cleanExpiredBlocks() {
         expiredBlocksCleanupScheduler.cleanExpiredBlocks();
 
         verify(loginAttemptService).removeExpiredBlocks();

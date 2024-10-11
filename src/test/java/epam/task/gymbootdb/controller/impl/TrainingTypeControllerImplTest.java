@@ -24,7 +24,7 @@ class TrainingTypeControllerImplTest {
     TrainingTypeService trainingTypeService;
 
     @Test
-    void testGetAllTrainingTypes() {
+    void getAllTrainingTypes() {
         TrainingTypeDto yoga = new TrainingTypeDto(1, "YOGA");
         List<TrainingTypeDto> trainingTypes = List.of(yoga);
 

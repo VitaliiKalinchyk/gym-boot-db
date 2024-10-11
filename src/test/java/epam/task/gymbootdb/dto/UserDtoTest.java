@@ -33,49 +33,49 @@ class UserDtoTest {
     }
 
     @Test
-    void testValidUserDto() {
+    void validUserDto() {
         UserDto userDto = createUserDto(FIRST_NAME, LAST_NAME);
 
         assertNoViolations(userDto);
     }
 
     @Test
-    void testNullFirstName() {
+    void nullFirstName() {
         UserDto userDto = createUserDto(null, LAST_NAME);
 
         assertSingleViolation(userDto, NULL_FIRST_NAME_ERROR);
     }
 
     @Test
-    void testNullLastName() {
+    void nullLastName() {
         UserDto userDto = createUserDto(FIRST_NAME, null);
 
         assertSingleViolation(userDto, NULL_LAST_NAME_ERROR);
     }
 
     @Test
-    void testFirstNameTooLong() {
+    void firstNameTooLong() {
         UserDto userDto = createUserDto("A".repeat(46), LAST_NAME);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR);
     }
 
     @Test
-    void testLastNameTooLong() {
+    void lastNameTooLong() {
         UserDto userDto = createUserDto(FIRST_NAME, "A".repeat(46));
 
         assertSingleViolation(userDto, LAST_NAME_ERROR);
     }
 
     @Test
-    void testFirstNameWithDigits() {
+    void firstNameWithDigits() {
         UserDto userDto = createUserDto("Joe1", LAST_NAME);
 
         assertSingleViolation(userDto, FIRST_NAME_ERROR);
     }
 
     @Test
-    void testLastNameWithDigits() {
+    void lastNameWithDigits() {
         UserDto userDto = createUserDto(FIRST_NAME, "Doe1");
 
         assertSingleViolation(userDto, LAST_NAME_ERROR);

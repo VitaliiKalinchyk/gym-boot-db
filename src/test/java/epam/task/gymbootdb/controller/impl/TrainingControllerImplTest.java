@@ -45,14 +45,14 @@ class TrainingControllerImplTest {
     }
 
     @Test
-    void testCreateTrainingTraining() {
+    void createTrainingTraining() {
         assertDoesNotThrow(() -> trainingController.createTraining(trainingDto));
         assertEquals(USERNAME, trainingDto.getTrainee().getUser().getUsername());
         verify(trainingService).create(trainingDto);
     }
 
     @Test
-    void testGetTraineeTrainings() {
+    void getTraineeTrainings() {
         List<TrainingDto> trainings = List.of(trainingDto);
 
         when(trainingService.getTraineeTrainings(any())).thenReturn(trainings);
@@ -65,7 +65,7 @@ class TrainingControllerImplTest {
     }
 
     @Test
-    void testGetTrainerTrainings() {
+    void getTrainerTrainings() {
         List<TrainingDto> trainings = List.of(trainingDto);
 
         when(trainingService.getTrainerTrainings(any())).thenReturn(trainings);

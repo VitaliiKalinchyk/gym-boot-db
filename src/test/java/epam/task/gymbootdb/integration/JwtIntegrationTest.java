@@ -86,7 +86,8 @@ class JwtIntegrationTest {
     @Test
     void invalidTokenSignatureRequest() throws Exception {
         String token = jwtService.generateToken(new GymUserDetails(getUser()));
-        String invalidSignatureAuthHeader = BEARER + token.substring(0, token.length() - 1) + "A";
+        String invalidChar = token.endsWith("A") ? "a" : "A";
+        String invalidSignatureAuthHeader = BEARER + token.substring(0, token.length() - 1) + invalidChar;
 
         mockMvc.perform(post(AUTH_LOGOUT)
                         .header(HttpHeaders.AUTHORIZATION, invalidSignatureAuthHeader))

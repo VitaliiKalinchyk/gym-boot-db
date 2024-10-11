@@ -54,7 +54,6 @@ public class JwtServiceImpl implements JwtService {
         String username = extractUsername(token);
 
         return (username.equals(userDetails.getUsername()))
-                && !isTokenExpired(token)
                 && isNotInBlacklist(token);
     }
 
@@ -88,10 +87,6 @@ public class JwtServiceImpl implements JwtService {
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
     }
 
     private Date extractExpiration(String token) {

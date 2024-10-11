@@ -53,13 +53,13 @@ class AdminControllerImplTest {
     }
 
     @Test
-    void testChangeActiveStatusForUserByAdmin() {
+    void changeActiveStatusForUserByAdmin() {
         assertDoesNotThrow(() -> adminController.changeActiveStatusForUserByAdmin(USERNAME));
         verify(userService).changeStatus(USERNAME);
     }
 
     @Test
-    void testUpdateTraineeProfileByAdmin() {
+    void updateTraineeProfileByAdmin() {
         when(traineeService.update(traineeDto)).thenReturn(traineeDto);
 
         TraineeDto response = adminController.updateTraineeProfileByAdmin(USERNAME, traineeDto);
@@ -69,15 +69,16 @@ class AdminControllerImplTest {
     }
 
     @Test
-    void testDeleteTraineeProfileByAdmin() {
+    void deleteTraineeProfileByAdmin() {
         assertDoesNotThrow(() -> adminController.deleteTraineeProfileByAdmin(USERNAME));
 
         verify(traineeService).deleteByUsername(USERNAME);
     }
 
     @Test
-    void testGetTrainersNotAssignedToTraineeByAdmin() {
+    void getTrainersNotAssignedToTraineeByAdmin() {
         List<TrainerDto> trainers = List.of(TrainerDto.builder().id(1).build());
+
         when(traineeService.getTrainersNotAssignedToTrainee(USERNAME)).thenReturn(trainers);
 
         List<TrainerDto> response = adminController.getTrainersNotAssignedToTraineeByAdmin(USERNAME);
@@ -86,14 +87,14 @@ class AdminControllerImplTest {
     }
 
     @Test
-    void testUpdateTraineeProfileByAdminTrainers() {
+    void updateTraineeProfileByAdminTrainers() {
         assertDoesNotThrow(() -> adminController.updateTraineeTrainersByAdmin(USERNAME, 1L));
 
         verify(traineeService).updateTraineeTrainers(USERNAME, 1L);
     }
 
     @Test
-    void testUpdateTrainerProfileByAdmin() {
+    void updateTrainerProfileByAdmin() {
         when(trainerService.update(trainerDto)).thenReturn(trainerDto);
 
         TrainerDto response = adminController.updateTrainerProfileByAdmin(USERNAME, trainerDto);
@@ -103,14 +104,14 @@ class AdminControllerImplTest {
     }
 
     @Test
-    void testCreateTrainingFoTraineeByAdmin() {
+    void createTrainingFoTraineeByAdmin() {
         assertDoesNotThrow(() -> adminController.createTrainingFoTraineeByAdmin(USERNAME, trainingDto));
         assertEquals(USERNAME, trainingDto.getTrainee().getUser().getUsername());
         verify(trainingService).create(trainingDto);
     }
 
     @Test
-    void testGetTraineeTrainingsByAdmin() {
+    void getTraineeTrainingsByAdmin() {
         List<TrainingDto> trainings = List.of(trainingDto);
 
         when(trainingService.getTraineeTrainings(any())).thenReturn(trainings);
@@ -123,7 +124,7 @@ class AdminControllerImplTest {
     }
 
     @Test
-    void testGetTrainerTrainingsByAdmin() {
+    void getTrainerTrainingsByAdmin() {
         List<TrainingDto> trainings = List.of(trainingDto);
 
         when(trainingService.getTrainerTrainings(any())).thenReturn(trainings);

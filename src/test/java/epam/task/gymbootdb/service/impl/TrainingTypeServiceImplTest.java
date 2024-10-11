@@ -26,7 +26,7 @@ class TrainingTypeServiceImplTest {
     private  TrainingTypeMapper trainingTypeMapper;
 
     @Test
-    void testGetAll() {
+    void getAll() {
         List<TrainingType> trainingTypes= List.of();
         List<TrainingTypeDto> trainingTypeDtos= List.of(new TrainingTypeDto());
 

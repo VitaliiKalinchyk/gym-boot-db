@@ -22,7 +22,7 @@ class TrainerMapperTest {
     private final TrainerMapper mapper = Mappers.getMapper(TrainerMapper.class);
 
     @Test
-    void testToDto() {
+    void toDto() {
         TrainerDto dto = mapper.toDto(getTrainer1());
 
         assertTrainer(getTrainer1(), dto);
@@ -30,7 +30,34 @@ class TrainerMapperTest {
     }
 
     @Test
-    void testToEntity() {
+    void toDtoNullUser() {
+        Trainer trainer = getTrainer1();
+        trainer.setUser(null);
+
+        TrainerDto dto = mapper.toDto(trainer);
+
+        assertNull(dto.getUser());
+    }
+
+    @Test
+    void toDtoNullTrainingType() {
+        Trainer trainer = getTrainer1();
+        trainer.setTrainingType(null);
+
+        TrainerDto dto = mapper.toDto(trainer);
+
+        assertNull(dto.getTrainingType());
+    }
+
+    @Test
+    void toDtoNullValue() {
+        TrainerDto dto = mapper.toDto(null);
+
+        assertNull(dto);
+    }
+
+    @Test
+    void toEntity() {
         Trainer trainer = mapper.toEntity(getDto());
 
         assertTrainer(trainer, getDto());
@@ -38,11 +65,46 @@ class TrainerMapperTest {
     }
 
     @Test
-    void testToDtoList() {
+    void toEntityNullUser() {
+        TrainerDto dto = getDto();
+        dto.setUser(null);
+
+        Trainer trainer = mapper.toEntity(dto);
+
+        assertNull(trainer.getUser());
+    }
+
+    @Test
+    void toEntityNullTrainingType() {
+        TrainerDto dto = getDto();
+        dto.setTrainingType(null);
+
+        Trainer trainer = mapper.toEntity(dto);
+
+        assertNull(trainer.getTrainingType());
+    }
+
+    @Test
+    void toEntityNullValue() {
+        Trainer trainer = mapper.toEntity(null);
+
+        assertNull(trainer);
+    }
+
+    @Test
+    void toDtoList() {
         List<TrainerDto> trainerDtos = mapper.toDtoList(List.of(getTrainer1(), getTrainer2()));
 
-        assertTrainer(getTrainer1(), trainerDtos.get(0));
-        assertTrainer(getTrainer2(), trainerDtos.get(1));
+        assertTrainer(getTrainer1(), trainerDtos.getFirst());
+        assertTrainer(getTrainer2(), trainerDtos.getLast());
+    }
+
+
+    @Test
+    void toDtoListNullList() {
+        List<TrainerDto> trainerDtos = mapper.toDtoList(null);
+
+        assertNull(trainerDtos);
     }
 
     private static void assertTrainer(Trainer trainer, TrainerDto dto) {
@@ -98,6 +160,5 @@ class TrainerMapperTest {
                 .trainingType(new TrainingTypeDto(1, "YOGA"))
                 .trainees(List.of(new TraineeDto()))
                 .build();
-
     }
 }

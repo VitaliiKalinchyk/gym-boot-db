@@ -26,7 +26,7 @@ class AuthControllerImplTest {
     JwtService jwtService;
 
     @Test
-    void testLogin() {
+    void login() {
         UserCredentials credentials = new UserCredentials("username", "password");
 
         when(authService.authenticate(any())).thenReturn("token");
@@ -37,7 +37,7 @@ class AuthControllerImplTest {
     }
 
     @Test
-    void testLogout() {
+    void logout() {
         assertDoesNotThrow(() -> authController.logout("Bearer token"));
 
         verify(jwtService).saveToBlacklist("token");

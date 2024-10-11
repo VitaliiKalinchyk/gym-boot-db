@@ -29,8 +29,9 @@ class UnauthorizedAuthenticationEntryPointTest {
     AuthenticationException authException;
     @Mock
     PrintWriter writer;
+
     @Test
-    void commence_ShouldSetUnauthorizedStatusAndWriteErrorMessage() throws Exception {
+    void commence() throws Exception {
         when(response.getWriter()).thenReturn(writer);
 
         entryPoint.commence(request, response, authException);

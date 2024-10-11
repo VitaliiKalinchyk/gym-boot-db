@@ -16,6 +16,7 @@ public interface TrainerMapper {
 
     @Mapping(source = "user.active", target = "user.isActive")
     @Mapping(target = "user.password", ignore = true)
+    @Mapping(target = "user.roles", ignore = true)
     @Mapping(target = "trainees", ignore = true)
     Trainer toEntity(TrainerDto trainer);
 

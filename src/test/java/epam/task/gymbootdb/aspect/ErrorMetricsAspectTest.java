@@ -24,7 +24,7 @@ class ErrorMetricsAspectTest {
     private ErrorMetricsAspect errorMetricsAspect;
 
     @Test
-    void testCountErrors() {
+    void countErrors() {
         when(registry.counter("error.counter")).thenReturn(counter);
 
         errorMetricsAspect.countError();

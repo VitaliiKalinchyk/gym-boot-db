@@ -29,7 +29,7 @@ class RestLoggingInterceptorTest {
     private HttpServletResponse response;
 
     @Test
-    void testPreHandleWithQueryString() {
+    void preHandleWithQueryString() {
         when(request.getMethod()).thenReturn(GET);
         when(request.getRequestURI()).thenReturn(URI);
         when(request.getQueryString()).thenReturn(PARAM_VALUE);
@@ -40,7 +40,7 @@ class RestLoggingInterceptorTest {
     }
 
     @Test
-    void testPreHandleWithNullQueryString() {
+    void preHandleWithNullQueryString() {
         when(request.getMethod()).thenReturn(GET);
         when(request.getRequestURI()).thenReturn(URI);
 
@@ -50,7 +50,7 @@ class RestLoggingInterceptorTest {
     }
 
     @Test
-    void testAfterCompletion() {
+    void afterCompletion() {
         when(response.getStatus()).thenReturn(200);
 
         assertDoesNotThrow(() -> interceptor.afterCompletion(request, response, new Object(), null));

@@ -70,7 +70,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    void testChangeUserActiveStatus() throws Exception {
+    void changeUserActiveStatus() throws Exception {
         mockMvc.perform(patch(USERS_STATUS)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isOk());
@@ -80,7 +80,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    void testChangeUserActiveStatusUserDeleted() throws Exception {
+    void changeUserActiveStatusUserDeleted() throws Exception {
         User user = getUser();
         user.setUsername(WRONG);
         authorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(user));
@@ -95,7 +95,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    void testChangeUserPassword() throws Exception {
+    void changeUserPassword() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getChangeUserPasswordRequest());
 
         mockMvc.perform(put(USERS_CHANGE_PASSWORD)
@@ -110,7 +110,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    void testChangeUserPasswordInvalidRequest() throws Exception {
+    void changeUserPasswordInvalidRequest() throws Exception {
         ChangePasswordRequest request = new ChangePasswordRequest();
 
         String jsonRequest = objectMapper.writeValueAsString(request);

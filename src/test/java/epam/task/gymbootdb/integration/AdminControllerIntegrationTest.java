@@ -102,7 +102,7 @@ public class AdminControllerIntegrationTest {
 
 
     @Test
-    void testChangeActiveStatusForUserByAdmin() throws Exception {
+    void changeActiveStatusForUserByAdmin() throws Exception {
         boolean active = savedTrainee.getUser().isActive();
 
         mockMvc.perform(patch(ADMIN_USERS_STATUS_USERNAME, TRAINEE_USERNAME)
@@ -114,7 +114,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void testChangeActiveStatusForUserByAdminUserDeleted() throws Exception {
+    void changeActiveStatusForUserByAdminUserDeleted() throws Exception {
         mockMvc.perform(patch(ADMIN_USERS_STATUS_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isNotFound())

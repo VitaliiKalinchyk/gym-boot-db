@@ -1,13 +1,7 @@
 package epam.task.gymbootdb.dto.mapper;
 
-import epam.task.gymbootdb.dto.TrainingDto;
-import epam.task.gymbootdb.dto.TrainerDto;
-import epam.task.gymbootdb.dto.TraineeDto;
-import epam.task.gymbootdb.dto.TrainingTypeDto;
-import epam.task.gymbootdb.entity.Training;
-import epam.task.gymbootdb.entity.Trainer;
-import epam.task.gymbootdb.entity.Trainee;
-import epam.task.gymbootdb.entity.TrainingType;
+import epam.task.gymbootdb.dto.*;
+import epam.task.gymbootdb.entity.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,25 +17,46 @@ class TrainingMapperTest {
     private final TrainingMapper mapper = Mappers.getMapper(TrainingMapper.class);
 
     @Test
-    void testToDto() {
+    void toDto() {
         TrainingDto trainingDto = mapper.toDto(getTraining1());
 
         assertTraining(getTraining1(), trainingDto);
     }
 
     @Test
-    void testToEntity() {
+    void toDtoNullValue() {
+        TrainingDto trainingDto = mapper.toDto(null);
+
+        assertNull(trainingDto);
+    }
+
+    @Test
+    void toEntity() {
         Training training = mapper.toEntity(getTrainingDto());
 
         assertTraining(training, getTrainingDto());
     }
 
     @Test
-    void testToDtoList() {
+    void toEntityNullValue() {
+        Training training = mapper.toEntity(null);
+
+        assertNull(training);
+    }
+
+    @Test
+    void toDtoList() {
         List<TrainingDto> trainingDtos = mapper.toDtoList(List.of(getTraining1(), getTraining2()));
 
         assertTraining(getTraining1(), trainingDtos.get(0));
         assertTraining(getTraining2(), trainingDtos.get(1));
+    }
+
+    @Test
+    void toDtoListNullList() {
+        List<TrainingDto> trainingDtos = mapper.toDtoList(null);
+
+        assertNull(trainingDtos);
     }
 
     private static void assertTraining(Training training, TrainingDto trainingDto) {
@@ -72,10 +87,41 @@ class TrainingMapperTest {
                 .name("Evening Boxing")
                 .date(LocalDate.of(2024, 12, 13))
                 .duration(45)
-                .trainer(Trainer.builder().id(2L).build())
-                .trainee(Trainee.builder().id(2L).build())
-                .trainingType(TrainingType.builder().id(2L).build())
+                .trainer(getTrainer())
+                .trainee(getTrainee())
+                .trainingType(getTrainingType())
                 .build();
+    }
+
+    private static Trainee getTrainee() {
+        return Trainee.builder()
+                .id(2L)
+                .user(getUser())
+                .birthday(LocalDate.now())
+                .address("address")
+                .build();
+    }
+
+    private static Trainer getTrainer() {
+        return Trainer.builder()
+                .id(2L)
+                .user(getUser())
+                .trainingType(getTrainingType())
+                .build();
+    }
+
+    private static User getUser() {
+        return User.builder()
+                .id(1)
+                .firstName("Joe")
+                .lastName("Smith")
+                .username("joe.smith")
+                .isActive(true)
+                .build();
+    }
+
+    private static TrainingType getTrainingType() {
+        return new TrainingType(1, "Yoga");
     }
 
     private static TrainingDto getTrainingDto() {
@@ -83,9 +129,40 @@ class TrainingMapperTest {
                 .name("Morning Yoga")
                 .date(LocalDate.of(2024, 12, 12))
                 .duration(60)
-                .trainer(TrainerDto.builder().id(1L).build())
-                .trainee(TraineeDto.builder().id(2L).build())
-                .trainingType(TrainingTypeDto.builder().id(3L).build())
+                .trainer(getTrainerDto())
+                .trainee(getTraineeDto())
+                .trainingType(getTrainingTypeDto())
+                .build();
+    }
+
+    private static TraineeDto getTraineeDto() {
+        return TraineeDto.builder()
+                .id(2L)
+                .user(getUserDto())
+                .birthday(LocalDate.now())
+                .address("address")
+                .build();
+    }
+
+    private static TrainerDto getTrainerDto() {
+        return TrainerDto.builder()
+                .id(1L)
+                .user(getUserDto())
+                .trainingType(getTrainingTypeDto())
+                .build();
+    }
+
+    private static TrainingTypeDto getTrainingTypeDto() {
+        return new TrainingTypeDto(1, "Yoga");
+    }
+    
+    private static UserDto getUserDto() {
+        return UserDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("john.doe")
+                .id(1L)
+                .active(true)
                 .build();
     }
 }

@@ -51,7 +51,7 @@ class UserServiceImplTest {
     }
 
      @Test
-     void testLoadUserByUsername() {
+     void loadUserByUsername() {
          user.setUsername("Joe");
          user.setPassword("pass");
          user.setRoles(new HashSet<>());
@@ -65,13 +65,13 @@ class UserServiceImplTest {
      }
 
      @Test
-     void testLoadUserByUsernameNoSuchUser() {
+     void loadUserByUsernameNoSuchUser() {
          UserException e = assertThrows(UserException.class, () -> userService.loadUserByUsername("Joe"));
          assertEquals("User with username Joe was not found", e.getReason());
      }
 
     @Test
-    void testChangeStatus() {
+    void changeStatus() {
         user.setActive(false);
 
         when(userRepository.findByUsername("Joe")).thenReturn(Optional.of(user));
@@ -82,13 +82,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testChangeStatusNoSuchUser() {
+    void changeStatusNoSuchUser() {
         UserException e = assertThrows(UserException.class, () -> userService.changeStatus("Joe"));
         assertEquals("User with username Joe was not found", e.getReason());
     }
 
     @Test
-    void testChangePassword() {
+    void changePassword() {
         when(userRepository.findByUsername(userCredentials.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())).thenReturn(true);
         when(passwordEncoder.encode(request.getNewPassword())).thenReturn("newEncodedPassword");
@@ -99,13 +99,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testChangePasswordNoSuchUser() {
+    void changePasswordNoSuchUser() {
         UserException e = assertThrows(UserException.class, () -> userService.changePassword(request));
         assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getReason());
     }
 
     @Test
-    void testChangePasswordIncorrect() {
+    void changePasswordIncorrect() {
         when(userRepository.findByUsername(userCredentials.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())).thenReturn(false);
 
@@ -115,7 +115,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateAdmin() {
+    void createAdmin() {
         when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.FALSE);
         when(roleRepository.findByName(anyString())).thenReturn(new Role());
 
@@ -125,7 +125,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateAdminAlreadyExists() {
+    void createAdminAlreadyExists() {
         when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.TRUE);
 
         userService.createAdmin("Joe.Doe", "password");

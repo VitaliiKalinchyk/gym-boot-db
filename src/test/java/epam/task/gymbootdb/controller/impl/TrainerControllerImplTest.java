@@ -45,7 +45,7 @@ class TrainerControllerImplTest {
     }
 
     @Test
-    void testGetTrainerProfileTrainer() {
+    void getTrainerProfileTrainer() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
         TrainerDto response = trainerController.getTrainerProfile(TRAINER_USERNAME);
@@ -54,7 +54,7 @@ class TrainerControllerImplTest {
     }
 
     @Test
-    void testGetTrainerProfileTrainerProfile() {
+    void getTrainerProfileTrainerProfile() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
         TrainerDto response = trainerController.getTrainerProfile();
@@ -63,7 +63,7 @@ class TrainerControllerImplTest {
     }
 
     @Test
-    void testCreateTrainerTrainer() {
+    void createTrainerTrainer() {
         when(trainerService.createProfile(trainerDto)).thenReturn(credentials);
 
         UserCredentials response = trainerController.createTrainer(trainerDto);
@@ -72,7 +72,7 @@ class TrainerControllerImplTest {
     }
 
     @Test
-    void testUpdateTrainerProfileTrainer() {
+    void updateTrainerProfileTrainer() {
         when(trainerService.update(trainerDto)).thenReturn(trainerDto);
 
         TrainerDto response = trainerController.updateTrainerProfile(trainerDto);

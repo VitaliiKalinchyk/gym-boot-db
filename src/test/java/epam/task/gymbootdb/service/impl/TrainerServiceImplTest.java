@@ -79,7 +79,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testCreateProfile() {
+    void createProfile() {
         prepareCreateProfileMocks(false);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
@@ -90,14 +90,14 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testCreateProfileNoSuchTrainingType() {
+    void createProfileNoSuchTrainingType() {
         TrainingTypeException e = assertThrows(TrainingTypeException.class,
                 () -> trainerService.createProfile(trainerRequest));
         assertEquals("TrainingType with id 1 does not exist", e.getReason());
     }
 
     @Test
-    void testCreateProfileUsernameExists() {
+    void createProfileUsernameExists() {
         prepareCreateProfileMocks(true);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
@@ -108,7 +108,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainer() {
+    void updateTrainer() {
         trainerRequest.setUser(createUserDto());
 
         when(trainerRepository.findByUserUsername(JANE_SMITH)).thenReturn(Optional.of(trainerEntity));
@@ -124,7 +124,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainerNoSuchTrainer() {
+    void updateTrainerNoSuchTrainer() {
         trainerRequest.setUser(new UserDto());
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
@@ -132,7 +132,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testGetByUsername() {
+    void getByUsername() {
         when(trainerRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(trainerEntity)).thenReturn(trainerResponse);
         when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
@@ -145,7 +145,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testGetByUsernameNoSuchTrainer() {
+    void getByUsernameNoSuchTrainer() {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getByUsername(USERNAME));
 
         assertEquals("Trainer with username Joe was not found", e.getReason());

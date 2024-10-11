@@ -59,7 +59,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTraining() {
+    void createTraining() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -73,7 +73,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainee() {
+    void createTrainingNoSuchTrainee() {
         buildRequest();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.create(trainingRequest));
@@ -81,7 +81,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainer() {
+    void createTrainingNoSuchTrainer() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -92,7 +92,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainingType() {
+    void createTrainingNoSuchTrainingType() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -104,7 +104,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTraineeTrainings() {
+    void getTraineeTrainings() {
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
         when(traineeRepository.existsByUserUsername(anyString())).thenReturn(true);
@@ -120,7 +120,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTraineeTrainingsNoSuchTrainee() {
+    void getTraineeTrainingsNoSuchTrainee() {
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.getTraineeTrainings(request));
@@ -128,7 +128,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainerTrainings() {
+    void getTrainerTrainings() {
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
         when(trainerRepository.existsByUserUsername(anyString())).thenReturn(true);
@@ -144,7 +144,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainerTrainingsNoSuchTrainer() {
+    void getTrainerTrainingsNoSuchTrainer() {
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.getTrainerTrainings(request));
