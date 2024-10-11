@@ -18,6 +18,6 @@ public class ExpiredTokenCleanupScheduler {
     @Scheduled(cron = "0 0 0 * * ?")
     public void cleanExpiredTokens() {
         jwtService.deleteExpiredTokens();
-        log.debug("Clean expired tokens");
+        log.debug("Cleaned expired tokens");
     }
 }

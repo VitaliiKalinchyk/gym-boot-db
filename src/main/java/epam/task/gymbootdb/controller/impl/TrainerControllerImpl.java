@@ -3,7 +3,6 @@ package epam.task.gymbootdb.controller.impl;
 import epam.task.gymbootdb.controller.TrainerController;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 
 import jakarta.validation.Valid;
@@ -20,45 +19,32 @@ import org.springframework.web.bind.annotation.*;
 public class TrainerControllerImpl implements TrainerController {
 
     private final TrainerService trainerService;
-    private final LoggingService loggingService;
 
     @Override
     @GetMapping("/{username}")
-    public TrainerDto get(@PathVariable String username) {
-        TrainerDto trainerDto = trainerService.getByUsername(username);
-        loggingService.logDebugController("was fetched");
-
-        return trainerDto;
+    public TrainerDto getTrainerProfile(@PathVariable String username) {
+        return trainerService.getByUsername(username);
     }
 
     @Override
     @GetMapping("/profile")
-    public TrainerDto get() {
-        TrainerDto trainerDto = trainerService.getByUsername(getUsername());
-        loggingService.logDebugController("was fetched by itself");
-
-        return trainerDto;
+    public TrainerDto getTrainerProfile() {
+        return trainerService.getByUsername(getUsername());
     }
 
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserCredentials create(@Valid @RequestBody TrainerDto trainerDto) {
-        UserCredentials profile = trainerService.createProfile(trainerDto);
-        loggingService.logDebugController("was created as trainer", profile.getUsername());
-
-        return profile;
+    public UserCredentials createTrainer(@Valid @RequestBody TrainerDto trainerDto) {
+        return trainerService.createProfile(trainerDto);
     }
 
     @Override
     @PutMapping
-    public TrainerDto update(@Valid @RequestBody TrainerDto trainerDto){
+    public TrainerDto updateTrainerProfile(@Valid @RequestBody TrainerDto trainerDto){
         trainerDto.getUser().setUsername(getUsername());
 
-        TrainerDto update = trainerService.update(trainerDto);
-        loggingService.logDebugController("was updated");
-
-        return update;
+        return trainerService.update(trainerDto);
     }
 
     private static String getUsername() {

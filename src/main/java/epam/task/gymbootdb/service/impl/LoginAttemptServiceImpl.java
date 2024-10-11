@@ -2,8 +2,6 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.service.LoginAttemptService;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-@Slf4j
 public class LoginAttemptServiceImpl implements LoginAttemptService {
     private final Map<String, Integer> attempts = new ConcurrentHashMap<>();
     private final Map<String, Long> lockoutTime = new ConcurrentHashMap<>();
@@ -50,7 +47,5 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     public void removeExpiredBlocks() {
         long currentTime = System.currentTimeMillis();
         lockoutTime.entrySet().removeIf(entry -> currentTime - entry.getValue() > lockoutDuration.toMillis());
-
-        log.debug("Expired lockouts removed. Current lockout entries: {}", lockoutTime.size());
     }
 }

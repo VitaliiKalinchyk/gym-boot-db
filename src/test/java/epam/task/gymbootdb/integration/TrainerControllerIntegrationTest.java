@@ -69,15 +69,15 @@ public class TrainerControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        trainerAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getUser(TRAINER_USERNAME)));
-        wrongAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getUser(WRONG_USERNAME)));
+        trainerAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getTrainerProfileUser(TRAINER_USERNAME)));
+        wrongAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getTrainerProfileUser(WRONG_USERNAME)));
 
-        savedTrainer = trainerMapper.toDto(trainerRepository.save(getTrainer()));
-        userRepository.save(getUser(WRONG_USERNAME));
+        savedTrainer = trainerMapper.toDto(trainerRepository.save(getTrainerProfileTrainer()));
+        userRepository.save(getTrainerProfileUser(WRONG_USERNAME));
     }
 
     @Test
-    void getTrainerFromDb() throws Exception {
+    void getTrainerProfileTrainerFromDb() throws Exception {
         mockMvc.perform(get(TRAINERS_USERNAME, TRAINER_USERNAME)
                 .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader))
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerFromDbNoSuchTrainer() throws Exception {
+    void getTrainerProfileTrainerFromDbNoSuchTrainer() throws Exception {
         mockMvc.perform(get(TRAINERS_USERNAME, WRONG_USERNAME)
                 .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader))
                 .andExpect(status().isNotFound())
@@ -99,7 +99,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerByProfileFromDb() throws Exception {
+    void getTrainerProfileTrainerByProfileFromDb() throws Exception {
         mockMvc.perform(get(TRAINERS_PROFILE)
                 .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader))
                 .andExpect(status().isOk())
@@ -110,7 +110,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerFromDbByProfileDeletedTrainer() throws Exception {
+    void getTrainerProfileTrainerFromDbByProfileDeletedTrainer() throws Exception {
         mockMvc.perform(get(TRAINERS_PROFILE)
                 .header(HttpHeaders.AUTHORIZATION, wrongAuthorizationHeader))
                 .andExpect(status().isNotFound())
@@ -121,7 +121,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void createTrainer() throws Exception {
+    void createTrainerTrainer() throws Exception {
         mockMvc.perform(post(TRAINERS)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(savedTrainer)))
@@ -133,7 +133,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void createTrainerInvalidRequest() throws Exception {
+    void createTrainerTrainerInvalidRequest() throws Exception {
         savedTrainer.setTrainingType(null);
         savedTrainer.getUser().setFirstName("1234");
         savedTrainer.getUser().setLastName("1234");
@@ -151,7 +151,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainer() throws Exception {
+    void updateTrainerProfileTrainer() throws Exception {
         savedTrainer.getUser().setFirstName("Jim");
         savedTrainer.getUser().setLastName("Morris");
 
@@ -168,7 +168,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainerInvalidRequest() throws Exception {
+    void updateTrainerProfileTrainerInvalidRequest() throws Exception {
         savedTrainer.getUser().setFirstName("1234");
         savedTrainer.getUser().setLastName("1234");
 
@@ -185,7 +185,7 @@ public class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainerDeletedTrainer() throws Exception {
+    void updateTrainerProfileTrainerDeletedTrainer() throws Exception {
         mockMvc.perform(put(TRAINERS)
                         .header(HttpHeaders.AUTHORIZATION, wrongAuthorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -197,20 +197,20 @@ public class TrainerControllerIntegrationTest {
                 });
     }
 
-    private Trainer getTrainer() {
+    private Trainer getTrainerProfileTrainer() {
         return Trainer.builder()
-                .user(getUser(TRAINER_USERNAME))
-                .trainingType(getTrainingType())
+                .user(getTrainerProfileUser(TRAINER_USERNAME))
+                .trainingType(getTrainerProfileTrainingType())
                 .build();
     }
 
-    private TrainingType getTrainingType() {
+    private TrainingType getTrainerProfileTrainingType() {
         return trainingTypeRepository.findAll().stream()
                 .findFirst()
                 .orElseGet(() -> trainingTypeRepository.save(TrainingType.builder().name("Default Type").build()));
     }
 
-    private User getUser(String username) {
+    private User getTrainerProfileUser(String username) {
         return User.builder()
                 .firstName("Jane")
                 .lastName("Doe")

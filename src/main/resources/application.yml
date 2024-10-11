@@ -19,6 +19,10 @@ server:
   servlet:
     context-path: /api
 
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level --- [%thread] %logger{36} : [Transaction ID: %X{transactionId:-NO TRANSACTION}] [User ID: %X{userId:-NO USER ID}] [Message: %msg]%n"
+
 
 security:
   bcrypt:

@@ -3,7 +3,6 @@ package epam.task.gymbootdb.controller.impl;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.dto.UserDto;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +31,6 @@ class TrainerControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
-    @Mock
-    private LoggingService loggingService;
 
     private TrainerDto trainerDto;
     private UserCredentials credentials;
@@ -48,44 +45,40 @@ class TrainerControllerImplTest {
     }
 
     @Test
-    void testGetTrainer() {
+    void testGetTrainerProfileTrainer() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
-        TrainerDto response = trainerController.get(TRAINER_USERNAME);
+        TrainerDto response = trainerController.getTrainerProfile(TRAINER_USERNAME);
 
         assertEquals(trainerDto, response);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testGetTrainerProfile() {
+    void testGetTrainerProfileTrainerProfile() {
         when(trainerService.getByUsername(TRAINER_USERNAME)).thenReturn(trainerDto);
 
-        TrainerDto response = trainerController.get();
+        TrainerDto response = trainerController.getTrainerProfile();
 
         assertEquals(trainerDto, response);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testCreateTrainer() {
+    void testCreateTrainerTrainer() {
         when(trainerService.createProfile(trainerDto)).thenReturn(credentials);
 
-        UserCredentials response = trainerController.create(trainerDto);
+        UserCredentials response = trainerController.createTrainer(trainerDto);
 
         assertEquals(credentials, response);
-        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
-    void testUpdateTrainer() {
+    void testUpdateTrainerProfileTrainer() {
         when(trainerService.update(trainerDto)).thenReturn(trainerDto);
 
-        TrainerDto response = trainerController.update(trainerDto);
+        TrainerDto response = trainerController.updateTrainerProfile(trainerDto);
 
         assertEquals(trainerDto, response);
         assertEquals(TRAINER_USERNAME, trainerDto.getUser().getUsername());
-        verify(loggingService).logDebugController(anyString());
     }
 
     private void setUpSecurityContext() {

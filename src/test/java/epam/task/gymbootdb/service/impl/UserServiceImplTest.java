@@ -9,7 +9,6 @@ import epam.task.gymbootdb.exception.UserException;
 import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 
-import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +38,6 @@ class UserServiceImplTest {
     private RoleRepository roleRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
-    @Mock
-    private LoggingService loggingService;
 
     private static User user;
     private static UserCredentials userCredentials;
@@ -82,7 +79,6 @@ class UserServiceImplTest {
         userService.changeStatus("Joe");
 
         assertTrue(user.isActive(), "User should be active");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -100,7 +96,6 @@ class UserServiceImplTest {
         userService.changePassword(request);
 
         assertEquals("newEncodedPassword", user.getPassword());
-        verify(loggingService).logDebugService(anyString());
     }
 
     @Test

@@ -1,7 +1,8 @@
 package epam.task.gymbootdb.controller.impl;
 
-import epam.task.gymbootdb.dto.*;
-import epam.task.gymbootdb.service.LoggingService;
+import epam.task.gymbootdb.dto.UserDto;
+import epam.task.gymbootdb.dto.TraineeDto;
+import epam.task.gymbootdb.dto.TrainingDto;
 import epam.task.gymbootdb.service.TrainingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +33,6 @@ class TrainingControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
-    @Mock
-    private LoggingService loggingService;
 
     private TrainingDto trainingDto;
     private static final String USERNAME = "Joe";
@@ -46,11 +45,10 @@ class TrainingControllerImplTest {
     }
 
     @Test
-    void testCreateTraining() {
-        assertDoesNotThrow(() -> trainingController.create(trainingDto));
+    void testCreateTrainingTraining() {
+        assertDoesNotThrow(() -> trainingController.createTraining(trainingDto));
         assertEquals(USERNAME, trainingDto.getTrainee().getUser().getUsername());
         verify(trainingService).create(trainingDto);
-        verify(loggingService).logDebugController(anyString(),anyString());
     }
 
     @Test
@@ -64,7 +62,6 @@ class TrainingControllerImplTest {
 
         assertEquals(1, response.size());
         assertEquals(trainingDto, response.getFirst());
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
@@ -77,7 +74,6 @@ class TrainingControllerImplTest {
 
         assertEquals(1, response.size());
         assertEquals(trainingDto, response.getFirst());
-        verify(loggingService).logDebugController(anyString());
     }
 
     private void setUpSecurityContext() {

@@ -8,7 +8,6 @@ import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.UserException;
 import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,13 +29,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final LoggingService loggingService;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException(username));
-
-        return new GymUserDetails(user);
+        return new GymUserDetails(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserException(username)));
     }
 
     @Override
@@ -44,7 +41,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserException(username));
         boolean status = user.isActive();
         user.setActive(!status);
-        loggingService.logDebugService("changed status to " + !status, username);
 
         userRepository.save(user);
     }
@@ -56,7 +52,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         entity.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(entity);
-        loggingService.logDebugService("changed its password");
     }
 
     @Override

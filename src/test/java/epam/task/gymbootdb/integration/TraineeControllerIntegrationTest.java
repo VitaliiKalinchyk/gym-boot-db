@@ -78,15 +78,15 @@ public class TraineeControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        traineeAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getUser(TRAINEE_USERNAME)));
-        trainerAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getUser(TRAINER_USERNAME)));
+        traineeAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getTraineeProfileUser(TRAINEE_USERNAME)));
+        trainerAuthorizationHeader = BEARER + jwtService.generateToken(new GymUserDetails(getTraineeProfileUser(TRAINER_USERNAME)));
 
-        savedTrainee = traineeMapper.toDto(traineeRepository.save(getTrainee()));
-        savedTrainer = trainerMapper.toDto(trainerRepository.save(getTrainer()));
+        savedTrainee = traineeMapper.toDto(traineeRepository.save(getTraineeProfileTrainee()));
+        savedTrainer = trainerMapper.toDto(trainerRepository.save(getTraineeProfileTrainer()));
     }
 
     @Test
-    void getTraineeFromDb() throws Exception {
+    void getTraineeProfileTraineeFromDb() throws Exception {
         mockMvc.perform(get(TRAINEES_USERNAME, TRAINEE_USERNAME)
                 .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeFromDbNoSuchTrainee() throws Exception {
+    void getTraineeProfileTraineeFromDbNoSuchTrainee() throws Exception {
         mockMvc.perform(get(TRAINEES_USERNAME, TRAINER_USERNAME)
                 .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader))
                 .andExpect(status().isNotFound())
@@ -108,7 +108,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeByProfileFromDb() throws Exception {
+    void getTraineeProfileTraineeByProfileFromDb() throws Exception {
         mockMvc.perform(get(TRAINEES_PROFILE)
                 .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeFromDbByProfileDeletedTrainee() throws Exception {
+    void getTraineeProfileTraineeFromDbByProfileDeletedTrainee() throws Exception {
         mockMvc.perform(get(TRAINEES_PROFILE)
                 .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader))
                 .andExpect(status().isNotFound())
@@ -130,7 +130,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void createTrainee() throws Exception {
+    void createTraineeTrainee() throws Exception {
         mockMvc.perform(post(TRAINEES)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(savedTrainee)))
@@ -142,7 +142,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void createTraineeInvalidRequest() throws Exception {
+    void createTraineeTraineeInvalidRequest() throws Exception {
         savedTrainee.getUser().setFirstName("1234");
         savedTrainee.getUser().setLastName("1234");
         savedTrainee.setBirthday(LocalDate.now().plusDays(1));
@@ -162,7 +162,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainee() throws Exception {
+    void updateTraineeProfileTrainee() throws Exception {
         savedTrainee.getUser().setFirstName("Jim");
         savedTrainee.getUser().setLastName("Morris");
 
@@ -179,7 +179,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeInvalidRequest() throws Exception {
+    void updateTraineeProfileTraineeInvalidRequest() throws Exception {
         savedTrainee.getUser().setFirstName("1234");
         savedTrainee.getUser().setLastName("1234");
 
@@ -196,7 +196,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeDeletedTrainee() throws Exception {
+    void updateTraineeProfileTraineeDeletedTrainee() throws Exception {
         mockMvc.perform(put(TRAINEES)
                         .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -209,7 +209,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void deleteTrainee() throws Exception {
+    void deleteTraineeTrainee() throws Exception {
         mockMvc.perform(delete(TRAINEES)
                         .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader))
                 .andExpect(status().isOk());
@@ -218,7 +218,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void deleteTraineeWrongUsername() throws Exception {
+    void deleteTraineeTraineeWrongUsername() throws Exception {
         mockMvc.perform(delete(TRAINEES)
                         .header(HttpHeaders.AUTHORIZATION, trainerAuthorizationHeader))
                 .andExpect(status().isNotFound())
@@ -229,7 +229,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void getTrainersNotAssignedToTrainee() throws Exception {
+    void getTraineeProfileTrainersNotAssignedToTrainee() throws Exception {
         mockMvc.perform(get(TRAINEES_UNASSIGNED_TRAINERS)
                         .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader))
                 .andExpect(status().isOk())
@@ -240,7 +240,7 @@ public class TraineeControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeTrainers() throws Exception {
+    void updateTraineeProfileTraineeTrainers() throws Exception {
         mockMvc.perform(put(TRAINEES_TRAINERS)
                         .header(HttpHeaders.AUTHORIZATION, traineeAuthorizationHeader)
                         .param("trainerId", String.valueOf(savedTrainer.getId())))
@@ -255,26 +255,26 @@ public class TraineeControllerIntegrationTest {
                 });
     }
 
-    private Trainee getTrainee() {
+    private Trainee getTraineeProfileTrainee() {
         return Trainee.builder()
-                .user(getUser(TRAINEE_USERNAME))
+                .user(getTraineeProfileUser(TRAINEE_USERNAME))
                 .build();
     }
 
-    private Trainer getTrainer() {
+    private Trainer getTraineeProfileTrainer() {
         return Trainer.builder()
-                .user(getUser(TRAINER_USERNAME))
-                .trainingType(getTrainingType())
+                .user(getTraineeProfileUser(TRAINER_USERNAME))
+                .trainingType(getTraineeProfileTrainingType())
                 .build();
     }
 
-    private TrainingType getTrainingType() {
+    private TrainingType getTraineeProfileTrainingType() {
         return trainingTypeRepository.findAll().stream()
                 .findFirst()
                 .orElseGet(() -> trainingTypeRepository.save(TrainingType.builder().name("Default Type").build()));
     }
 
-    private User getUser(String username) {
+    private User getTraineeProfileUser(String username) {
         return User.builder()
                 .firstName("Jane")
                 .lastName("Doe")

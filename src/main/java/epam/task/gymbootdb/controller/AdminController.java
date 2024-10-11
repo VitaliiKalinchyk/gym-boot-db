@@ -18,7 +18,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainee status changed successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    void changeActiveStatus(String username);
+    void changeActiveStatusForUserByAdmin(String username);
 
     @Operation(summary = "Update trainee",
             description = "Updates the details of an existing trainee.")
@@ -27,7 +27,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "404", description = "Trainee not found"),
             @ApiResponse(responseCode = "400", description = "Invalid trainee data")
     })
-    TraineeDto updateTrainee(String username, TraineeDto trainee);
+    TraineeDto updateTraineeProfileByAdmin(String username, TraineeDto trainee);
 
     @Operation(summary = "Delete trainee by username",
             description = "Deletes the trainee's profile by username.")
@@ -35,7 +35,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainee deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    void deleteTrainee(String username);
+    void deleteTraineeProfileByAdmin(String username);
 
     @Operation(summary = "Get trainers not assigned to trainee by username",
             description = "Fetches a list of trainers that are not assigned to the trainee by username.")
@@ -43,7 +43,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainers retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    List<TrainerDto> getTrainersNotAssignedToTrainee(String username);
+    List<TrainerDto> getTrainersNotAssignedToTraineeByAdmin(String username);
 
     @Operation(summary = "Update trainee trainers",
             description = "Updates the list of trainers assigned to a trainee based on username and trainer IDs.")
@@ -51,7 +51,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainers updated successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee or trainer not found")
     })
-    void updateTraineeTrainers(String username, long trainerId);
+    void updateTraineeTrainersByAdmin(String username, long trainerId);
 
     @Operation(summary = "Update trainer",
             description = "Updates the details of an existing trainer.")
@@ -60,7 +60,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "404", description = "Trainer not found"),
             @ApiResponse(responseCode = "400", description = "Invalid trainer data")
     })
-    TrainerDto updateTrainer(String username, TrainerDto trainerDto);
+    TrainerDto updateTrainerProfileByAdmin(String username, TrainerDto trainerDto);
 
     @Operation(summary = "Create a new training",
             description = "Creates a new training and stores it in the system.")
@@ -68,7 +68,7 @@ public interface AdminController {
             @ApiResponse(responseCode = "201", description = "Training created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid training data provided")
     })
-    void createTraining(String username, TrainingDto trainingDto);
+    void createTrainingFoTraineeByAdmin(String username, TrainingDto trainingDto);
 
     @Operation(summary = "Get trainings for a specific trainee",
             description = "Fetches a list of trainings for a specific trainee, filtered by optional parameters.")
@@ -76,8 +76,8 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainings retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    List<TrainingDto> getTraineeTrainings(String username, LocalDate fromDate, LocalDate toDate,
-                                          Long trainerId, Long trainingTypeId);
+    List<TrainingDto> getTraineeTrainingsByAdmin(String username, LocalDate fromDate, LocalDate toDate,
+                                                 Long trainerId, Long trainingTypeId);
 
     @Operation(summary = "Get trainings for a specific trainer",
             description = "Fetches a list of trainings for a specific trainer, filtered by optional parameters.")
@@ -85,5 +85,5 @@ public interface AdminController {
             @ApiResponse(responseCode = "200", description = "Trainings retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found")
     })
-    List<TrainingDto> getTrainerTrainings(String username, LocalDate fromDate, LocalDate toDate, Long trainerId);
+    List<TrainingDto> getTrainerTrainingsByAdmin(String username, LocalDate fromDate, LocalDate toDate, Long trainerId);
 }

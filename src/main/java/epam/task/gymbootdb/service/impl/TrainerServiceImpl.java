@@ -13,7 +13,6 @@ import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
@@ -39,7 +38,6 @@ public class TrainerServiceImpl implements TrainerService {
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
-    private final LoggingService loggingService;
 
     @Override
     @Transactional
@@ -53,7 +51,6 @@ public class TrainerServiceImpl implements TrainerService {
         setUserFields(user, username, password);
 
         trainerRepository.save(entity);
-        loggingService.logDebugService("was created", username);
 
         return new UserCredentials(username, password);
     }
@@ -68,7 +65,6 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        loggingService.logDebugService("was updated", username);
 
         return dto;
     }
@@ -81,7 +77,6 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(entity);
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        loggingService.logDebugService("was fetched", username);
 
         return dto;
     }

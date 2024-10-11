@@ -1,21 +1,17 @@
 package epam.task.gymbootdb.interceptor;
 
-import epam.task.gymbootdb.service.LoggingService;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@RequiredArgsConstructor
+@Slf4j
 public class RestLoggingInterceptor implements HandlerInterceptor {
-
-    private final LoggingService loggingService;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request,
@@ -24,8 +20,7 @@ public class RestLoggingInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         String uri = request.getRequestURI();
         String queryString = request.getQueryString() != null ? "?" + request.getQueryString() : "";
-
-        loggingService.logInfoInterceptorPreHandle(method, uri, queryString);
+        log.info("HTTP Method: {}, Endpoint: {}{}", method, uri, queryString);
 
         return true;
     }
@@ -37,7 +32,6 @@ public class RestLoggingInterceptor implements HandlerInterceptor {
                                 Exception e) {
         int status = response.getStatus();
         String message = (e != null) ? e.getMessage() : "Response OK";
-
-        loggingService.logInfoInterceptorPostHandle(status, message);
+        log.info("Response Status: {}, Message: {}", status, message);
     }
 }

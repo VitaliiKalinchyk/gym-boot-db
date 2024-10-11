@@ -60,7 +60,7 @@ public class TrainingTypeControllerIntegrationTest {
     }
 
     @Test
-    void getAllTrainingTypes() throws Exception {
+    void getAllTrainingTypesTrainingTypes() throws Exception {
         List<TrainingType> trainingTypes = trainingTypeRepository.findAll();
 
         var resultActions = mockMvc.perform(get(TRAINING_TYPES)

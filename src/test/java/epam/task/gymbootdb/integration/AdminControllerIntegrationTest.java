@@ -102,7 +102,7 @@ public class AdminControllerIntegrationTest {
 
 
     @Test
-    void testChangeActiveStatus() throws Exception {
+    void testChangeActiveStatusForUserByAdmin() throws Exception {
         boolean active = savedTrainee.getUser().isActive();
 
         mockMvc.perform(patch(ADMIN_USERS_STATUS_USERNAME, TRAINEE_USERNAME)
@@ -114,7 +114,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void testChangeActiveStatusUserDeleted() throws Exception {
+    void testChangeActiveStatusForUserByAdminUserDeleted() throws Exception {
         mockMvc.perform(patch(ADMIN_USERS_STATUS_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isNotFound())
@@ -125,7 +125,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainee() throws Exception {
+    void updateTraineeProfileByAdmin() throws Exception {
         savedTrainee.getUser().setFirstName("Jim");
         savedTrainee.getUser().setLastName("Morris");
 
@@ -142,7 +142,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeInvalidRequest() throws Exception {
+    void updateTraineeProfileByAdminInvalidRequest() throws Exception {
         savedTrainee.getUser().setFirstName("1234");
         savedTrainee.getUser().setLastName("1234");
 
@@ -159,7 +159,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeDeletedTrainee() throws Exception {
+    void updateTraineeDeletedTraineeProfileByAdmin() throws Exception {
         mockMvc.perform(put(ADMIN_TRAINEES_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -172,7 +172,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void deleteTrainee() throws Exception {
+    void deleteTraineeProfileByAdmin() throws Exception {
         mockMvc.perform(delete(ADMIN_TRAINEES_USERNAME, TRAINEE_USERNAME)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isOk());
@@ -181,7 +181,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void deleteTraineeWrongUsername() throws Exception {
+    void deleteTraineeProfileByAdminWrongUsername() throws Exception {
         mockMvc.perform(delete(ADMIN_TRAINEES_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isNotFound())
@@ -192,7 +192,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTrainersNotAssignedToTrainee() throws Exception {
+    void getTrainersNotAssignedToTraineeByAdmin() throws Exception {
         mockMvc.perform(get(ADMIN_TRAINEES_UNASSIGNED_TRAINERS_USERNAME, TRAINEE_USERNAME)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isOk())
@@ -203,7 +203,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTraineeTrainers() throws Exception {
+    void updateTraineeProfileByAdminTrainers() throws Exception {
         mockMvc.perform(put(ADMIN_TRAINEES_TRAINERS_USERNAME, TRAINEE_USERNAME)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .param("trainerId", String.valueOf(savedTrainer.getId())))
@@ -220,7 +220,7 @@ public class AdminControllerIntegrationTest {
 
 
     @Test
-    void updateTrainer() throws Exception {
+    void updateTrainerProfileByAdmin() throws Exception {
         savedTrainer.getUser().setFirstName("Jim");
         savedTrainer.getUser().setLastName("Morris");
 
@@ -237,7 +237,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainerInvalidRequest() throws Exception {
+    void updateTrainerProfileByAdminInvalidRequest() throws Exception {
         savedTrainer.getUser().setFirstName("1234");
         savedTrainer.getUser().setLastName("1234");
 
@@ -254,7 +254,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void updateTrainerDeletedTrainer() throws Exception {
+    void updateTrainerDeletedTrainerProfileByAdmin() throws Exception {
         mockMvc.perform(put(ADMIN_TRAINERS_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -268,7 +268,7 @@ public class AdminControllerIntegrationTest {
 
 
     @Test
-    void createTraining() throws Exception {
+    void createTrainingFoTraineeByAdmin() throws Exception {
         long initialCount = trainingRepository.count();
         String jsonRequest = objectMapper.writeValueAsString(getTraining());
 
@@ -284,7 +284,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWrongUsername() throws Exception {
+    void createTrainingFoTraineeByAdminWrongUsername() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getTraining());
 
         mockMvc.perform(post(ADMIN_TRAININGS_USERNAME, WRONG)
@@ -299,7 +299,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithoutTrainer() throws Exception {
+    void createTrainingFoTraineeByAdminWithoutTrainer() throws Exception {
         TrainingDto trainingWithoutTrainer = getTraining();
         trainingWithoutTrainer.getTrainer().setId(0);
 
@@ -317,7 +317,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithoutTrainingType() throws Exception {
+    void createTrainingWithoutTrainingFoTraineeByAdminType() throws Exception {
         TrainingDto trainingWithoutTrainingType = getTraining();
         trainingWithoutTrainingType.getTrainingType().setId(0);
 
@@ -335,7 +335,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithInvalidRequest() throws Exception {
+    void createTrainingFoTraineeByAdminWithInvalidRequest() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getInvalidTraining());
 
         mockMvc.perform(post(ADMIN_TRAININGS_USERNAME, TRAINEE_USERNAME)
@@ -355,7 +355,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeTrainings() throws Exception {
+    void getTraineeTrainingsByAdmin() throws Exception {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now().plusDays(7);
 
@@ -373,7 +373,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeTrainingsWithoutParams() throws Exception {
+    void getTraineeTrainingsByAdminWithoutParams() throws Exception {
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINEE_USERNAME, TRAINEE_USERNAME)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isOk())
@@ -384,7 +384,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeTrainingsWithUnmatchedDate() throws Exception {
+    void getTraineeTrainingsByAdminWithUnmatchedDate() throws Exception {
         LocalDate toDate = LocalDate.now();
 
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINEE_USERNAME, TRAINEE_USERNAME)
@@ -398,7 +398,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTraineeTrainingsWithWrongUsername() throws Exception {
+    void getTraineeTrainingsByAdminWithWrongUsername() throws Exception {
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINEE_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isNotFound())
@@ -409,7 +409,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerTrainings() throws Exception {
+    void getTrainerTrainingsByAdmin() throws Exception {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now().plusDays(7);
 
@@ -426,7 +426,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerTrainingsWithoutParams() throws Exception {
+    void getTrainerTrainingsByAdminWithoutParams() throws Exception {
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINER_USERNAME, TRAINER_USERNAME)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isOk())
@@ -437,7 +437,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerTrainingsWithUnmatchedDate() throws Exception {
+    void getTrainerTrainingsByAdminWithUnmatchedDate() throws Exception {
         LocalDate toDate = LocalDate.now();
 
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINER_USERNAME, TRAINER_USERNAME)
@@ -451,7 +451,7 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    void getTrainerTrainingsWithWrongUsername() throws Exception {
+    void getTrainerTrainingsByAdminWithWrongUsername() throws Exception {
         mockMvc.perform(get(ADMIN_TRAININGS_TRAINER_USERNAME, WRONG)
                         .header(HttpHeaders.AUTHORIZATION, authorizationHeader))
                 .andExpect(status().isNotFound())

@@ -14,7 +14,7 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Trainee status changed successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    void changeActiveStatus();
+    void changeUserActiveStatus();
 
     @Operation(summary = "Change user password",
             description = "Allows users to change their password after providing the correct credentials.")
@@ -22,5 +22,5 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Password changed successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid password format")
     })
-    void changePassword(ChangePasswordRequest request);
+    void changeUserPassword(ChangePasswordRequest request);
 }

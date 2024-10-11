@@ -5,9 +5,9 @@ import epam.task.gymbootdb.dto.JwtTokenDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
 import epam.task.gymbootdb.service.JwtService;
-import epam.task.gymbootdb.service.LoggingService;
 
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.*;
@@ -18,25 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthControllerImpl implements AuthController {
 
     private final AuthService authService;
-    private final LoggingService loggingService;
     private final JwtService jwtService;
 
     @Override
     @PostMapping("/login")
     public JwtTokenDto login(@Valid @RequestBody UserCredentials credentials) {
-        String token = authService.authenticate(credentials);
-        loggingService.logDebugController("logged in", credentials.getUsername());
-
-        return new JwtTokenDto(token);
+        return new JwtTokenDto(authService.authenticate(credentials));
     }
 
     @Override
     @PostMapping("/logout")
     public void logout(@RequestHeader String authorization) {
-        String token = getToken(authorization);
-
-        jwtService.saveToBlacklist(token);
-        loggingService.logDebugController("logged out", jwtService.extractUsername(token));
+        jwtService.saveToBlacklist(getToken(authorization));
     }
 
     private String getToken(String authorization) {

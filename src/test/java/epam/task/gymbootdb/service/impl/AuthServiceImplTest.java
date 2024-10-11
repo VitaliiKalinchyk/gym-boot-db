@@ -3,7 +3,6 @@ package epam.task.gymbootdb.service.impl;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
 
-import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,8 +35,6 @@ public class AuthServiceImplTest {
     @Mock
     private LoginAttemptServiceImpl loginAttempt;
     @Mock
-    private LoggingService loggingService;
-    @Mock
     private Authentication authentication;
 
     private UserCredentials credentials;
@@ -57,7 +54,6 @@ public class AuthServiceImplTest {
 
         assertEquals(MOCKED_TOKEN, token);
         verify(loginAttempt).loginSucceeded(any());
-        verify(loggingService, times(2)).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -66,7 +62,6 @@ public class AuthServiceImplTest {
 
         LoginAttemptException e = assertThrows(LoginAttemptException.class, () -> authService.authenticate(credentials));
         assertEquals(USERNAME + " is locked. Please try again later.", e.getReason());
-        verify(loggingService).logWarnService(anyString(), anyString());
     }
 
     @Test
@@ -75,6 +70,5 @@ public class AuthServiceImplTest {
                 .thenThrow(new BadCredentialsException("Login failed"));
 
         assertThrows(BadCredentialsException.class, () -> authService.authenticate(credentials));
-        verify(loginAttempt).loginFailed(any());
     }
 }

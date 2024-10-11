@@ -2,7 +2,6 @@ package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +30,6 @@ class UserControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
-    @Mock
-    private LoggingService loggingService;
 
     private static final String USERNAME = "Joe.Doe";
     private static final String PASSWORD = "pass";
@@ -44,20 +41,18 @@ class UserControllerImplTest {
     }
 
     @Test
-    void testChangeActiveStatus() {
-        assertDoesNotThrow(() -> userController.changeActiveStatus());
+    void testChangeUserActiveStatus() {
+        assertDoesNotThrow(() -> userController.changeUserActiveStatus());
         verify(userService).changeStatus(USERNAME);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testChangePasswordSuccess() {
+    void testChangeUserPasswordSuccess() {
         UserCredentials userCredentials = new UserCredentials(USERNAME, PASSWORD);
         ChangePasswordRequest request = new ChangePasswordRequest(userCredentials, NEW_PASS);
 
-        assertDoesNotThrow(() -> userController.changePassword(request));
+        assertDoesNotThrow(() -> userController.changeUserPassword(request));
         verify(userService).changePassword(request);
-        verify(loggingService).logDebugController(anyString());
     }
 
     private void setUpSecurityContext() {

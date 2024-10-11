@@ -16,5 +16,5 @@ public interface TrainingTypeController {
             @ApiResponse(responseCode = "200", description = "Training types retrieved successfully"),
             @ApiResponse(responseCode = "500", description = "Server error while fetching training types")
     })
-    List<TrainingTypeDto> getAll();
+    List<TrainingTypeDto> getAllTrainingTypes();
 }

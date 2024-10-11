@@ -3,9 +3,8 @@ package epam.task.gymbootdb.controller.impl;
 import epam.task.gymbootdb.dto.JwtTokenDto;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.AuthService;
-
 import epam.task.gymbootdb.service.JwtService;
-import epam.task.gymbootdb.service.LoggingService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,8 +23,6 @@ class AuthControllerImplTest {
     @Mock
     AuthService authService;
     @Mock
-    LoggingService loggingService;
-    @Mock
     JwtService jwtService;
 
     @Test
@@ -37,7 +34,6 @@ class AuthControllerImplTest {
         JwtTokenDto login = authController.login(credentials);
 
         assertEquals(new JwtTokenDto("token"), login);
-        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
@@ -45,6 +41,5 @@ class AuthControllerImplTest {
         assertDoesNotThrow(() -> authController.logout("Bearer token"));
 
         verify(jwtService).saveToBlacklist("token");
-        verify(loggingService).logDebugController(anyString(), nullable(String.class));
     }
 }

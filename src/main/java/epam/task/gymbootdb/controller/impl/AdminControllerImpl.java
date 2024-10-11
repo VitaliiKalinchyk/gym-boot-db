@@ -1,8 +1,15 @@
 package epam.task.gymbootdb.controller.impl;
 
 import epam.task.gymbootdb.controller.AdminController;
-import epam.task.gymbootdb.dto.*;
-import epam.task.gymbootdb.service.*;
+import epam.task.gymbootdb.dto.TraineeDto;
+import epam.task.gymbootdb.dto.TrainerDto;
+import epam.task.gymbootdb.dto.TrainingDto;
+import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
+import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
+import epam.task.gymbootdb.service.UserService;
+import epam.task.gymbootdb.service.TraineeService;
+import epam.task.gymbootdb.service.TrainerService;
+import epam.task.gymbootdb.service.TrainingService;
 
 import jakarta.validation.Valid;
 
@@ -23,72 +30,61 @@ public class AdminControllerImpl implements AdminController {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
-    private final LoggingService loggingService;
 
     @Override
     @PatchMapping("/users/status/{username}")
-    public void changeActiveStatus(@PathVariable String username) {
+    public void changeActiveStatusForUserByAdmin(@PathVariable String username) {
         userService.changeStatus(username);
-        loggingService.logDebugAdminController("changed active status for", username);
     }
 
     @Override
     @PutMapping("/trainees/{username}")
-    public TraineeDto updateTrainee(@PathVariable String username, @Valid @RequestBody TraineeDto trainee) {
+    public TraineeDto updateTraineeProfileByAdmin(@PathVariable String username,
+                                                  @Valid @RequestBody TraineeDto trainee) {
         trainee.getUser().setUsername(username);
 
-        TraineeDto traineeDto = traineeService.update(trainee);
-        loggingService.logDebugAdminController("updated profile for", username);
-
-        return traineeDto;
+        return traineeService.update(trainee);
     }
 
     @Override
     @DeleteMapping("/trainees/{username}")
-    public void deleteTrainee(@PathVariable String username) {
+    public void deleteTraineeProfileByAdmin(@PathVariable String username) {
         traineeService.deleteByUsername(username);
-        loggingService.logDebugAdminController("deleted profile of", username);
     }
 
     @Override
     @GetMapping("/trainees/unassigned-trainers/{username}")
-    public List<TrainerDto> getTrainersNotAssignedToTrainee(@PathVariable String username) {
-        List<TrainerDto> trainersNotAssignedToTrainee = traineeService.getTrainersNotAssignedToTrainee(username);
-        loggingService.logDebugAdminController("got unassigned trainers for", username);
-
-        return trainersNotAssignedToTrainee;
+    public List<TrainerDto> getTrainersNotAssignedToTraineeByAdmin(@PathVariable String username) {
+        return traineeService.getTrainersNotAssignedToTrainee(username);
     }
 
     @Override
     @PutMapping("/trainees/trainers/{username}")
-    public void updateTraineeTrainers(@PathVariable String username, @RequestParam long trainerId) {
+    public void updateTraineeTrainersByAdmin(@PathVariable String username, @RequestParam long trainerId) {
         traineeService.updateTraineeTrainers(username, trainerId);
-        loggingService.logDebugAdminController("added new trainer for", username);
     }
 
     @Override
     @PutMapping("/trainers/{username}")
-    public TrainerDto updateTrainer(@PathVariable String username,@Valid @RequestBody TrainerDto trainerDto) {
+    public TrainerDto updateTrainerProfileByAdmin(@PathVariable String username,
+                                                  @Valid @RequestBody TrainerDto trainerDto) {
         trainerDto.getUser().setUsername(username);
 
-        TrainerDto update = trainerService.update(trainerDto);
-        loggingService.logDebugAdminController("updated profile for", username);
-
-        return update;
+        return trainerService.update(trainerDto);
     }
 
     @Override
     @PostMapping("/trainings/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTraining(@PathVariable String username, @Valid @RequestBody TrainingDto trainingDto) {
+    public void createTrainingFoTraineeByAdmin(@PathVariable String username,
+                                               @Valid @RequestBody TrainingDto trainingDto) {
         trainingDto.getTrainee().getUser().setUsername(username);
         trainingService.create(trainingDto);
-        loggingService.logDebugAdminController("created training for", username);
     }
 
     @Override
     @GetMapping("/trainings/trainee/{username}")
-    public List<TrainingDto> getTraineeTrainings(
+    public List<TrainingDto> getTraineeTrainingsByAdmin(
             @PathVariable String username,
             @RequestParam(name = "from-date", required = false) LocalDate fromDate,
             @RequestParam(name = "to-date", required = false) LocalDate toDate,
@@ -103,15 +99,12 @@ public class AdminControllerImpl implements AdminController {
                 .trainingTypeId(trainingTypeId)
                 .build();
 
-        List<TrainingDto> trainings = trainingService.getTraineeTrainings(request);
-        loggingService.logDebugAdminController("fetched trainees trainings for", username);
-
-        return trainings;
+        return trainingService.getTraineeTrainings(request);
     }
 
     @Override
     @GetMapping("/trainings/trainer/{username}")
-    public List<TrainingDto> getTrainerTrainings(
+    public List<TrainingDto> getTrainerTrainingsByAdmin(
             @PathVariable String username,
             @RequestParam(name = "from-date", required = false) LocalDate fromDate,
             @RequestParam(name = "to-date", required = false) LocalDate toDate,
@@ -124,9 +117,6 @@ public class AdminControllerImpl implements AdminController {
                 .traineeId(trainerId)
                 .build();
 
-        List<TrainingDto> trainings = trainingService.getTrainerTrainings(request);
-        loggingService.logDebugAdminController("fetched trainers trainings for", username);
-
-        return trainings;
+        return trainingService.getTrainerTrainings(request);
     }
 }

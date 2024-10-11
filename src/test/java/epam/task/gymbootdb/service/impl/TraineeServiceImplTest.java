@@ -13,7 +13,6 @@ import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
@@ -62,8 +61,6 @@ class TraineeServiceImplTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private NameGenerator nameGenerator;
-    @Mock
-    private LoggingService loggingService;
 
     @InjectMocks
     private TraineeServiceImpl traineeService;
@@ -91,7 +88,6 @@ class TraineeServiceImplTest {
         assertUserCredentials(result, USERNAME);
         assertTrue(user.isActive(), "User should be active");
         assertEquals(ENCODED_PASSWORD, user.getPassword(), "Password should be encoded");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -121,7 +117,6 @@ class TraineeServiceImplTest {
         assertEquals(traineeResponse, result, "TraineeResponse should match the expected value");
         assertEquals(1, result.getTrainers().size());
         assertTraineeUpdatedFields();
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -143,7 +138,6 @@ class TraineeServiceImplTest {
         assertNotNull(result, "TraineeResponse should not be null");
         assertEquals(traineeResponse, result, "TraineeResponse should match the expected value");
         assertEquals(1, traineeResponse.getTrainers().size());
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -159,7 +153,6 @@ class TraineeServiceImplTest {
 
         assertDoesNotThrow(() -> traineeService.deleteByUsername(USERNAME));
         verify(traineeRepository).delete(traineeEntity);
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -180,7 +173,6 @@ class TraineeServiceImplTest {
         assertNotNull(result, "Trainer list should not be null");
         assertEquals(1, result.size(), "Should return one trainer");
         assertEquals(trainerDto, result.getFirst());
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
@@ -203,7 +195,6 @@ class TraineeServiceImplTest {
 
         assertEquals(1, traineeEntity.getTrainers().size());
         assertTrue(traineeEntity.getTrainers().contains(trainer));
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test

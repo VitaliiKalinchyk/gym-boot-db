@@ -14,7 +14,6 @@ import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TraineeService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
@@ -42,7 +41,6 @@ public class TraineeServiceImpl implements TraineeService {
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
-    private final LoggingService loggingService;
 
     @Override
     @Transactional
@@ -54,7 +52,6 @@ public class TraineeServiceImpl implements TraineeService {
         setUserFields(user, username, password);
 
         traineeRepository.save(entity);
-        loggingService.logDebugService("was created", username);
 
         return new UserCredentials(username, password);
     }
@@ -69,7 +66,6 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(traineeRepository.save(entity));
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        loggingService.logDebugService("was updated", username);
 
         return dto;
     }
@@ -82,7 +78,6 @@ public class TraineeServiceImpl implements TraineeService {
 
         TraineeDto dto = traineeMapper.toDto(entity);
         dto.setTrainers(trainerMapper.toDtoList(entity.getTrainers()));
-        loggingService.logDebugService("was fetched", username);
 
         return dto;
     }
@@ -91,7 +86,6 @@ public class TraineeServiceImpl implements TraineeService {
     public void deleteByUsername(String username) {
         Trainee entity = traineeRepository.findByUserUsername(username)
                 .orElseThrow(() -> new TraineeException(username));
-        loggingService.logDebugService("was deleted", username);
 
         traineeRepository.delete(entity);
     }
@@ -99,8 +93,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public List<TrainerDto> getTrainersNotAssignedToTrainee(String username) {
         if (!traineeRepository.existsByUserUsername(username)) throw new TraineeException(username);
-        loggingService.logDebugService("got its unassigned trainers", username);
-      
+
         return trainerMapper.toDtoList(trainerRepository.findTrainersNotAssignedToTrainee(username));
     }
 
@@ -118,7 +111,6 @@ public class TraineeServiceImpl implements TraineeService {
         if (!trainee.getTrainers().contains(trainer)) {
             trainee.getTrainers().add(trainer);
             traineeRepository.save(trainee);
-            loggingService.logDebugService("added new trainer to its list", username);
         }
     }
 

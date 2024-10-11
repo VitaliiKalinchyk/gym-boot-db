@@ -95,7 +95,7 @@ public class TrainingControllerIntegrationTest {
     }
 
     @Test
-    void createTraining() throws Exception {
+    void createTrainingTraining() throws Exception {
         long initialCount = trainingRepository.count();
         String jsonRequest = objectMapper.writeValueAsString(getTraining());
 
@@ -111,7 +111,7 @@ public class TrainingControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWrongUsername() throws Exception {
+    void createTrainingTrainingWrongUsername() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getTraining());
 
         mockMvc.perform(post(TRAININGS)
@@ -126,7 +126,7 @@ public class TrainingControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithoutTrainer() throws Exception {
+    void createTrainingTrainingWithoutTrainer() throws Exception {
         TrainingDto trainingWithoutTrainer = getTraining();
         trainingWithoutTrainer.getTrainer().setId(0);
 
@@ -144,7 +144,7 @@ public class TrainingControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithoutTrainingType() throws Exception {
+    void createTrainingTrainingWithoutTrainingType() throws Exception {
         TrainingDto trainingWithoutTrainingType = getTraining();
         trainingWithoutTrainingType.getTrainingType().setId(0);
 
@@ -162,7 +162,7 @@ public class TrainingControllerIntegrationTest {
     }
 
     @Test
-    void createTrainingWithInvalidRequest() throws Exception {
+    void createTrainingTrainingWithInvalidRequest() throws Exception {
         String jsonRequest = objectMapper.writeValueAsString(getInvalidTraining());
 
         mockMvc.perform(post(TRAININGS)

@@ -1,9 +1,8 @@
 package epam.task.gymbootdb.handler;
 
 import epam.task.gymbootdb.exception.GymResponseStatusException;
-import epam.task.gymbootdb.service.LoggingService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,7 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-@RequiredArgsConstructor
+@Slf4j
 public class GymExceptionHandler {
 
     public static final String ERROR_ID = "errorId";
@@ -30,12 +29,11 @@ public class GymExceptionHandler {
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String GLOBAL_EXCEPTION = "Global Exception";
     public static final String RESPONSE_STATUS_EXCEPTION = "GymResponseStatus Exception";
-
-    private final LoggingService loggingService;
+    public static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
 
     @ExceptionHandler(GymResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleGymResponseStatusException(GymResponseStatusException e) {
-        loggingService.logErrorHandler(RESPONSE_STATUS_EXCEPTION, e.getReason(), e.getErrorId());
+        logError(e.getErrorId(), RESPONSE_STATUS_EXCEPTION, e.getReason());
 
         return createResponseEntity(e.getStatusCode(), e.getReason(), e.getErrorId());
     }
@@ -43,7 +41,7 @@ public class GymExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(VALIDATION_ERROR, e.getMessage(), errorId);
+        logError(errorId, VALIDATION_ERROR, e.getMessage());
 
         Map<String, Object> body = new HashMap<>(Map.of(TIMESTAMP, LocalDateTime.now(), ERROR_ID, errorId));
         body.putAll(e.getFieldErrors().stream()
@@ -56,7 +54,7 @@ public class GymExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(GLOBAL_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, GLOBAL_EXCEPTION, e.getMessage());
 
         return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, UNEXPECTED_ERROR_OCCURRED, errorId);
     }
@@ -71,5 +69,9 @@ public class GymExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(body);
+    }
+
+    private void logError(String errorId, String exceptionType,String errorMessage) {
+        log.error(LOG_MESSAGE, errorId, exceptionType, errorMessage);
     }
 }
