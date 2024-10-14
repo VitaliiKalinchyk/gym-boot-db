@@ -31,5 +31,5 @@ public class TraineeDto {
     @Size(max = 120, message = "Address cannot exceed 120 characters")
     private String address;
 
-    List<TrainerDto> trainers;
+    private List<TrainerDto> trainers;
 }

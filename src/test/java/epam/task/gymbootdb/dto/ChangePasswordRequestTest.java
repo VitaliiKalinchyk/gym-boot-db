@@ -26,34 +26,34 @@ class ChangePasswordRequestTest {
     }
 
     @Test
-    void testValidChangePasswordRequest() {
+    void validChangePasswordRequest() {
 
         assertNoViolations(createRequest(getValidUserCredentials(), NEW_PASSWORD));
     }
 
     @Test
-    void testNullUserCredentials() {
+    void nullUserCredentials() {
         ChangePasswordRequest request = createRequest(null, NEW_PASSWORD);
 
         assertSingleViolation(request, "UserCredentials is required");
     }
 
     @Test
-    void testInvalidUserCredentials() {
+    void invalidUserCredentials() {
         ChangePasswordRequest request = createRequest(getInvalidUserCredentials(), NEW_PASSWORD);
 
         assertSingleViolation(request, "Username is required");
     }
 
     @Test
-    void testNullNewPassword() {
+    void nullNewPassword() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), null);
 
         assertSingleViolation(request, "New password is required");
     }
 
     @Test
-    void testNewPasswordTooShort() {
+    void newPasswordTooShort() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "short");
 
         assertSingleViolation(request,
@@ -62,7 +62,7 @@ class ChangePasswordRequestTest {
 
 
     @Test
-    void testNewPasswordTooLong() {
+    void newPasswordTooLong() {
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), "veryLongPassword123");
 
         assertSingleViolation(request,
@@ -70,7 +70,7 @@ class ChangePasswordRequestTest {
     }
 
     @Test
-    void testNewPasswordWithSpecialSymbol(){
+    void newPasswordWithSpecialSymbol(){
         ChangePasswordRequest request = createRequest(getValidUserCredentials(), NEW_PASSWORD + "_");
 
         assertSingleViolation(request,

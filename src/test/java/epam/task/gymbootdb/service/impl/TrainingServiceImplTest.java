@@ -10,9 +10,8 @@ import epam.task.gymbootdb.exception.TrainingTypeException;
 import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingRepository;
-
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
-import epam.task.gymbootdb.service.LoggingService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,8 +40,6 @@ class TrainingServiceImplTest {
     private TrainingTypeRepository trainingTypeRepository;
     @Mock
     private TrainingMapper trainingMapper;
-    @Mock
-    private LoggingService loggingService;
 
     @InjectMocks
     private TrainingServiceImpl trainingService;
@@ -62,7 +59,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTraining() {
+    void createTraining() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -73,11 +70,10 @@ class TrainingServiceImplTest {
         trainingService.create(trainingRequest);
 
         verify(trainingRepository).save(trainingEntity);
-        verify(loggingService).logDebugService(anyString());
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainee() {
+    void createTrainingNoSuchTrainee() {
         buildRequest();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.create(trainingRequest));
@@ -85,7 +81,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainer() {
+    void createTrainingNoSuchTrainer() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -96,7 +92,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testCreateTrainingNoSuchTrainingType() {
+    void createTrainingNoSuchTrainingType() {
         buildRequest();
 
         when(traineeRepository.findByUserUsername("name")).thenReturn(Optional.of(trainee));
@@ -108,7 +104,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTraineeTrainings() {
+    void getTraineeTrainings() {
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
         when(traineeRepository.existsByUserUsername(anyString())).thenReturn(true);
@@ -121,11 +117,10 @@ class TrainingServiceImplTest {
         assertNotNull(result, "Trainee trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");
         assertEquals(trainingResponse, result.getFirst(), "Returned training should match the expected value");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testGetTraineeTrainingsNoSuchTrainee() {
+    void getTraineeTrainingsNoSuchTrainee() {
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder().username(USERNAME).build();
 
         TraineeException e = assertThrows(TraineeException.class, () -> trainingService.getTraineeTrainings(request));
@@ -133,7 +128,7 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    void testGetTrainerTrainings() {
+    void getTrainerTrainings() {
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
         when(trainerRepository.existsByUserUsername(anyString())).thenReturn(true);
@@ -146,11 +141,10 @@ class TrainingServiceImplTest {
         assertNotNull(result, "Trainer trainings list should not be null");
         assertEquals(1, result.size(), "Expected one training");
         assertEquals(trainingResponse, result.getFirst(), "Returned training should match the expected value");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testGetTrainerTrainingsNoSuchTrainer() {
+    void getTrainerTrainingsNoSuchTrainer() {
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder().username(USERNAME).build();
 
         TrainerException e = assertThrows(TrainerException.class, () -> trainingService.getTrainerTrainings(request));

@@ -30,19 +30,19 @@ class TrainingDtoTest {
     }
 
     @Test
-    void testValidTrainingCreateRequest() {
+    void validTrainingCreateRequest() {
         assertNoViolations(createRequest(NAME, DATE, DURATION, ID, ID, ID));
     }
 
     @Test
-    void testNameIsNull() {
+    void nameIsNull() {
         TrainingDto request = createRequest(null, DATE, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Name cannot be null");
     }
 
     @Test
-    void testNameTooShort() {
+    void nameTooShort() {
         TrainingDto request = createRequest("A", DATE, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
@@ -50,7 +50,7 @@ class TrainingDtoTest {
     }
 
     @Test
-    void testNameTooLong() {
+    void nameTooLong() {
         TrainingDto request = createRequest("A".repeat(46), DATE, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
@@ -58,7 +58,7 @@ class TrainingDtoTest {
     }
 
     @Test
-    void testNameWithSpecialCharacters() {
+    void nameWithSpecialCharacters() {
         TrainingDto request = createRequest(NAME +"_", DATE, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Name must be between 3 and 45 characters and " +
@@ -66,49 +66,49 @@ class TrainingDtoTest {
     }
 
     @Test
-    void testNullDate() {
+    void nullDate() {
         TrainingDto request = createRequest(NAME, null, DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Date is required");
     }
 
     @Test
-    void testDateInPast() {
+    void dateInPast() {
         TrainingDto request = createRequest(NAME, LocalDate.now().minusDays(1), DURATION, ID, ID, ID);
 
         assertSingleViolation(request, "Date must be in the future");
     }
 
     @Test
-    void testDurationTooShort() {
+    void durationTooShort() {
         TrainingDto request = createRequest(NAME, DATE,9, ID, ID, ID);
 
         assertSingleViolation(request, "Duration must be greater than 10");
     }
 
     @Test
-    void testDurationTooLong() {
+    void durationTooLong() {
         TrainingDto request = createRequest(NAME, DATE,301, ID, ID, ID);
 
         assertSingleViolation(request, "Duration mustn't be greater than 300");
     }
 
     @Test
-    void testNoTrainer() {
+    void noTrainer() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, 0, ID, ID);
 
         assertSingleViolation(request, "Trainer is required");
     }
 
     @Test
-    void testNoTrainee() {
+    void noTrainee() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, ID, 0, ID);
 
         assertSingleViolation(request, "Trainee is required");
     }
 
     @Test
-    void testNoTrainingType() {
+    void noTrainingType() {
         TrainingDto request = createRequest(NAME, DATE,DURATION, ID, ID, 0);
 
         assertSingleViolation(request, "TrainingType is required");

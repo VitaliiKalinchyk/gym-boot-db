@@ -17,7 +17,7 @@ public interface TrainingController {
             @ApiResponse(responseCode = "201", description = "Training created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid training data provided")
     })
-    void create(TrainingDto trainingDto);
+    void createTraining(TrainingDto trainingDto);
 
     @Operation(summary = "Get trainings for a specific trainee",
             description = "Fetches a list of trainings for a specific trainee, filtered by optional parameters.")

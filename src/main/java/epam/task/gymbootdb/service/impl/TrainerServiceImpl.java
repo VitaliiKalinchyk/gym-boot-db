@@ -9,10 +9,10 @@ import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TrainerException;
 import epam.task.gymbootdb.exception.TrainingTypeException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainerService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
@@ -30,12 +32,12 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final TrainerMapper trainerMapper;
     private final TraineeMapper traineeMapper;
     private final PasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final NameGenerator nameGenerator;
-    private final LoggingService loggingService;
 
     @Override
     @Transactional
@@ -49,7 +51,6 @@ public class TrainerServiceImpl implements TrainerService {
         setUserFields(user, username, password);
 
         trainerRepository.save(entity);
-        loggingService.logDebugService("was created", username);
 
         return new UserCredentials(username, password);
     }
@@ -64,7 +65,6 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(trainerRepository.save(entity));
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        loggingService.logDebugService("was updated", username);
 
         return dto;
     }
@@ -77,7 +77,6 @@ public class TrainerServiceImpl implements TrainerService {
 
         TrainerDto dto = trainerMapper.toDto(entity);
         dto.setTrainees(traineeMapper.toDtoList(entity.getTrainees()));
-        loggingService.logDebugService("was fetched", username);
 
         return dto;
     }
@@ -91,7 +90,7 @@ public class TrainerServiceImpl implements TrainerService {
     private String generateUsername(User user) {
         String username = nameGenerator.generateUsername(user.getFirstName(), user.getLastName());
         return userRepository.existsByUsername(username) ?
-                nameGenerator.generateUsername(username, userRepository.findUsernamesByUsernameStartsWith(username)) :
+                nameGenerator.generateUsername(username, userRepository.findByUsernameStartingWith(username)) :
                 username;
     }
 
@@ -99,6 +98,7 @@ public class TrainerServiceImpl implements TrainerService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(true);
+        user.setRoles(Set.of(roleRepository.findByName("ROLE_TRAINER")));
     }
 
     private void updateTrainerFields(UserDto userDto, User user) {

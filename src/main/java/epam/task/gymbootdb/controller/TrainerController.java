@@ -15,7 +15,7 @@ public interface TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainer retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found")
     })
-    TrainerDto get(String username);
+    TrainerDto getTrainerProfile(String username);
 
     @Operation(summary = "Get trainer's profile",
             description = "Fetches a trainer's details based on authentication.")
@@ -23,7 +23,7 @@ public interface TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainer retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found")
     })
-    TrainerDto get();
+    TrainerDto getTrainerProfile();
 
     @Operation(summary = "Create new trainer",
             description = "Creates a new trainer profile and returns the associated user credentials.")
@@ -31,7 +31,7 @@ public interface TrainerController {
             @ApiResponse(responseCode = "201", description = "Trainer created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid trainer data")
     })
-    UserCredentials create(TrainerDto trainerDto);
+    UserCredentials createTrainer(TrainerDto trainerDto);
 
     @Operation(summary = "Update trainer",
             description = "Updates the details of an existing trainer.")
@@ -40,5 +40,5 @@ public interface TrainerController {
             @ApiResponse(responseCode = "404", description = "Trainer not found"),
             @ApiResponse(responseCode = "400", description = "Invalid trainer data")
     })
-    TrainerDto update(TrainerDto trainerDto);
+    TrainerDto updateTrainerProfile(TrainerDto trainerDto);
 }

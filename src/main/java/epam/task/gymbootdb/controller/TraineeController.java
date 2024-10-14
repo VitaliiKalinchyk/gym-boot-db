@@ -18,7 +18,7 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    TraineeDto get(String username);
+    TraineeDto getTraineeProfile(String username);
 
     @Operation(summary = "Get trainee's profile",
             description = "Fetches a trainee's details based on authentication.")
@@ -26,7 +26,7 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    TraineeDto get();
+    TraineeDto getTraineeProfile();
 
     @Operation(summary = "Create new trainee",
             description = "Creates a new trainee profile and returns the associated user credentials.")
@@ -34,7 +34,7 @@ public interface TraineeController {
             @ApiResponse(responseCode = "201", description = "Trainee created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid trainee data")
     })
-    UserCredentials create(TraineeDto traineeDto);
+    UserCredentials createTrainee(TraineeDto traineeDto);
 
     @Operation(summary = "Update trainee",
             description = "Updates the details of an existing trainee.")
@@ -43,7 +43,7 @@ public interface TraineeController {
             @ApiResponse(responseCode = "404", description = "Trainee not found"),
             @ApiResponse(responseCode = "400", description = "Invalid trainee data")
     })
-   TraineeDto update(TraineeDto trainee);
+   TraineeDto updateTraineeProfile(TraineeDto trainee);
 
     @Operation(summary = "Delete trainee by authentication details",
             description = "Deletes the trainee's profile based on the authentication details.")
@@ -51,7 +51,7 @@ public interface TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Trainee not found")
     })
-    void delete();
+    void deleteTrainee();
 
     @Operation(summary = "Get trainers not assigned to trainee",
             description = "Fetches a list of trainers that are not assigned to the trainee based on the " +

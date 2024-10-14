@@ -11,7 +11,6 @@ import epam.task.gymbootdb.repository.TraineeRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final TrainingMapper trainingMapper;
-    private final LoggingService loggingService;
 
     @Override
     public void create(TrainingDto request) {
@@ -42,7 +40,6 @@ public class TrainingServiceImpl implements TrainingService {
         entity.setTrainee(trainee);
 
         trainingRepository.save(entity);
-        loggingService.logDebugService("created new training");
     }
 
     @Override
@@ -52,7 +49,6 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTraineeTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTrainerId(), request.getTrainingTypeId());
-        loggingService.logDebugService("fetched it's trainee trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }
@@ -64,7 +60,6 @@ public class TrainingServiceImpl implements TrainingService {
 
         List<Training> entities = trainingRepository.findTrainerTrainingsByOptionalParams(username,
                 request.getFromDate(), request.getToDate(), request.getTraineeId());
-        loggingService.logDebugService("fetched it's trainer trainings", username);
 
         return trainingMapper.toDtoList(entities);
     }

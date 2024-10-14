@@ -2,10 +2,7 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.exception.LoginAttemptException;
-import epam.task.gymbootdb.security.service.JwtService;
-import epam.task.gymbootdb.security.service.LoginAttemptService;
 
-import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,11 +31,9 @@ public class AuthServiceImplTest {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private JwtService jwtService;
+    private JwtServiceImpl jwtServiceImpl;
     @Mock
-    private LoginAttemptService loginAttempt;
-    @Mock
-    private LoggingService loggingService;
+    private LoginAttemptServiceImpl loginAttempt;
     @Mock
     private Authentication authentication;
 
@@ -50,33 +45,30 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testAuthenticateSuccess() {
+    void authenticateSuccess() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(jwtService.generateToken(any())).thenReturn(MOCKED_TOKEN);
+        when(jwtServiceImpl.generateToken(any())).thenReturn(MOCKED_TOKEN);
 
         String token = authService.authenticate(credentials);
 
         assertEquals(MOCKED_TOKEN, token);
         verify(loginAttempt).loginSucceeded(any());
-        verify(loggingService, times(2)).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testAuthenticateUserBlocked() {
+    void authenticateUserBlocked() {
         when(loginAttempt.isBlocked(USERNAME)).thenReturn(true);
 
         LoginAttemptException e = assertThrows(LoginAttemptException.class, () -> authService.authenticate(credentials));
         assertEquals(USERNAME + " is locked. Please try again later.", e.getReason());
-        verify(loggingService).logWarnService(anyString(), anyString());
     }
 
     @Test
-    void testAuthenticateBadCredentials() {
+    void authenticateBadCredentials() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Login failed"));
 
         assertThrows(BadCredentialsException.class, () -> authService.authenticate(credentials));
-        verify(loginAttempt).loginFailed(any());
     }
 }

@@ -1,11 +1,12 @@
 package epam.task.gymbootdb.handler;
 
-import epam.task.gymbootdb.service.LoggingService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestControllerAdvice
-@RequiredArgsConstructor
+@Slf4j
 public class GymAuthExceptionHandler {
 
     private static final String ERROR_ID = "errorId";
@@ -33,13 +34,12 @@ public class GymAuthExceptionHandler {
     private static final String MALFORMED_JWT_EXCEPTION = "Malformed JWT Exception";
     private static final String JWT_EXCEPTION = "JWT Exception";
     private static final String AUTHENTICATION_EXCEPTION = "Authentication Exception";
-
-    private final LoggingService loggingService;
+    public static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(AUTHENTICATION_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, AUTHENTICATION_EXCEPTION, e.getMessage());
 
         return createUnauthResponseEntity(WRONG_USERNAME_OR_PASSWORD, errorId);
     }
@@ -47,7 +47,7 @@ public class GymAuthExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<Map<String, Object>> handleExpiredJwtException(ExpiredJwtException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(JWT_EXPIRED_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, JWT_EXPIRED_EXCEPTION, e.getMessage());
 
         return createUnauthResponseEntity(JWT_EXPIRED, errorId);
     }
@@ -55,7 +55,7 @@ public class GymAuthExceptionHandler {
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<Map<String, Object>> handleMalformedJwtException(MalformedJwtException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(MALFORMED_JWT_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, MALFORMED_JWT_EXCEPTION, e.getMessage());
 
         return createUnauthResponseEntity(TOKEN_FORMAT_IS_INVALID, errorId);
     }
@@ -63,7 +63,7 @@ public class GymAuthExceptionHandler {
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<Map<String, Object>> handleSignatureException(SignatureException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(JWT_SIGNATURE_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, JWT_SIGNATURE_EXCEPTION, e.getMessage());
 
         return createUnauthResponseEntity(INVALID_TOKEN_SIGNATURE, errorId);
     }
@@ -71,7 +71,7 @@ public class GymAuthExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<Map<String, Object>> handleJwtException(JwtException e) {
         String errorId = UUID.randomUUID().toString();
-        loggingService.logErrorHandler(JWT_EXCEPTION, e.getMessage(), errorId);
+        logError(errorId, JWT_EXCEPTION, e.getMessage());
 
         return createUnauthResponseEntity(INVALID_JWT, errorId);
     }
@@ -84,5 +84,9 @@ public class GymAuthExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    private void logError(String errorId, String exceptionType,String errorMessage) {
+        log.error(LOG_MESSAGE, errorId, exceptionType, errorMessage);
     }
 }

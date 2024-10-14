@@ -3,14 +3,15 @@ package epam.task.gymbootdb.service.impl;
 import epam.task.gymbootdb.dto.*;
 import epam.task.gymbootdb.dto.mapper.TraineeMapper;
 import epam.task.gymbootdb.dto.mapper.TrainerMapper;
+import epam.task.gymbootdb.entity.Role;
 import epam.task.gymbootdb.entity.Trainer;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.TrainerException;
 import epam.task.gymbootdb.exception.TrainingTypeException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.TrainerRepository;
 import epam.task.gymbootdb.repository.TrainingTypeRepository;
 import epam.task.gymbootdb.repository.UserRepository;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.utils.NameGenerator;
 import epam.task.gymbootdb.utils.PasswordGenerator;
 
@@ -46,6 +47,8 @@ class TrainerServiceImplTest {
     @Mock
     private TrainingTypeRepository trainingTypeRepository;
     @Mock
+    private RoleRepository roleRepository;
+    @Mock
     private TrainerMapper trainerMapper;
     @Mock
     private TraineeMapper traineeMapper;
@@ -55,8 +58,6 @@ class TrainerServiceImplTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private NameGenerator nameGenerator;
-    @Mock
-    private LoggingService loggingService;
 
     @InjectMocks
     private TrainerServiceImpl trainerService;
@@ -78,7 +79,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testCreateProfile() {
+    void createProfile() {
         prepareCreateProfileMocks(false);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
@@ -86,18 +87,17 @@ class TrainerServiceImplTest {
         assertUserCredentials(result, USERNAME);
         assertTrue(user.isActive(), "User should be active");
         assertEquals(ENCODED_PASSWORD, user.getPassword(), "Password should be encoded");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testCreateProfileNoSuchTrainingType() {
+    void createProfileNoSuchTrainingType() {
         TrainingTypeException e = assertThrows(TrainingTypeException.class,
                 () -> trainerService.createProfile(trainerRequest));
         assertEquals("TrainingType with id 1 does not exist", e.getReason());
     }
 
     @Test
-    void testCreateProfileUsernameExists() {
+    void createProfileUsernameExists() {
         prepareCreateProfileMocks(true);
 
         UserCredentials result = trainerService.createProfile(trainerRequest);
@@ -108,7 +108,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testUpdateTrainer() {
+    void updateTrainer() {
         trainerRequest.setUser(createUserDto());
 
         when(trainerRepository.findByUserUsername(JANE_SMITH)).thenReturn(Optional.of(trainerEntity));
@@ -121,11 +121,10 @@ class TrainerServiceImplTest {
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
         assertEquals(1, result.getTrainees().size());
         assertTrainerUpdatedFields();
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testUpdateTrainerNoSuchTrainer() {
+    void updateTrainerNoSuchTrainer() {
         trainerRequest.setUser(new UserDto());
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.update(trainerRequest));
 
@@ -133,7 +132,7 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    void testGetByUsername() {
+    void getByUsername() {
         when(trainerRepository.findByUserUsername(USERNAME)).thenReturn(Optional.of(trainerEntity));
         when(trainerMapper.toDto(trainerEntity)).thenReturn(trainerResponse);
         when(traineeMapper.toDtoList(any())).thenReturn(List.of(new TraineeDto()));
@@ -143,11 +142,10 @@ class TrainerServiceImplTest {
         assertNotNull(result, "TrainerResponse should not be null");
         assertEquals(trainerResponse, result, "TrainerResponse should match the expected value");
         assertEquals(1, result.getTrainees().size());
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testGetByUsernameNoSuchTrainer() {
+    void getByUsernameNoSuchTrainer() {
         TrainerException e = assertThrows(TrainerException.class, () -> trainerService.getByUsername(USERNAME));
 
         assertEquals("Trainer with username Joe was not found", e.getReason());
@@ -160,10 +158,11 @@ class TrainerServiceImplTest {
         when(nameGenerator.generateUsername(anyString(), anyString())).thenReturn(USERNAME);
         when(userRepository.existsByUsername(anyString())).thenReturn(usernameExists);
         if (usernameExists) {
-            when(userRepository.findUsernamesByUsernameStartsWith(USERNAME)).thenReturn(List.of(USERNAME));
+            when(userRepository.findByUsernameStartingWith(USERNAME)).thenReturn(List.of(USERNAME));
             when(nameGenerator.generateUsername(USERNAME, List.of(USERNAME))).thenReturn(USERNAME + "1");
         }
         when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);
+        when(roleRepository.findByName(anyString())).thenReturn(new Role());
     }
 
     private void assertUserCredentials(UserCredentials result, String expectedUsername) {

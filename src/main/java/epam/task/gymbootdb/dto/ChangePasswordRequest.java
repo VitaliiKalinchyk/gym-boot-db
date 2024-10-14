@@ -17,7 +17,7 @@ public class ChangePasswordRequest {
 
     @Valid
     @NotNull(message = "UserCredentials is required")
-    UserCredentials userCredentials;
+    private UserCredentials userCredentials;
 
     @NotNull(message = "New password is required")
     @Pattern(regexp = "[a-zA-Z0-9]{8,16}",

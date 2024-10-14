@@ -25,5 +25,5 @@ public class TrainerDto {
     @NotNull(message = "TrainingType cannot be null")
     private TrainingTypeDto trainingType;
 
-    List<TraineeDto> trainees;
+    private List<TraineeDto> trainees;
 }

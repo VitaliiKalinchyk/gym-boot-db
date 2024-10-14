@@ -2,12 +2,13 @@ package epam.task.gymbootdb.service.impl;
 
 import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
+import epam.task.gymbootdb.entity.Role;
 import epam.task.gymbootdb.entity.User;
 import epam.task.gymbootdb.exception.PasswordException;
 import epam.task.gymbootdb.exception.UserException;
+import epam.task.gymbootdb.repository.RoleRepository;
 import epam.task.gymbootdb.repository.UserRepository;
 
-import epam.task.gymbootdb.service.LoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -33,9 +35,9 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private RoleRepository roleRepository;
     @Mock
-    private LoggingService loggingService;
+    private PasswordEncoder passwordEncoder;
 
     private static User user;
     private static UserCredentials userCredentials;
@@ -49,9 +51,10 @@ class UserServiceImplTest {
     }
 
      @Test
-     void testLoadUserByUsername() {
+     void loadUserByUsername() {
          user.setUsername("Joe");
          user.setPassword("pass");
+         user.setRoles(new HashSet<>());
 
          when(userRepository.findByUsername("Joe")).thenReturn(Optional.of(user));
 
@@ -62,13 +65,13 @@ class UserServiceImplTest {
      }
 
      @Test
-     void testLoadUserByUsernameNoSuchUser() {
+     void loadUserByUsernameNoSuchUser() {
          UserException e = assertThrows(UserException.class, () -> userService.loadUserByUsername("Joe"));
          assertEquals("User with username Joe was not found", e.getReason());
      }
 
     @Test
-    void testChangeStatus() {
+    void changeStatus() {
         user.setActive(false);
 
         when(userRepository.findByUsername("Joe")).thenReturn(Optional.of(user));
@@ -76,17 +79,16 @@ class UserServiceImplTest {
         userService.changeStatus("Joe");
 
         assertTrue(user.isActive(), "User should be active");
-        verify(loggingService).logDebugService(anyString(), anyString());
     }
 
     @Test
-    void testChangeStatusNoSuchUser() {
+    void changeStatusNoSuchUser() {
         UserException e = assertThrows(UserException.class, () -> userService.changeStatus("Joe"));
         assertEquals("User with username Joe was not found", e.getReason());
     }
 
     @Test
-    void testChangePassword() {
+    void changePassword() {
         when(userRepository.findByUsername(userCredentials.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())).thenReturn(true);
         when(passwordEncoder.encode(request.getNewPassword())).thenReturn("newEncodedPassword");
@@ -94,22 +96,40 @@ class UserServiceImplTest {
         userService.changePassword(request);
 
         assertEquals("newEncodedPassword", user.getPassword());
-        verify(loggingService).logDebugService(anyString());
     }
 
     @Test
-    void testChangePasswordNoSuchUser() {
+    void changePasswordNoSuchUser() {
         UserException e = assertThrows(UserException.class, () -> userService.changePassword(request));
         assertEquals("User with username " + userCredentials.getUsername() + " was not found", e.getReason());
     }
 
     @Test
-    void testChangePasswordIncorrect() {
+    void changePasswordIncorrect() {
         when(userRepository.findByUsername(userCredentials.getUsername())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())).thenReturn(false);
 
         PasswordException e = assertThrows(PasswordException.class, () -> userService.changePassword(request));
 
         assertEquals("Wrong password", e.getReason());
+    }
+
+    @Test
+    void createAdmin() {
+        when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.FALSE);
+        when(roleRepository.findByName(anyString())).thenReturn(new Role());
+
+        userService.createAdmin("Joe.Doe", "password");
+
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void createAdminAlreadyExists() {
+        when(userRepository.existsByUsername("Joe.Doe")).thenReturn(Boolean.TRUE);
+
+        userService.createAdmin("Joe.Doe", "password");
+
+        verify(userRepository, never()).save(any());
     }
 }

@@ -4,7 +4,6 @@ import epam.task.gymbootdb.dto.TraineeDto;
 import epam.task.gymbootdb.dto.TrainerDto;
 import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.dto.UserCredentials;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TraineeService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +34,6 @@ class TraineeControllerImplTest {
     private Authentication authentication;
     @Mock
     private SecurityContext securityContext;
-    @Mock
-    private LoggingService loggingService;
 
     private TraineeDto traineeDto;
     private UserCredentials credentials;
@@ -51,71 +48,64 @@ class TraineeControllerImplTest {
     }
 
     @Test
-    void testGetTrainee() {
+    void getTraineeProfileTrainee() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
-        TraineeDto response = traineeController.get(TRAINEE_USERNAME);
+        TraineeDto response = traineeController.getTraineeProfile(TRAINEE_USERNAME);
 
         assertEquals(traineeDto, response);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testGetTraineeProfile() {
+    void getTraineeProfileTraineeProfile() {
         when(traineeService.getByUsername(TRAINEE_USERNAME)).thenReturn(traineeDto);
 
-        TraineeDto response = traineeController.get();
+        TraineeDto response = traineeController.getTraineeProfile();
 
         assertEquals(traineeDto, response);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testCreateTrainee() {
+    void createTraineeTrainee() {
         when(traineeService.createProfile(traineeDto)).thenReturn(credentials);
 
-        UserCredentials response = traineeController.create(traineeDto);
+        UserCredentials response = traineeController.createTrainee(traineeDto);
 
         assertEquals(credentials, response);
-        verify(loggingService).logDebugController(anyString(), anyString());
     }
 
     @Test
-    void testUpdateTrainee() {
+    void updateTraineeProfileTrainee() {
         when(traineeService.update(traineeDto)).thenReturn(traineeDto);
 
-        TraineeDto response = traineeController.update(traineeDto);
+        TraineeDto response = traineeController.updateTraineeProfile(traineeDto);
 
         assertEquals(traineeDto, response);
         assertEquals(TRAINEE_USERNAME, traineeDto.getUser().getUsername());
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testDeleteTrainee() {
-        assertDoesNotThrow(() -> traineeController.delete());
+    void deleteTraineeTrainee() {
+        assertDoesNotThrow(() -> traineeController.deleteTrainee());
 
         verify(traineeService).deleteByUsername(TRAINEE_USERNAME);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testGetUnassignedTrainers() {
+    void getTraineeProfileUnassignedTrainers() {
         List<TrainerDto> trainers = List.of(TrainerDto.builder().id(1).build());
         when(traineeService.getTrainersNotAssignedToTrainee(TRAINEE_USERNAME)).thenReturn(trainers);
 
         List<TrainerDto> response = traineeController.getTrainersNotAssignedToTrainee();
 
         assertEquals(trainers, response);
-        verify(loggingService).logDebugController(anyString());
     }
 
     @Test
-    void testUpdateTraineeTrainers() {
+    void updateTraineeProfileTraineeTrainers() {
         assertDoesNotThrow(() -> traineeController.updateTraineeTrainers(1L));
 
         verify(traineeService).updateTraineeTrainers(TRAINEE_USERNAME, 1L);
-        verify(loggingService).logDebugController(anyString());
     }
 
     private void setUpSecurityContext() {

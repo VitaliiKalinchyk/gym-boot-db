@@ -24,26 +24,26 @@ class TrainerDtoTest {
     }
 
     @Test
-    void testValidTrainerDto() {
+    void validTrainerDto() {
         assertNoViolations(createDto(getUser(), getTrainingType()));
     }
 
     @Test
-    void testNullUser() {
+    void nullUser() {
         TrainerDto dto = createDto(null, getTrainingType());
 
         assertSingleViolation(dto, "User cannot be null");
     }
 
     @Test
-    void testNotValidUserNoFirstName() {
+    void notValidUserNoFirstName() {
         TrainerDto dto = createDto(getUserNoFirstName(), getTrainingType());
 
         assertSingleViolation(dto, "First name cannot be null");
     }
 
     @Test
-    void testNullTrainingType() {
+    void nullTrainingType() {
         TrainerDto dto = createDto(getUser(), null);
 
         assertSingleViolation(dto, "TrainingType cannot be null");

@@ -16,6 +16,7 @@ public interface TraineeMapper {
 
     @Mapping(source = "user.active", target = "user.isActive")
     @Mapping(target = "user.password", ignore = true)
+    @Mapping(target = "user.roles", ignore = true)
     @Mapping(target = "trainers", ignore = true)
     Trainee toEntity(TraineeDto trainee);
 

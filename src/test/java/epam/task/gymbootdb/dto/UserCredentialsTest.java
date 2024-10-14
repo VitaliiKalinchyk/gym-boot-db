@@ -27,19 +27,19 @@ class UserCredentialsTest {
     }
 
     @Test
-    void testValidUserCredentials() {
+    void validUserCredentials() {
         assertNoViolations(createCredentials(USERNAME, PASSWORD));
     }
 
     @Test
-    void testNullUsername() {
+    void nullUsername() {
         UserCredentials credentials = createCredentials(null, PASSWORD);
 
         assertSingleViolation(credentials, "Username is required");
     }
 
     @Test
-    void testNullPassword() {
+    void nullPassword() {
         UserCredentials credentials = createCredentials(USERNAME, null);
 
         assertSingleViolation(credentials, "Password is required");

@@ -1,6 +1,6 @@
-package epam.task.gymbootdb.security;
+package epam.task.gymbootdb.service.impl;
 
-import epam.task.gymbootdb.security.service.LoginAttemptService;
+import epam.task.gymbootdb.service.LoginAttemptService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,31 +8,32 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LoginAttemptServiceTest {
+class LoginAttemptServiceImplTest {
 
-    public static final int MAX_ATTEMPTS = 3;
-    public static final String USERNAME = "testUser";
+    private static final int MAX_ATTEMPTS = 3;
+    private static final String USERNAME = "Joe.Doe";
+    private static final Duration LOCKOUT_DURATION = Duration.ofMinutes(1);
+
     private LoginAttemptService loginAttemptService;
 
     @BeforeEach
     void setUp() {
-        loginAttemptService = new LoginAttemptService(MAX_ATTEMPTS, Duration.ofMinutes(1));
+        loginAttemptService = new LoginAttemptServiceImpl(MAX_ATTEMPTS, LOCKOUT_DURATION);
     }
 
     @Test
-    void isBlocked_ShouldReturnFalseWhenUserIsNotBlocked() {
+    void isBlocked() {
         assertFalse(loginAttemptService.isBlocked(USERNAME));
     }
 
     @Test
-    void loginFailed_ShouldLockUserAfterMaxAttempts() {
+    void loginFailedShouldLockUserAfterMaxAttempts() {
         for (int i = 0; i < MAX_ATTEMPTS; i++) {
             loginAttemptService.loginFailed(USERNAME);
         }
 
         assertTrue(loginAttemptService.isBlocked(USERNAME));
     }
-
 
     @Test
     void loginSucceededShouldClearAttemptsWhenLoginIsSuccessful() {
@@ -41,6 +42,16 @@ class LoginAttemptServiceTest {
         }
 
         loginAttemptService.loginSucceeded(USERNAME);
+
+        assertFalse(loginAttemptService.isBlocked(USERNAME));
+    }
+
+    @Test
+    void removeExpiredBlocks() {
+        loginAttemptService = new LoginAttemptServiceImpl(1, Duration.ZERO);
+
+        loginAttemptService.loginFailed(USERNAME);
+        loginAttemptService.removeExpiredBlocks();
 
         assertFalse(loginAttemptService.isBlocked(USERNAME));
     }

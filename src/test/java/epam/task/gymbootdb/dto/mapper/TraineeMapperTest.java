@@ -21,7 +21,7 @@ class TraineeMapperTest {
     private final TraineeMapper mapper = Mappers.getMapper(TraineeMapper.class);
 
     @Test
-    void testToDto() {
+    void toDto() {
         TraineeDto dto = mapper.toDto(getTrainee1());
 
         assertTrainee(getTrainee1(), dto);
@@ -29,7 +29,24 @@ class TraineeMapperTest {
     }
 
     @Test
-    void testToEntity() {
+    void toDtoNullUser() {
+        Trainee trainee = getTrainee1();
+        trainee.setUser(null);
+
+        TraineeDto dto = mapper.toDto(trainee);
+
+        assertNull(dto.getUser());
+    }
+
+    @Test
+    void toDtoNullValue() {
+        TraineeDto dto = mapper.toDto(null);
+
+        assertNull(dto);
+    }
+
+    @Test
+    void toEntity() {
         Trainee trainee = mapper.toEntity(getDto());
 
         assertTrainee(trainee, getDto());
@@ -37,11 +54,35 @@ class TraineeMapperTest {
     }
 
     @Test
-    void testToDtoList() {
+    void toEntityNullUser() {
+        TraineeDto dto = getDto();
+        dto.setUser(null);
+
+        Trainee trainee = mapper.toEntity(dto);
+
+        assertNull(trainee.getUser());
+    }
+
+    @Test
+    void toEntityNullValue() {
+        Trainee trainee = mapper.toEntity(null);
+
+        assertNull(trainee);
+    }
+
+    @Test
+    void toDtoList() {
         List<TraineeDto> traineeDtos = mapper.toDtoList(List.of(getTrainee1(), getTrainee2()));
 
-        assertTrainee(getTrainee1(), traineeDtos.get(0));
-        assertTrainee(getTrainee2(), traineeDtos.get(1));
+        assertTrainee(getTrainee1(), traineeDtos.getFirst());
+        assertTrainee(getTrainee2(), traineeDtos.getLast());
+    }
+
+    @Test
+    void toDtoListNullList() {
+        List<TraineeDto> traineeDtos = mapper.toDtoList(null);
+
+        assertNull(traineeDtos);
     }
 
     private static void assertTrainee(Trainee trainee, TraineeDto dto) {

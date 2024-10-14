@@ -26,13 +26,12 @@ class SecurityConfigTest {
     HttpSecurity http;
 
     @Test
-    void testSecurityFilterChain() throws Exception {
+    void securityFilterChain() throws Exception {
         when(http.csrf(any())).thenReturn(http);
         when(http.cors(any())).thenReturn(http);
         when(http.sessionManagement(any())).thenReturn(http);
         when(http.authorizeHttpRequests(any())).thenReturn(http);
         when(http.exceptionHandling(any())).thenReturn(http);
-        when(http.logout(any())).thenReturn(http);
         when(http.addFilterBefore(any(), any())).thenReturn(http);
 
         securityConfig.securityFilterChain(http);
@@ -42,7 +41,6 @@ class SecurityConfigTest {
         verify(http).sessionManagement(any());
         verify(http).authorizeHttpRequests(any());
         verify(http).exceptionHandling(any());
-        verify(http).logout(any());
         verify(http).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

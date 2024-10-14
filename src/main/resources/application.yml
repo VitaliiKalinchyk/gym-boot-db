@@ -19,6 +19,10 @@ server:
   servlet:
     context-path: /api
 
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level --- [%thread] %logger{36} : [Transaction ID: %X{transactionId:-NO TRANSACTION}] [User ID: %X{userId:-NO USER ID}] [Message: %msg]%n"
+
 
 security:
   bcrypt:
@@ -33,6 +37,9 @@ security:
   lockout:
     duration: ${LOGIN_LOCKOUT_DURATION}
     cleaning-rate: ${LOCKOUT_CLEANING_RATE}
+  admin:
+    name: ${ADMIN_NAME}
+    password: ${ADMIN_PASSWORD}
 db: ${DB}
 
 management:
@@ -105,3 +112,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+logging:
+  level:
+    epam.task.gymbootdb: DEBUG

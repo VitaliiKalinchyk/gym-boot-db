@@ -4,7 +4,6 @@ import epam.task.gymbootdb.controller.TrainingController;
 import epam.task.gymbootdb.dto.TraineeTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainerTrainingsRequest;
 import epam.task.gymbootdb.dto.TrainingDto;
-import epam.task.gymbootdb.service.LoggingService;
 import epam.task.gymbootdb.service.TrainingService;
 
 import jakarta.validation.Valid;
@@ -24,16 +23,14 @@ import java.util.List;
 public class TrainingControllerImpl implements TrainingController {
 
     private final TrainingService trainingService;
-    private final LoggingService loggingService;
 
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody TrainingDto trainingDto) {
-        String username = getUsername();
-        trainingDto.getTrainee().getUser().setUsername(username);
+    public void createTraining(@Valid @RequestBody TrainingDto trainingDto) {
+        trainingDto.getTrainee().getUser().setUsername(getUsername());
+
         trainingService.create(trainingDto);
-        loggingService.logDebugController("created training: " + trainingDto, username);
     }
 
     @Override
@@ -44,19 +41,15 @@ public class TrainingControllerImpl implements TrainingController {
             @RequestParam(name = "trainer-id", required = false) Long trainerId,
             @RequestParam(name = "training-type-id", required = false) Long trainingTypeId)
     {
-        String username = getUsername();
         TraineeTrainingsRequest request = TraineeTrainingsRequest.builder()
-                .username(username)
+                .username(getUsername())
                 .fromDate(fromDate)
                 .toDate(toDate)
                 .trainerId(trainerId)
                 .trainingTypeId(trainingTypeId)
                 .build();
 
-        List<TrainingDto> trainings = trainingService.getTraineeTrainings(request);
-        loggingService.logDebugController("fetched it's trainee's trainings");
-
-        return trainings;
+        return trainingService.getTraineeTrainings(request);
     }
 
     @Override
@@ -66,18 +59,14 @@ public class TrainingControllerImpl implements TrainingController {
             @RequestParam(name = "to-date", required = false) LocalDate toDate,
             @RequestParam(name = "trainee-id", required = false) Long trainerId)
     {
-        String username = getUsername();
         TrainerTrainingsRequest request = TrainerTrainingsRequest.builder()
-                .username(username)
+                .username(getUsername())
                 .fromDate(fromDate)
                 .toDate(toDate)
                 .traineeId(trainerId)
                 .build();
 
-        List<TrainingDto> trainings = trainingService.getTrainerTrainings(request);
-        loggingService.logDebugController("fetched it's trainer's trainings");
-
-        return trainings;
+        return trainingService.getTrainerTrainings(request);
     }
 
     private static String getUsername() {
