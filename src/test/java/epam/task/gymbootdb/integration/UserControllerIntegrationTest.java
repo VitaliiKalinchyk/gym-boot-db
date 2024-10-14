@@ -40,12 +40,12 @@ class UserControllerIntegrationTest {
 
     private static final String USERNAME = "Joe.Doe";
     private static final String PASSWORD = "password";
-    public static final boolean STATUS = true;
-    public static final String NEW_PASSWORD = "newPassword";
-    public static final String BEARER = "Bearer ";
-    public static final String WRONG = "wrong";
-    public static final String USERS_CHANGE_PASSWORD = "/users/change-password";
-    public static final String USERS_STATUS = "/users/status";
+    private static final boolean STATUS = true;
+    private static final String NEW_PASSWORD = "newPassword";
+    private static final String BEARER = "Bearer ";
+    private static final String WRONG = "wrong";
+    private static final String USERS_CHANGE_PASSWORD = "/users/change-password";
+    private static final String USERS_STATUS = "/users/status";
 
     @Autowired
     private MockMvc mockMvc;

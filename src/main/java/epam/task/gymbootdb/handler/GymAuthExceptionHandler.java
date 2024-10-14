@@ -34,7 +34,7 @@ public class GymAuthExceptionHandler {
     private static final String MALFORMED_JWT_EXCEPTION = "Malformed JWT Exception";
     private static final String JWT_EXCEPTION = "JWT Exception";
     private static final String AUTHENTICATION_EXCEPTION = "Authentication Exception";
-    public static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
+    private static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException e) {
@@ -76,7 +76,7 @@ public class GymAuthExceptionHandler {
         return createUnauthResponseEntity(INVALID_JWT, errorId);
     }
 
-    private static ResponseEntity<Map<String, Object>> createUnauthResponseEntity(String message, String errorId) {
+    private ResponseEntity<Map<String, Object>> createUnauthResponseEntity(String message, String errorId) {
         Map<String, Object> body = Map.of(
                 TIMESTAMP, LocalDateTime.now(),
                 MESSAGE, message,

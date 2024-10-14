@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DbHealthIndicatorTest {
 
-    DbHealthIndicator dbHealthIndicator;
+    private DbHealthIndicator dbHealthIndicator;
 
     @Mock
     JdbcTemplate jdbcTemplate;

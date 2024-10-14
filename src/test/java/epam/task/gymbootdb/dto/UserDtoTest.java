@@ -81,7 +81,7 @@ class UserDtoTest {
         assertSingleViolation(userDto, LAST_NAME_ERROR);
     }
 
-    private static UserDto createUserDto(String firstName, String lastName) {
+    private UserDto createUserDto(String firstName, String lastName) {
         return UserDto.builder()
                 .firstName(firstName)
                 .lastName(lastName)

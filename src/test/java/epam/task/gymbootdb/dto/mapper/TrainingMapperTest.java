@@ -59,7 +59,7 @@ class TrainingMapperTest {
         assertNull(trainingDtos);
     }
 
-    private static void assertTraining(Training training, TrainingDto trainingDto) {
+    private void assertTraining(Training training, TrainingDto trainingDto) {
         assertEquals(training.getId(), trainingDto.getId());
         assertEquals(training.getName(), trainingDto.getName());
         assertEquals(training.getDate(), trainingDto.getDate());
@@ -69,7 +69,7 @@ class TrainingMapperTest {
         assertEquals(training.getTrainingType().getId(), trainingDto.getTrainingType().getId());
     }
 
-    private static Training getTraining1() {
+    private Training getTraining1() {
         return Training.builder()
                 .id(1L)
                 .name("Morning Yoga")
@@ -81,7 +81,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static Training getTraining2() {
+    private Training getTraining2() {
         return Training.builder()
                 .id(2L)
                 .name("Evening Boxing")
@@ -93,7 +93,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static Trainee getTrainee() {
+    private Trainee getTrainee() {
         return Trainee.builder()
                 .id(2L)
                 .user(getUser())
@@ -102,7 +102,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static Trainer getTrainer() {
+    private Trainer getTrainer() {
         return Trainer.builder()
                 .id(2L)
                 .user(getUser())
@@ -110,7 +110,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static User getUser() {
+    private User getUser() {
         return User.builder()
                 .id(1)
                 .firstName("Joe")
@@ -120,11 +120,11 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static TrainingType getTrainingType() {
+    private TrainingType getTrainingType() {
         return new TrainingType(1, "Yoga");
     }
 
-    private static TrainingDto getTrainingDto() {
+    private TrainingDto getTrainingDto() {
         return TrainingDto.builder()
                 .name("Morning Yoga")
                 .date(LocalDate.of(2024, 12, 12))
@@ -135,7 +135,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static TraineeDto getTraineeDto() {
+    private TraineeDto getTraineeDto() {
         return TraineeDto.builder()
                 .id(2L)
                 .user(getUserDto())
@@ -144,7 +144,7 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static TrainerDto getTrainerDto() {
+    private TrainerDto getTrainerDto() {
         return TrainerDto.builder()
                 .id(1L)
                 .user(getUserDto())
@@ -152,11 +152,11 @@ class TrainingMapperTest {
                 .build();
     }
 
-    private static TrainingTypeDto getTrainingTypeDto() {
+    private TrainingTypeDto getTrainingTypeDto() {
         return new TrainingTypeDto(1, "Yoga");
     }
     
-    private static UserDto getUserDto() {
+    private UserDto getUserDto() {
         return UserDto.builder()
                 .firstName("John")
                 .lastName("Doe")

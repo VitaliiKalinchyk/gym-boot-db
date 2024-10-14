@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceImplTest {
+class AuthServiceImplTest {
 
-    public static final String USERNAME = "Joe";
-    public static final String PASSWORD = "password";
-    public static final String MOCKED_TOKEN = "mockedToken";
+    private static final String USERNAME = "Joe";
+    private static final String PASSWORD = "password";
+    private static final String MOCKED_TOKEN = "mockedToken";
 
     @InjectMocks
     private AuthServiceImpl authService;

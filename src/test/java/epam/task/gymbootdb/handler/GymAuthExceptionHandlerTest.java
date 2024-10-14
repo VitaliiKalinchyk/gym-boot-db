@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GymAuthExceptionHandlerTest {
 
-    private final GymAuthExceptionHandler handler = new GymAuthExceptionHandler();
-
-    public static final String TRANSACTION_ID = "timestamp";
+    public static final String TIMESTAMP = "timestamp";
     public static final String MESSAGE = "message";
+
+    private final GymAuthExceptionHandler handler = new GymAuthExceptionHandler();
 
     @Test
     void handleAuthenticationException() {
@@ -62,12 +62,12 @@ class GymAuthExceptionHandlerTest {
         asserResponseEntity(responseEntity, "Invalid JWT");
     }
 
-    private static void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity, String message) {
+    private void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity, String message) {
         Map<String, Object> body = responseEntity.getBody();
 
         assertNotNull(body);
         assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
-        assertTrue(body.containsKey(TRANSACTION_ID));
+        assertTrue(body.containsKey(TIMESTAMP));
         assertTrue(body.containsKey(MESSAGE));
         assertTrue(body.containsValue(message));
     }

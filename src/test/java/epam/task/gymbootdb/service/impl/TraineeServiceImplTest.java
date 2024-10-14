@@ -36,12 +36,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TraineeServiceImplTest {
 
-    public static final String USERNAME = "Joe";
-    public static final String LAST_NAME = "Smith";
-    public static final String ENCODED_PASSWORD = "encodedPassword";
-    public static final String JANE_SMITH = "Jane.Smith";
-    public static final String JANE = "Jane";
-    public static final String PASSWORD = "password";
+    private static final String USERNAME = "Joe";
+    private static final String LAST_NAME = "Smith";
+    private static final String ENCODED_PASSWORD = "encodedPassword";
+    private static final String JANE_SMITH = "Jane.Smith";
+    private static final String JANE = "Jane";
+    private static final String PASSWORD = "password";
 
     @Mock
     private TraineeRepository traineeRepository;

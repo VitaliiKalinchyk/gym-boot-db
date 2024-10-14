@@ -40,26 +40,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class AdminControllerIntegrationTest {
+class AdminControllerIntegrationTest {
 
-    public static final String WRONG = "wrong";
+    private static final String WRONG = "wrong";
     private static final String TRAINEE_USERNAME = "Joe.Doe";
-    public static final String TRAINER_USERNAME = "Jane.Doe";
-    public static final String TRAINING_NAME = "First Training";
+    private static final String TRAINER_USERNAME = "Jane.Doe";
+    private static final String TRAINING_NAME = "First Training";
     private static final String PASSWORD = "password";
-    public static final String BEARER = "Bearer ";
-    public static final String ADMIN_USERS_STATUS_USERNAME = "/admin/users/status/{username}";
-    public static final String ADMIN_TRAINEES_USERNAME = "/admin/trainees/{username}";
-    public static final String ADMIN_TRAINEES_UNASSIGNED_TRAINERS_USERNAME = "/admin/trainees/unassigned-trainers/{username}";
-    public static final String ADMIN_TRAINEES_TRAINERS_USERNAME = "/admin/trainees/trainers/{username}";
-    public static final String ADMIN_TRAINERS_USERNAME = "/admin/trainers/{username}";
-    public static final String ADMIN_TRAININGS_USERNAME = "/admin/trainings/{username}";
-    public static final String ADMIN_TRAININGS_TRAINEE_USERNAME = "/admin/trainings/trainee/{username}";
-    public static final String ADMIN_TRAININGS_TRAINER_USERNAME = "/admin/trainings/trainer/{username}";
+    private static final String BEARER = "Bearer ";
+    private static final String ADMIN_USERS_STATUS_USERNAME = "/admin/users/status/{username}";
+    private static final String ADMIN_TRAINEES_USERNAME = "/admin/trainees/{username}";
+    private static final String ADMIN_TRAINEES_UNASSIGNED_TRAINERS_USERNAME = "/admin/trainees/unassigned-trainers/{username}";
+    private static final String ADMIN_TRAINEES_TRAINERS_USERNAME = "/admin/trainees/trainers/{username}";
+    private static final String ADMIN_TRAINERS_USERNAME = "/admin/trainers/{username}";
+    private static final String ADMIN_TRAININGS_USERNAME = "/admin/trainings/{username}";
+    private static final String ADMIN_TRAININGS_TRAINEE_USERNAME = "/admin/trainings/trainee/{username}";
+    private static final String ADMIN_TRAININGS_TRAINER_USERNAME = "/admin/trainings/trainer/{username}";
 
     @Value("${security.admin.name}")
     private String adminName;
-
     @Value("${security.admin.password}")
     private String adminPassword;
 
@@ -87,7 +86,6 @@ public class AdminControllerIntegrationTest {
     private TrainingMapper trainingMapper;
 
     private String authorizationHeader;
-
     private TraineeDto savedTrainee;
     private TrainerDto savedTrainer;
 

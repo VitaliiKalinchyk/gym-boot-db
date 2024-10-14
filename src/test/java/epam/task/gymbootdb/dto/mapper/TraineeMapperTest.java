@@ -85,7 +85,7 @@ class TraineeMapperTest {
         assertNull(traineeDtos);
     }
 
-    private static void assertTrainee(Trainee trainee, TraineeDto dto) {
+    private void assertTrainee(Trainee trainee, TraineeDto dto) {
         assertEquals(trainee.getId(), dto.getId());
         assertEquals(trainee.getAddress(), dto.getAddress());
         assertEquals(trainee.getBirthday(), dto.getBirthday());
@@ -96,7 +96,7 @@ class TraineeMapperTest {
         assertEquals(trainee.getUser().isActive(), dto.getUser().isActive());
     }
 
-    private static Trainee getTrainee1() {
+    private Trainee getTrainee1() {
         return Trainee.builder()
                 .id(1L)
                 .user(User.builder()
@@ -112,7 +112,7 @@ class TraineeMapperTest {
                 .build();
     }
 
-    private static Trainee getTrainee2() {
+    private Trainee getTrainee2() {
         return Trainee.builder()
                 .id(2L)
                 .user(User.builder()
@@ -127,7 +127,7 @@ class TraineeMapperTest {
                 .build();
     }
 
-    private static TraineeDto getDto() {
+    private TraineeDto getDto() {
         return TraineeDto.builder()
                 .id(1L)
                 .user(UserDto.builder()

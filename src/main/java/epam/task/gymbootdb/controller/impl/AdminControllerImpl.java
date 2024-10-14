@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-public class AdminControllerImpl implements AdminController {
+public class AdminControllerImpl extends AbstractController implements AdminController {
 
     private final UserService userService;
     private final TraineeService traineeService;

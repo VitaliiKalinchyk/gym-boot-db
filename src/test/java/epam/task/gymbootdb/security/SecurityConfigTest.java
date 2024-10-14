@@ -17,13 +17,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SecurityConfigTest {
 
-    @InjectMocks
-    private SecurityConfig securityConfig;
-
     @Mock
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Mock
     HttpSecurity http;
+
+    @InjectMocks
+    private SecurityConfig securityConfig;
 
     @Test
     void securityFilterChain() throws Exception {

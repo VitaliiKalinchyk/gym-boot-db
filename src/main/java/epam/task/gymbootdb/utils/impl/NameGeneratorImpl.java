@@ -24,14 +24,18 @@ public class NameGeneratorImpl implements NameGenerator {
             }
         };
 
-        int maxIndex = existingUsernames.stream()
+        return username + (getMaxIndex(username, existingUsernames, stringToIntFunction) + 1);
+    }
+
+    private int getMaxIndex(String username,
+                            List<String> existingUsernames,
+                            ToIntFunction<String> stringToIntFunction) {
+        return existingUsernames.stream()
                 .filter(u -> u.startsWith(username))
                 .map(u -> u.substring(username.length()))
                 .filter(s -> !s.isEmpty())
                 .mapToInt(stringToIntFunction)
                 .max()
                 .orElse(0);
-
-        return username + (maxIndex + 1);
     }
 }

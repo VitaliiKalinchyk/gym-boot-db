@@ -37,15 +37,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class TrainerControllerIntegrationTest {
+class TrainerControllerIntegrationTest {
 
     private static final String TRAINER_USERNAME = "Jane.Doe";
     private static final String PASSWORD = "password";
-    public static final String BEARER = "Bearer ";
-    public static final String WRONG_USERNAME = "wrongUsername";
-    public static final String TRAINERS_USERNAME = "/trainers/{username}";
-    public static final String TRAINERS_PROFILE = "/trainers/profile";
-    public static final String TRAINERS = "/trainers";
+    private static final String BEARER = "Bearer ";
+    private static final String WRONG_USERNAME = "wrongUsername";
+    private static final String TRAINERS_USERNAME = "/trainers/{username}";
+    private static final String TRAINERS_PROFILE = "/trainers/profile";
+    private static final String TRAINERS = "/trainers";
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,7 +64,6 @@ public class TrainerControllerIntegrationTest {
 
     private String trainerAuthorizationHeader;
     private String wrongAuthorizationHeader;
-
     private TrainerDto savedTrainer;
 
     @BeforeEach

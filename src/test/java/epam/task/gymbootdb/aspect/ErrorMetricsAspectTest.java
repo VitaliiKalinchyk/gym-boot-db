@@ -16,7 +16,6 @@ class ErrorMetricsAspectTest {
 
     @Mock
     private MeterRegistry registry;
-
     @Mock
     private Counter counter;
 

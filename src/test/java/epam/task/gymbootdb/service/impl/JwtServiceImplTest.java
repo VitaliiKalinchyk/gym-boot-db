@@ -23,14 +23,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JwtServiceImplTest {
 
-    private JwtServiceImpl jwtService;
+    private static final String USERNAME = "Joe";
 
     @Mock
     JwtBlacklistRepository jwtBlacklistRepository;
 
-    private UserDetails userDetails;
+    private JwtServiceImpl jwtService;
 
-    private static final String USERNAME = "Joe";
+    private UserDetails userDetails;
 
     @BeforeEach
     void setUp() {

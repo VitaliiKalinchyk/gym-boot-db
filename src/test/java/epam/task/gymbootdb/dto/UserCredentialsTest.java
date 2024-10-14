@@ -45,7 +45,7 @@ class UserCredentialsTest {
         assertSingleViolation(credentials, "Password is required");
     }
 
-    private static UserCredentials createCredentials(String username, String password) {
+    private UserCredentials createCredentials(String username, String password) {
         return new UserCredentials(username, password);
     }
 

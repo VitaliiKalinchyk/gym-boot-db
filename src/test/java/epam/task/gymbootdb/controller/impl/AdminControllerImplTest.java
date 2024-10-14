@@ -26,8 +26,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AdminControllerImplTest {
 
-    @InjectMocks
-    private AdminControllerImpl adminController;
+    private static final String USERNAME = "Joe.Doe";
+
     @Mock
     private UserService userService;
     @Mock
@@ -37,12 +37,12 @@ class AdminControllerImplTest {
     @Mock
     private TrainingService trainingService;
 
+    @InjectMocks
+    private AdminControllerImpl adminController;
+
     private TraineeDto traineeDto;
     private TrainerDto trainerDto;
     private TrainingDto trainingDto;
-
-    private static final String USERNAME = "Joe.Doe";
-
 
     @BeforeEach
     void setUp() {

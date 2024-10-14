@@ -33,9 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class TrainingTypeControllerIntegrationTest {
+class TrainingTypeControllerIntegrationTest {
 
-    public static final String TRAINING_TYPES = "/training-types";
+    private static final String TRAINING_TYPES = "/training-types";
+    private static final String USERNAME = "Joe.Doe";
+    private static final String PASSWORD = "password";
+    private static final String BEARER = "Bearer ";
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,10 +48,6 @@ public class TrainingTypeControllerIntegrationTest {
     private TrainingTypeRepository trainingTypeRepository;
     @Autowired
     private UserRepository userRepository;
-
-    private static final String USERNAME = "Joe.Doe";
-    private static final String PASSWORD = "password";
-    public static final String BEARER = "Bearer ";
 
     private String authorizationHeader;
 

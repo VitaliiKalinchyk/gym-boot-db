@@ -18,12 +18,14 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TrainingTypeServiceImplTest {
-    @InjectMocks
-    private TrainingTypeServiceImpl trainingTypeService;
+
     @Mock
     private TrainingTypeRepository trainingTypeRepository;
     @Mock
     private  TrainingTypeMapper trainingTypeMapper;
+
+    @InjectMocks
+    private TrainingTypeServiceImpl trainingTypeService;
 
     @Test
     void getAll() {

@@ -65,7 +65,7 @@ class TraineeDtoTest {
         assertSingleViolation(dto, "Address cannot exceed 120 characters");
     }
 
-    private static TraineeDto createDto(UserDto user, LocalDate date, String address) {
+    private TraineeDto createDto(UserDto user, LocalDate date, String address) {
         return TraineeDto.builder()
                 .user(user)
                 .birthday(date)
@@ -73,11 +73,11 @@ class TraineeDtoTest {
                 .build();
     }
 
-    private static UserDto getUser() {
+    private UserDto getUser() {
         return UserDto.builder().firstName("Joe").lastName("Doe").build();
     }
 
-    private static UserDto getUserNoFirstName() {
+    private UserDto getUserNoFirstName() {
         return UserDto.builder().lastName("Doe").build();
     }
 

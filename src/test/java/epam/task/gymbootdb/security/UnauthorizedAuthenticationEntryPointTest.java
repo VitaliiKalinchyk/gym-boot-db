@@ -18,9 +18,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UnauthorizedAuthenticationEntryPointTest {
 
-    @InjectMocks
-    private UnauthorizedAuthenticationEntryPoint entryPoint;
-
     @Mock
     HttpServletRequest request;
     @Mock
@@ -29,6 +26,9 @@ class UnauthorizedAuthenticationEntryPointTest {
     AuthenticationException authException;
     @Mock
     PrintWriter writer;
+
+    @InjectMocks
+    private UnauthorizedAuthenticationEntryPoint entryPoint;
 
     @Test
     void commence() throws Exception {

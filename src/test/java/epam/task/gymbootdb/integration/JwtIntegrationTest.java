@@ -32,9 +32,9 @@ class JwtIntegrationTest {
 
     private static final String USERNAME = "Joe.Doe";
     private static final String PASSWORD = "password";
-    public static final String BEARER = "Bearer ";
-    public static final String MALFORMED_TOKEN = "malformedToken";
-    public static final String AUTH_LOGOUT = "/auth/logout";
+    private static final String BEARER = "Bearer ";
+    private static final String MALFORMED_TOKEN = "malformedToken";
+    private static final String AUTH_LOGOUT = "/auth/logout";
 
     @Autowired
     private MockMvc mockMvc;

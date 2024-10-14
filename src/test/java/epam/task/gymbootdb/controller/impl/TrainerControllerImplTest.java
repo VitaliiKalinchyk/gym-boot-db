@@ -5,6 +5,7 @@ import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.dto.UserDto;
 import epam.task.gymbootdb.service.TrainerService;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainerControllerImplTest {
 
-    @InjectMocks
-    private TrainerControllerImpl trainerController;
+    private static final String TRAINER_USERNAME = "Joe.Doe";
 
     @Mock
     private TrainerService trainerService;
@@ -32,16 +32,22 @@ class TrainerControllerImplTest {
     @Mock
     private SecurityContext securityContext;
 
+    @InjectMocks
+    private TrainerControllerImpl trainerController;
+
     private TrainerDto trainerDto;
     private UserCredentials credentials;
-
-    private static final String TRAINER_USERNAME = "Joe.Doe";
 
     @BeforeEach
     void setUp() {
         trainerDto = TrainerDto.builder().user(new UserDto()).build();
         credentials = new UserCredentials("Trainee", "password");
         setUpSecurityContext();
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

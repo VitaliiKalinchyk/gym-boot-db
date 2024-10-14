@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GymExceptionHandler {
 
-    public static final String ERROR_ID = "errorId";
-    public static final String TIMESTAMP = "timestamp";
-    public static final String MESSAGE = "message";
-    public static final String UNEXPECTED_ERROR_OCCURRED = "Unexpected error occurred";
-    public static final String VALIDATION_ERROR = "Validation error";
-    public static final String GLOBAL_EXCEPTION = "Global Exception";
-    public static final String RESPONSE_STATUS_EXCEPTION = "GymResponseStatus Exception";
-    public static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
+    private static final String ERROR_ID = "errorId";
+    private static final String TIMESTAMP = "timestamp";
+    private static final String MESSAGE = "message";
+    private static final String UNEXPECTED_ERROR_OCCURRED = "Unexpected error occurred";
+    private static final String VALIDATION_ERROR = "Validation error";
+    private static final String GLOBAL_EXCEPTION = "Global Exception";
+    private static final String RESPONSE_STATUS_EXCEPTION = "GymResponseStatus Exception";
+    private static final String LOG_MESSAGE = "ErrorId: {}, {}: {}";
 
     @ExceptionHandler(GymResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleGymResponseStatusException(GymResponseStatusException e) {
@@ -59,7 +59,7 @@ public class GymExceptionHandler {
         return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, UNEXPECTED_ERROR_OCCURRED, errorId);
     }
 
-    private static ResponseEntity<Map<String, Object>> createResponseEntity(HttpStatusCode status,
+    private ResponseEntity<Map<String, Object>> createResponseEntity(HttpStatusCode status,
                                                                             String message,
                                                                             String errorId) {
         Map<String, Object> body = Map.of(

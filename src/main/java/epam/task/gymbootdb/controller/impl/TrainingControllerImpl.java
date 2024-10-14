@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,7 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/trainings")
-public class TrainingControllerImpl implements TrainingController {
+public class TrainingControllerImpl extends AbstractController implements TrainingController {
 
     private final TrainingService trainingService;
 
@@ -67,11 +66,5 @@ public class TrainingControllerImpl implements TrainingController {
                 .build();
 
         return trainingService.getTrainerTrainings(request);
-    }
-
-    private static String getUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
     }
 }

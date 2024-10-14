@@ -4,6 +4,7 @@ import epam.task.gymbootdb.dto.ChangePasswordRequest;
 import epam.task.gymbootdb.dto.UserCredentials;
 import epam.task.gymbootdb.service.UserService;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +22,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserControllerImplTest {
 
-    @InjectMocks
-    private UserControllerImpl userController;
+    private static final String USERNAME = "Joe.Doe";
+    private static final String PASSWORD = "pass";
+    private static final String NEW_PASS = "newPass";
 
     @Mock
     private UserService userService;
@@ -31,13 +33,17 @@ class UserControllerImplTest {
     @Mock
     private SecurityContext securityContext;
 
-    private static final String USERNAME = "Joe.Doe";
-    private static final String PASSWORD = "pass";
-    private static final String NEW_PASS = "newPass";
+    @InjectMocks
+    private UserControllerImpl userController;
 
     @BeforeEach
     void setUp() {
         setUpSecurityContext();
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test

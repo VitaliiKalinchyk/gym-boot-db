@@ -49,22 +49,22 @@ class TrainerDtoTest {
         assertSingleViolation(dto, "TrainingType cannot be null");
     }
 
-    private static TrainerDto createDto(UserDto user, TrainingTypeDto trainingTypeDto) {
+    private TrainerDto createDto(UserDto user, TrainingTypeDto trainingTypeDto) {
         return TrainerDto.builder()
                 .user(user)
                 .trainingType(trainingTypeDto)
                 .build();
     }
 
-    private static UserDto getUser() {
+    private UserDto getUser() {
         return UserDto.builder().firstName("Joe").lastName("Doe").build();
     }
 
-    private static UserDto getUserNoFirstName() {
+    private UserDto getUserNoFirstName() {
         return UserDto.builder().lastName("Doe").build();
     }
 
-    private static TrainingTypeDto getTrainingType() {
+    private TrainingTypeDto getTrainingType() {
         return new TrainingTypeDto(1L, "Fitness");
     }
 

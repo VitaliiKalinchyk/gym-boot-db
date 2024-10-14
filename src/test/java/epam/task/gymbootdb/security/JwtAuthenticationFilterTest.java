@@ -7,7 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +28,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
 
-    @InjectMocks
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     @Mock
     private JwtService jwtService;
     @Mock
@@ -42,7 +39,10 @@ class JwtAuthenticationFilterTest {
     @Mock
     private FilterChain filterChain;
 
-    UserDetails userDetails;
+    @InjectMocks
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private UserDetails userDetails;
 
     @BeforeEach
     void setup() {
@@ -51,8 +51,8 @@ class JwtAuthenticationFilterTest {
         SecurityContextHolder.clearContext();
     }
 
-    @AfterAll
-    static void setOff() {
+    @AfterEach
+    void tearDown() {
         SecurityContextHolder.clearContext();
     }
 

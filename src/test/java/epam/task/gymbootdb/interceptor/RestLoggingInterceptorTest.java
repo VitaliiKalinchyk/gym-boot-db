@@ -16,9 +16,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class RestLoggingInterceptorTest {
 
-    public static final String GET = "GET";
-    public static final String URI = "/api/test";
-    public static final String PARAM_VALUE = "param=value";
+    private static final String GET = "GET";
+    private static final String URI = "/api/test";
+    private static final String PARAM_VALUE = "param=value";
 
     @InjectMocks
     RestLoggingInterceptor interceptor;

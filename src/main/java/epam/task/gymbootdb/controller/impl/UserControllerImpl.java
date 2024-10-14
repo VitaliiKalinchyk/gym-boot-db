@@ -8,13 +8,12 @@ import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserControllerImpl implements UserController {
+public class UserControllerImpl extends AbstractController implements UserController {
 
     private final UserService userService;
 
@@ -30,11 +29,5 @@ public class UserControllerImpl implements UserController {
         request.getUserCredentials().setUsername(getUsername());
 
         userService.changePassword(request);
-    }
-
-    private static String getUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
     }
 }

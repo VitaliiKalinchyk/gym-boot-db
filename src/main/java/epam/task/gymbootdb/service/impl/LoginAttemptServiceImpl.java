@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class LoginAttemptServiceImpl implements LoginAttemptService {
+
     private final Map<String, Integer> attempts = new ConcurrentHashMap<>();
     private final Map<String, Long> lockoutTime = new ConcurrentHashMap<>();
 

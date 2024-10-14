@@ -129,7 +129,7 @@ public class TraineeServiceImpl implements TraineeService {
         user.setRoles(Set.of(roleRepository.findByName("ROLE_TRAINEE")));
     }
 
-    private static void updateTraineeFields(TraineeDto request, Trainee entity) {
+    private void updateTraineeFields(TraineeDto request, Trainee entity) {
         entity.getUser().setFirstName(request.getUser().getFirstName());
         entity.getUser().setLastName(request.getUser().getLastName());
         entity.getUser().setActive(request.getUser().isActive());

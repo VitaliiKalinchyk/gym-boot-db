@@ -30,8 +30,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @InjectMocks
-    private UserServiceImpl userService;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -39,9 +37,12 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    private static User user;
-    private static UserCredentials userCredentials;
-    private static ChangePasswordRequest request;
+    @InjectMocks
+    private UserServiceImpl userService;
+
+    private User user;
+    private UserCredentials userCredentials;
+    private ChangePasswordRequest request;
 
     @BeforeEach
     void setup() {

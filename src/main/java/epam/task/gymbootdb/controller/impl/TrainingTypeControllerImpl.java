@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/training-types")
 @RequiredArgsConstructor
-public class TrainingTypeControllerImpl implements TrainingTypeController {
+public class TrainingTypeControllerImpl extends AbstractController implements TrainingTypeController {
 
     private final TrainingTypeService trainingTypeService;
 

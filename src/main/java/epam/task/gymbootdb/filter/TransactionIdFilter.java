@@ -47,7 +47,7 @@ public class TransactionIdFilter  implements Filter {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
-            return "USER NOT FOUND";
+            return "NO USER ID";
         }
 
         String username = authentication.getName();

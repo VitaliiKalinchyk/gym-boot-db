@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TrainingServiceImplTest {
 
-    public static final String USERNAME = "Joe";
+    private static final String USERNAME = "Joe";
 
     @Mock
     private TrainingRepository trainingRepository;

@@ -107,7 +107,7 @@ class TrainerMapperTest {
         assertNull(trainerDtos);
     }
 
-    private static void assertTrainer(Trainer trainer, TrainerDto dto) {
+    private void assertTrainer(Trainer trainer, TrainerDto dto) {
         assertEquals(trainer.getId(), dto.getId());
         assertEquals(trainer.getTrainingType().getId(), dto.getTrainingType().getId());
         assertEquals(trainer.getTrainingType().getName(), dto.getTrainingType().getName());
@@ -118,7 +118,7 @@ class TrainerMapperTest {
         assertEquals(trainer.getUser().isActive(), dto.getUser().isActive());
     }
 
-    private static Trainer getTrainer1() {
+    private Trainer getTrainer1() {
         return Trainer.builder()
                 .id(1L)
                 .user(User.builder()
@@ -133,7 +133,7 @@ class TrainerMapperTest {
                 .build();
     }
 
-    private static Trainer getTrainer2() {
+    private Trainer getTrainer2() {
         return Trainer.builder()
                 .id(2L)
                 .user(User.builder()
@@ -148,7 +148,7 @@ class TrainerMapperTest {
 
     }
 
-    private static TrainerDto getDto() {
+    private TrainerDto getDto() {
         return TrainerDto.builder()
                 .id(1L)
                 .user(UserDto.builder()

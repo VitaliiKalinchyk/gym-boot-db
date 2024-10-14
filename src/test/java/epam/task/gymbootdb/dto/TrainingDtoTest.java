@@ -114,7 +114,7 @@ class TrainingDtoTest {
         assertSingleViolation(request, "TrainingType is required");
     }
 
-    private static TrainingDto createRequest(String name, LocalDate date, int duration,
+    private TrainingDto createRequest(String name, LocalDate date, int duration,
                                              long trainerId, long traineeId, long trainingTypeId) {
         return TrainingDto.builder()
                 .name(name)

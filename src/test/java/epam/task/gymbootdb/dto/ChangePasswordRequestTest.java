@@ -77,15 +77,15 @@ class ChangePasswordRequestTest {
                 "New password must be between 8 and 16 characters and contain only letters or digits");
     }
 
-    private static ChangePasswordRequest createRequest(UserCredentials userCredentials, String newPassword) {
+    private ChangePasswordRequest createRequest(UserCredentials userCredentials, String newPassword) {
         return new ChangePasswordRequest(userCredentials, newPassword);
     }
 
-    private static UserCredentials getValidUserCredentials() {
+    private UserCredentials getValidUserCredentials() {
         return new UserCredentials("Joe", "oldPassword");
     }
 
-    private static UserCredentials getInvalidUserCredentials() {
+    private UserCredentials getInvalidUserCredentials() {
         return new UserCredentials(null, "oldPassword");
     }
 

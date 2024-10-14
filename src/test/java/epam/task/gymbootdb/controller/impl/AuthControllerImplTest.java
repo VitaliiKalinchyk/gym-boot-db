@@ -17,13 +17,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthControllerImplTest {
 
-    @InjectMocks
-    private AuthControllerImpl authController;
-
     @Mock
     AuthService authService;
     @Mock
     JwtService jwtService;
+
+    @InjectMocks
+    private AuthControllerImpl authController;
 
     @Test
     void login() {

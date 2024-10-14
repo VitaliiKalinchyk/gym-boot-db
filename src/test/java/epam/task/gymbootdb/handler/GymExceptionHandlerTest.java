@@ -19,13 +19,13 @@ import static org.mockito.Mockito.mock;
 
 class GymExceptionHandlerTest {
 
-    private final GymExceptionHandler handler = new GymExceptionHandler();
-
-    public static final String TRANSACTION_ID = "timestamp";
+    public static final String TIMESTAMP = "timestamp";
     public static final String MESSAGE = "message";
     public static final String FIELD_NAME = "fieldName";
     public static final String ERROR_MESSAGE = "Error message";
     public static final String ERROR_ID = "errorId";
+
+    private final GymExceptionHandler handler = new GymExceptionHandler();
 
     @Test
     void testGymResponseStatusException() {
@@ -48,7 +48,7 @@ class GymExceptionHandlerTest {
 
         assertNotNull(body);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertTrue(body.containsKey(TRANSACTION_ID));
+        assertTrue(body.containsKey(TIMESTAMP));
         assertTrue(body.containsKey(FIELD_NAME));
         assertTrue(body.containsKey(ERROR_ID));
         assertTrue(body.containsValue(Collections.singletonList(ERROR_MESSAGE)));
@@ -61,13 +61,13 @@ class GymExceptionHandlerTest {
         asserResponseEntity(responseEntity, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
     }
 
-    private static void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity,
+    private void asserResponseEntity(ResponseEntity<Map<String, Object>> responseEntity,
                                             HttpStatusCode status, String message) {
         Map<String, Object> body = responseEntity.getBody();
 
         assertNotNull(body);
         assertEquals(status, responseEntity.getStatusCode());
-        assertTrue(body.containsKey(TRANSACTION_ID));
+        assertTrue(body.containsKey(TIMESTAMP));
         assertTrue(body.containsKey(MESSAGE));
         assertTrue(body.containsValue(message));
     }

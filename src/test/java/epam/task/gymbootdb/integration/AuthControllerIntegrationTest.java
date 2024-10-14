@@ -38,11 +38,11 @@ class AuthControllerIntegrationTest {
 
     private static final String USERNAME = "Joe.Doe";
     private static final String PASSWORD = "password";
-    public static final String WRONG_VALUE = "wrong";
-    public static final String BEARER = "Bearer ";
-    public static final String AUTH_LOGIN = "/auth/login";
-    public static final String AUTH_LOGOUT = "/auth/logout";
-    public static final String TOO_MUCH_ATTEMPTS = "tooMuchAttempts";
+    private static final String WRONG_VALUE = "wrong";
+    private static final String BEARER = "Bearer ";
+    private static final String AUTH_LOGIN = "/auth/login";
+    private static final String AUTH_LOGOUT = "/auth/logout";
+    private static final String TOO_MUCH_ATTEMPTS = "tooMuchAttempts";
 
     @Autowired
     private MockMvc mockMvc;

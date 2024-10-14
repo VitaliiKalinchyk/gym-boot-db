@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/trainees")
 @RequiredArgsConstructor
-public class TraineeControllerImpl implements TraineeController {
+public class TraineeControllerImpl extends AbstractController implements TraineeController {
 
     private final TraineeService traineeService;
 
@@ -66,11 +65,5 @@ public class TraineeControllerImpl implements TraineeController {
     @PutMapping("/trainers")
     public void updateTraineeTrainers(@RequestParam long trainerId) {
         traineeService.updateTraineeTrainers(getUsername(), trainerId);
-    }
-
-    private static String getUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
     }
 }

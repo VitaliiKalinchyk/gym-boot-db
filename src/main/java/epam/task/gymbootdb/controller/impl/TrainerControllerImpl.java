@@ -10,13 +10,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/trainers")
-public class TrainerControllerImpl implements TrainerController {
+public class TrainerControllerImpl extends AbstractController implements TrainerController {
 
     private final TrainerService trainerService;
 
@@ -45,11 +44,5 @@ public class TrainerControllerImpl implements TrainerController {
         trainerDto.getUser().setUsername(getUsername());
 
         return trainerService.update(trainerDto);
-    }
-
-    private static String getUsername() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
     }
 }

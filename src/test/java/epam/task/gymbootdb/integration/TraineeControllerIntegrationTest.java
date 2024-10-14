@@ -41,17 +41,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class TraineeControllerIntegrationTest {
+class TraineeControllerIntegrationTest {
 
     private static final String TRAINEE_USERNAME = "Joe.Doe";
-    public static final String TRAINER_USERNAME = "Jane.Doe";
+    private static final String TRAINER_USERNAME = "Jane.Doe";
     private static final String PASSWORD = "password";
-    public static final String BEARER = "Bearer ";
-    public static final String TRAINEES_USERNAME = "/trainees/{username}";
-    public static final String TRAINEES_PROFILE = "/trainees/profile";
-    public static final String TRAINEES = "/trainees";
-    public static final String TRAINEES_UNASSIGNED_TRAINERS = "/trainees/unassigned-trainers";
-    public static final String TRAINEES_TRAINERS = "/trainees/trainers";
+    private static final String BEARER = "Bearer ";
+    private static final String TRAINEES_USERNAME = "/trainees/{username}";
+    private static final String TRAINEES_PROFILE = "/trainees/profile";
+    private static final String TRAINEES = "/trainees";
+    private static final String TRAINEES_UNASSIGNED_TRAINERS = "/trainees/unassigned-trainers";
+    private static final String TRAINEES_TRAINERS = "/trainees/trainers";
 
     @Autowired
     private MockMvc mockMvc;
@@ -72,7 +72,6 @@ public class TraineeControllerIntegrationTest {
 
     private String traineeAuthorizationHeader;
     private String trainerAuthorizationHeader;
-
     private TraineeDto savedTrainee;
     private TrainerDto savedTrainer;
 

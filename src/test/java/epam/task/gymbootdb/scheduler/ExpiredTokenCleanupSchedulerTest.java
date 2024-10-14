@@ -12,11 +12,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ExpiredTokenCleanupSchedulerTest {
 
-    @InjectMocks
-    private ExpiredTokenCleanupScheduler expiredTokenCleanupScheduler;
-
     @Mock
     private JwtService jwtService;
+
+    @InjectMocks
+    private ExpiredTokenCleanupScheduler expiredTokenCleanupScheduler;
 
     @Test
     void cleanExpiredToken() {
