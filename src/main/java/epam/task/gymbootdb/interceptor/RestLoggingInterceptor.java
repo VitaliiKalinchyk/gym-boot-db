@@ -17,10 +17,10 @@ public class RestLoggingInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) {
-        String method = request.getMethod();
-        String uri = request.getRequestURI();
-        String queryString = request.getQueryString() != null ? "?" + request.getQueryString() : "";
-        log.info("HTTP Method: {}, Endpoint: {}{}", method, uri, queryString);
+        log.info("HTTP Method: {}, Endpoint: {}{}",
+                request.getMethod(),
+                request.getRequestURI(),
+                request.getQueryString() != null ? "?" + request.getQueryString() : "");
 
         return true;
     }
@@ -30,8 +30,9 @@ public class RestLoggingInterceptor implements HandlerInterceptor {
                                 @NonNull HttpServletResponse response,
                                 @NonNull Object handler,
                                 Exception e) {
-        int status = response.getStatus();
-        String message = (e != null) ? e.getMessage() : "Response OK";
-        log.info("Response Status: {}, Message: {}", status, message);
+        log.info("REST Response - URI: {}, Status: {}, Message: {}",
+                request.getRequestURI(),
+                response.getStatus(),
+                (e != null) ? e.getMessage() : "Response OK");
     }
 }
