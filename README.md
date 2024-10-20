@@ -57,10 +57,10 @@ Once the application is running, it will be available at:
 
 For API documentation and available endpoints, visit:
 
-`http://localhost:{port}/api/swagger-ui/index.html#/`
-Replace {port} with the appropriate port for your environment:
+`http://localhost:{port}/api/swagger-ui/index.html#/`<br>
+Replace `{port}` with the appropriate port for your environment:
 
-8011 for test profile
-8080 for development profile
-9000 for production profile
+* 8011 for **test** profile
+* 8080 for **development** profile
+* 9000 for **production** profile
 
