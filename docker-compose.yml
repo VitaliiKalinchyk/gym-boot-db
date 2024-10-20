@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: gym_postgres_container
+    env_file:
+      - .env-prod
+    environment:
+      POSTGRES_DB: gym
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgres
+    networks:
+      - my_network
+
+  app:
+    image: openjdk:21
+    container_name: gym_java_app_container
+    depends_on:
+      - db
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./target/gym.jar:/app/app.jar
+    env_file:
+      - .env
+      - .env-prod
+    command: [ "java", "-jar", "-Dspring.profiles.active=prod", "/app/app.jar" ]
+    networks:
+      - my_network
+
+volumes:
+  db_data:
+
+networks:
+  my_network:
